@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="content-body">
         <div class="w-100">
-            <h2 class="h4 mt-0 mb-1">Sign in</h2>
+            <h2 class="h4 mt-0 mb-1">Admin - Sign in</h2>
             <p class="text-muted">Sign in to access your Account</p>
 
             <!-- Session Status -->
@@ -10,7 +10,7 @@
             <!-- Validation Errors -->
             <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('admin.login') }}">
                 @csrf
                 <div class="form-group">
                     <input class="form-control" id="email" type="email" name="email" :value="old('email')" required
@@ -35,7 +35,7 @@
                 </div>
             </form>
             @if (Route::has('password.request'))
-            <p class="mt-5 mb-1"><a href="{{ route('password.request') }}">Forgot password?</a></p>
+            <p class="mt-5 mb-1"><a href="{{ route('admin.password.request') }}">Forgot password?</a></p>
             @endif
             {{-- <p>Don't have an account? <a href="./sign-up.html">Sign up!</a></p> --}}
         </div>
