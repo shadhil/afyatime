@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/simple-line-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.typeahead.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
 
     <!-- Theme CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
@@ -48,7 +49,8 @@
 
                     <div class="app-logo">
                         <div class="logo-wrap">
-                            <img src="{{ asset('assets/img/logo.svg') }}" alt="" width="147" height="33" class="logo-img">
+                            <img src="{{ asset('assets/img/logo.svg') }}" alt="" width="147" height="33"
+                                class="logo-img">
                         </div>
                     </div>
 
@@ -148,8 +150,8 @@
                             <button class="no-style dropdown-toggle" type="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false" data-offset="0, 10">
                                 <span class="d-flex align-items-center">
-                                    <img src="assets/content/user-400-1.jpg" alt="" width="40" height="40"
-                                        class="rounded-500 mr-1">
+                                    <img src="{{ asset('assets/content/user-400-1.jpg') }}" alt="" width="40"
+                                        height="40" class="rounded-500 mr-1">
                                     <i class="icofont-simple-down"></i>
                                 </span>
                             </button>
@@ -211,7 +213,11 @@
             <!-- end Horizontal navbar -->
 
             <!-- Horizontal navbar 2 -->
+            @if (request()->routeIs('admin*'))
+            @include('layouts.admin-navigation')
+            @else
             @include('layouts.navigation')
+            @endif
 
             <!-- endHorizontal navbar 2 -->
 
@@ -225,6 +231,8 @@
         </div>
     </div>
 
+    @stack('models')
+
 
 
     <script src="{{ asset('assets/js/jquery-3.3.1.min.js') }}"></script>
@@ -234,6 +242,7 @@
     <script src="{{ asset('assets/js/jquery.typeahead.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.barrating.min.js') }}"></script>
+    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
     <script src="{{ asset('assets/js/main.js') }}"></script>
     @livewireScripts

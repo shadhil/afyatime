@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateAdminsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,8 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->enum('user_type', ['system', 'admin']);
+            $table->string('phone_number', 20)->nullable();
+            $table->enum('admin_type', ['admin', 'system']);
             // $table->unsignedTinyInteger('account_type')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

@@ -1,6 +1,11 @@
 <?php
 
 use App\Http\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Http\Livewire\Admin\Organizations as AdminOrganizations;
+use App\Http\Livewire\Admin\Patients as AdminPrescribers;
+use App\Http\Livewire\Admin\Prescribers as AdminPatients;
+use App\Http\Livewire\Admin\Regions as AdminRegions;
+use App\Http\Livewire\Admin\Admins as AdminAdmins;
 use App\Http\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +27,12 @@ Route::get('/', function () {
 Route::get('/dash', Dashboard::class);
 
 
-Route::get('/admin', AdminDashboard::class);
+Route::get('/admin', AdminDashboard::class)->name('admin.dash');
+Route::get('/admin/organizations', AdminOrganizations::class)->name('admin.organizations');
+Route::get('/admin/prescribers', AdminPrescribers::class)->name('admin.prescribers');
+Route::get('/admin/patients', AdminPatients::class)->name('admin.patients');
+Route::get('/admin/regions', AdminRegions::class)->name('admin.regions');
+Route::get('/admin/admins', AdminAdmins::class)->name('admin.admins');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
