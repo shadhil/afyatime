@@ -5,10 +5,20 @@
             <p class="text-muted">Sign in to access your Account</p>
 
             <!-- Session Status -->
-            <x-auth-session-status class="mb-4" :status="session('status')" />
+            @if (session('status'))
+            <div class="alert alert-success outline" role="alert">
+                {{ session('status') }}
+            </div>
+            @endif
 
             <!-- Validation Errors -->
-            <x-auth-validation-errors class="mb-4" :errors="$errors" />
+            @if ($errors->any())
+            @foreach ($errors->all() as $error)
+            <div class="alert alert-danger" role="alert">
+                {{ $error }}
+            </div>
+            @endforeach
+            @endif
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf

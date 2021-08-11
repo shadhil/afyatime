@@ -27,12 +27,12 @@ Route::get('/', function () {
 Route::get('/dash', Dashboard::class);
 
 
-Route::get('/admin', AdminDashboard::class)->name('admin.dash');
-Route::get('/admin/organizations', AdminOrganizations::class)->name('admin.organizations');
-Route::get('/admin/prescribers', AdminPrescribers::class)->name('admin.prescribers');
-Route::get('/admin/patients', AdminPatients::class)->name('admin.patients');
-Route::get('/admin/regions', AdminRegions::class)->name('admin.regions');
-Route::get('/admin/admins', AdminAdmins::class)->name('admin.admins');
+// Route::get('/admin', AdminDashboard::class)->name('admin.dash');
+// Route::get('/admin/organizations', AdminOrganizations::class)->name('admin.organizations');
+// Route::get('/admin/prescribers', AdminPrescribers::class)->name('admin.prescribers');
+// Route::get('/admin/patients', AdminPatients::class)->name('admin.patients');
+// Route::get('/admin/regions', AdminRegions::class)->name('admin.regions');
+// Route::get('/admin/admins', AdminAdmins::class)->name('admin.admins');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -47,10 +47,12 @@ Route::middleware(['auth:user'])->group(function () {
 
 
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
-    Route::get('/dash', function () {
-        return view('welcome');
-    })->name('dash');
-    // Route::get('/dashboard', [WriterController::class, 'writerDashboard'])->name('writer.dashboard');
+    Route::get('/', AdminDashboard::class)->name('dashboard');
+    Route::get('/organizations', AdminOrganizations::class)->name('organizations');
+    Route::get('/prescribers', AdminPrescribers::class)->name('prescribers');
+    Route::get('/patients', AdminPatients::class)->name('patients');
+    Route::get('/regions', AdminRegions::class)->name('regions');
+    Route::get('/admins', AdminAdmins::class)->name('admins');
 });
 
 

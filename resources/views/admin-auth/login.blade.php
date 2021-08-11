@@ -5,21 +5,32 @@
             <p class="text-muted">Sign in to access your Account</p>
 
             <!-- Session Status -->
-            <x-auth-session-status class="mb-4" :status="session('status')" />
+            @if (session('status'))
+            <div class="alert alert-success outline" role="alert">
+                {{ session('status') }}
+            </div>
+            @endif
 
             <!-- Validation Errors -->
-            <x-auth-validation-errors class="mb-4" :errors="$errors" />
+            @if ($errors->any())
+            @foreach ($errors->all() as $error)
+            <div class="alert alert-danger" role="alert">
+                {{ $error }}
+            </div>
+            @endforeach
+            @endif
+
 
             <form method="POST" action="{{ route('admin.login') }}">
                 @csrf
                 <div class="form-group">
-                    <input class="form-control" id="email" type="email" name="email" :value="old('email')" required
-                        autofocus>
+                    <input class="form-control" id="email" type="email" placeholder="Email" name="email"
+                        :value="old('email')" required autofocus>
                 </div>
 
                 <div class="form-group">
-                    <input class="form-control" type="password" id="password" type="password" name="password" required
-                        autocomplete="current-password">
+                    <input class="form-control" type="password" id="password" placeholder="Password" type="password"
+                        name="password" required autocomplete="current-password">
                 </div>
 
                 <div class="form-group custom-control custom-switch">
@@ -34,7 +45,7 @@
                     </button>
                 </div>
             </form>
-            @if (Route::has('password.request'))
+            @if (Route::has('admin.password.request'))
             <p class="mt-5 mb-1"><a href="{{ route('admin.password.request') }}">Forgot password?</a></p>
             @endif
             {{-- <p>Don't have an account? <a href="./sign-up.html">Sign up!</a></p> --}}

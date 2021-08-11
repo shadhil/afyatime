@@ -42,7 +42,8 @@
                                                 wire:click.prevent="editdmin({{ $admin }})">
                                                 <span class="btn-icon icofont-ui-edit"></span>
                                             </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
+                                            <button class="btn btn-error btn-sm btn-square rounded-pill"
+                                                wire:click.prevent="confirmAdminRemoval({{ $admin->id }})">
                                                 <span class="btn-icon icofont-ui-delete"></span>
                                             </button>
                                         </div>
@@ -54,6 +55,8 @@
                             </tbody>
                         </table>
                     </div>
+                    {{ $admins->links() }}
+
 
                 </div>
             </div>
@@ -82,13 +85,12 @@
                             <img src="../assets/content/anonymous-400.jpg" width="40" height="40" alt=""
                                 class="rounded-500 mr-4">
 
-                            <button class="btn btn-outline-primary" type="button">
-                                Select image<span class="btn-icon icofont-ui-user ml-2"></span>
-                            </button>
+                            <input class="btn btn-outline-primary" type="file">
+
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('name') is-invalid @enderror" type="text"
+                            <input class="form-control flatpickr-input @error('name') is-invalid @enderror" type="text"
                                 placeholder="Name" wire:model.defer="state.name" id="name" required>
                             @error('name')
                             <div class="invalid-feedback">
@@ -111,6 +113,33 @@
                             <input class="form-control @error('phone_number') is-invalid @enderror" type="text"
                                 placeholder="phone number" wire:model.defer="state.phone_number" id="phoneNumber">
                             @error('phone_number')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <x-datepicker wire:model.defer="state.date" id="appointmentDate" :error="'date'"
+                                :holder="'pick date'" />
+                            @error('date')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <x-timepicker wire:model.defer="state.time" id="appointmentTime" :error="'time'"
+                                :holder="'pick time'" />
+                            @error('time')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control @error('time') is-invalid @enderror" type="time"
+                                placeholder="Time of Birth" wire:model.defer="state.time" id="time" required>
+                            @error('time')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
@@ -149,33 +178,71 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Delete Admin</h5>
+                </div>
 
-    @push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/css/icofont.min.css') }}">
-    @endpush
+                <div class="modal-body">
+                    <h4>Are you sure you want to delete this admin?</h4>
+                </div>
 
-    @push('scripts')
-    <script>
-        $(document).ready(function() {
-            toastr.options = {
-                "positionClass": "toast-bottom-right",
-                "progressBar": true,
-            }
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                            class="fa fa-times mr-1"></i>
+                        Cancel</button>
+                    <button type="button" wire:click.prevent="deleteAdmin" class="btn btn-danger"><i
+                            class="fa fa-trash mr-1"></i>Delete Admin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            window.addEventListener('hide-admin-modal', event => {
-                $('#add-admin').modal('hide');
-                toastr.success(event.detail.message, 'Success!');
-            })
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('assets/css/icofont.min.css') }}">
+@endpush
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        toastr.options = {
+            "positionClass": "toast-bottom-right",
+            "progressBar": true,
+        }
+
+        window.addEventListener('hide-admin-modal', event => {
+            $('#add-admin').modal('hide');
+            toastr.success(event.detail.message, 'Success!');
+        })
+
+        $('#datetimepicker3').datetimepicker({
+            format: 'LT',
         });
-    </script>
-    <script>
-        window.addEventListener('show-admin-modal', event => {
+    });
+</script>
+<script>
+    window.addEventListener('show-admin-modal', event => {
             $('#add-admin').modal('show');
+        })
+
+        window.addEventListener('show-delete-modal', event => {
+            $('#confirmationModal').modal('show');
+        })
+
+        window.addEventListener('hide-delete-modal', event => {
+            $('#confirmationModal').modal('hide');
+            toastr.success(event.detail.message, 'Success!');
         })
 
         // window.addEventListener('hide-admin-modal', event => {
         //     $('#add-admin').modal('hide');
         // })
-    </script>
-    @endpush
+</script>
+@endpush
 </div>

@@ -19,6 +19,10 @@
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.typeahead.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-select.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('assets/plugins/fontawesome-free/css/fontawesome.min.css') }}">
 
     <!-- Theme CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
@@ -172,7 +176,7 @@
                                     <li>
                                         <a href="#" class="align-items-center">
                                             <span class="icon icofont-ui-calendar"></span>
-                                            Calendar
+                                            {{ Auth::user()->name }}
                                         </a>
                                     </li>
                                     <li>
@@ -182,10 +186,28 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" class="align-items-center">
+                                        @if (request()->routeIs('admin*'))
+                                        <a href="{{ route('admin.logout') }}" class="align-items-center"
+                                            onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
                                             <span class="icon icofont-logout"></span>
                                             Log Out
                                         </a>
+                                        <form id="admin-logout-form" action="{{ route('admin.logout') }}" method="POST"
+                                            style="display: none;">
+                                            @csrf
+                                        </form>
+                                        @else
+                                        <a href="{{ route('logout') }}" class="align-items-center"
+                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <span class="icon icofont-logout"></span>
+                                            Log Out
+                                        </a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                            style="display: none;">
+                                            @csrf
+                                        </form>
+                                        @endif
+
                                     </li>
                                 </ul>
                             </div>
@@ -243,6 +265,30 @@
     <script src="{{ asset('assets/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.barrating.min.js') }}"></script>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/plugins/moment.js') }}"></script>
+    <script type=" text/javascript"
+        src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <script>
+        // $('.datepicker').datetimepicker({
+        //     format: 'DD/MM/YYYY HH:mm',
+        //     useCurrent: false,
+        //     showTodayButton: true,
+        //     showClear: true,
+        //     toolbarPlacement: 'bottom',
+        //     sideBySide: true,
+        //     icons: {
+        //         time: "fa fa-clock-o",
+        //         date: "fa fa-calendar",
+        //         up: "fa fa-arrow-up",
+        //         down: "fa fa-arrow-down",
+        //         previous: "fa fa-chevron-left",
+        //         next: "fa fa-chevron-right",
+        //         today: "fa fa-clock-o",
+        //         clear: "fa fa-trash-o"
+        //     }
+        // });
+    </script>
+
 
     <script src="{{ asset('assets/js/main.js') }}"></script>
     @livewireScripts
