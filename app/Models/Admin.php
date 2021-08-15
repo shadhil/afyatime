@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Authenticatable
 {
@@ -23,6 +24,9 @@ class Admin extends Authenticatable
         'phone_number',
         'admin_type',
         'password',
+        'b_date',
+        'b_time',
+        'profile_img',
     ];
 
     /**
@@ -42,5 +46,17 @@ class Admin extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        // 'b_date' => 'date',
+        // 'b_time' => 'time',
     ];
+
+    // public function getBDateAttribute($value)
+    // {
+    //     return Carbon::parse($value)->toFormattedDate();
+    // }
+
+    // public function getBTimeAttribute($value)
+    // {
+    //     return Carbon::parse($value)->toFormattedTime();
+    // }
 }

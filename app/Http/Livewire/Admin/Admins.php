@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\Admin;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -29,19 +30,27 @@ class Admins extends Component
 
     public function createAdmin()
     {
-        dd($this->state);
+        // dd($this->state);
         $validatedData = Validator::make($this->state, [
             'name' => 'required',
             'email' => 'required|email|unique:admins',
             'password' => 'required|confirmed',
         ])->validate();
-        $validatedData['password'] = bcrypt($validatedData['password']);
-        $validatedData['admin_type'] = 'admin';
+        $this->state['password'] = bcrypt($validatedData['password']);
+        $this->state['admin_type'] = 'admin';
+
+        if (!empty($this->state['b_date'])) {
+            $this->state['b_date'] = Carbon::createFromFormat('m/d/Y', $this->state['b_date'])->format('Y-m-d');
+        }
+
+        if (!empty($this->state['b_time'])) {
+            $this->state['b_time'] = Carbon::createFromFormat('g:i A', $this->state['b_time'])->format('H:i:s');
+        }
         // dd($validatedData);
 
-        // if ($this->photo) {
-        //     $validatedData['avatar'] = $this->photo->store('/', 'avatars');
-        // }
+        if ($this->photo) {
+            $this->state['profile_img'] = $this->photo->store('/', 'profiles');
+        }
 
         Admin::create($this->state);
 
@@ -68,6 +77,7 @@ class Admins extends Component
         $this->dispatchBrowserEvent('show-admin-modal');
         //dd($admin);
     }
+
     public function updateAdmin()
     {
         //dd($this->state);
@@ -75,11 +85,21 @@ class Admins extends Component
             'name' => 'required',
             'email' => 'required|email|unique:admins,email,' . $this->admin->id,
             'password' => 'sometimes|confirmed',
+            'b_date' => 'sometimes',
+            'b_time' => 'sometimes',
             'phone_number' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
         ])->validate();
 
+        if (!empty($validatedData['b_date'])) {
+            $validatedData['b_date'] = Carbon::createFromFormat('m/d/Y', $this->state['b_date'])->format('Y-m-d');
+        }
+
+        if (!empty($validatedData['b_time'])) {
+            $validatedData['b_time'] = Carbon::createFromFormat('g:i A', $this->state['b_time'])->format('H:i:s');
+        }
+
         // $validatedData['admin_type'] = 'admin';
-        // dd($validatedData);
+        //dd($validatedData);
 
         if (!empty($validatedData['password'])) {
             $validatedData['password'] = bcrypt($validatedData['password']);
@@ -101,6 +121,7 @@ class Admins extends Component
         $this->adminIdBeingRemoved = $adminId;
         $this->dispatchBrowserEvent('show-delete-modal');
     }
+
     public function deleteAdmin()
     {
         $admin = Admin::findOrFail($this->adminIdBeingRemoved);
@@ -112,7 +133,6 @@ class Admins extends Component
 
     public function render()
     {
-        $this->state['date'] = "2021-08-13";
         $admins = Admin::latest()->paginate(5);
         //dd($admins);
         return view('livewire.admin.admins', ['admins' => $admins]);

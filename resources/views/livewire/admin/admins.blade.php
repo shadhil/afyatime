@@ -12,7 +12,7 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
+                                    <th scope="col"></th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Phone Number</th>
@@ -23,7 +23,11 @@
                                 @php $i = 1; @endphp
                                 @foreach ($admins as $admin)
                                 <tr>
-                                    <td><strong>{{ $i }}.</strong></td>
+                                    {{-- <td><strong>{{ $i }}.</strong></td> --}}
+                                    <td>
+                                        <img src="{{ Storage::disk('profiles')->url($admin->profile_img) }}" width="50"
+                                            height="50" alt="" class="rounded-500 mr-4">
+                                    </td>
                                     <td>
                                         <div class="text-muted text-nowrap">{{ $admin->name }}</div>
                                     </td>
@@ -84,8 +88,15 @@
                         <div class="form-group avatar-box d-flex">
                             <img src="../assets/content/anonymous-400.jpg" width="40" height="40" alt=""
                                 class="rounded-500 mr-4">
-
-                            <input class="btn btn-outline-primary" type="file">
+                            <button class="btn btn-outline-primary" id="browseImg" type="button"
+                                onclick="document.getElementById('photo').click();">
+                                @if ($photo)
+                                {{ $photo->getClientOriginalName() }}
+                                @else
+                                Browse image
+                                @endif
+                            </button>
+                            <input wire:model="photo" type="file" style="display:none;" id="photo" name="photo">
 
                         </div>
 
@@ -119,27 +130,18 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <x-datepicker wire:model.defer="state.date" id="appointmentDate" :error="'date'"
+                            <x-datepicker wire:model.defer="state.b_date" id="b_date" :error="'b_date'"
                                 :holder="'pick date'" />
-                            @error('date')
+                            @error('b_date')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                             @enderror
                         </div>
                         <div class="form-group">
-                            <x-timepicker wire:model.defer="state.time" id="appointmentTime" :error="'time'"
+                            <x-timepicker wire:model.defer="state.b_time" id="b_time" :error="'b_time'"
                                 :holder="'pick time'" />
-                            @error('time')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control @error('time') is-invalid @enderror" type="time"
-                                placeholder="Time of Birth" wire:model.defer="state.time" id="time" required>
-                            @error('time')
+                            @error('b_time')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
