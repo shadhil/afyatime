@@ -1,247 +1,276 @@
-<div class="main-content-wrap">
-    <header class="page-header">
-        <h1 class="page-title">Organizations</h1>
-    </header>
+<div>
+    <div class="main-content-wrap">
+        <header class="page-header">
+            <h1 class="page-title">Organization</h1>
+        </header>
 
-    <div class="page-content">
-        <div class="row">
-            <div class="col-12 col-md-4">
-                <div class="card department bg-light bg-gradient">
-                    <img src="../assets/content/department-1.jpg" class="card-img-top" width="400" height="250" alt="">
+        <div class="page-content">
 
-                    <div class="card-body">
-                        <h3 class="h4 mt-0">Cardiology</h3>
+            <div class="card mb-0">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Prescribers</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (sizeof($organizations)>0)
+                                @foreach ($organizations as $org)
+                                <tr>
+                                    <td>
+                                        <div class="text-muted text-nowrap">{{ $org->name }}</div>
+                                    </td>
+                                    <td><strong>{{ $org->email }}</strong></td>
+                                    <td>
+                                        <div class="text-nowrap text-success">
+                                            <i class="icofont-check-circled"></i> {{ $org->phone_number }}
+                                        </div>
+                                    </td>
+                                    <td><strong>{{ $org->account_type }}.</strong></td>
+                                    <td>
+                                        <div class="actions">
+                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
+                                                <span class="btn-icon icofont-external-link"></span>
+                                            </a>
+                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
+                                                wire:click.prevent="editOrg({{ $org->id }})">
+                                                <span class="btn-icon icofont-ui-edit"></span>
+                                            </button>
+                                            <button class="btn btn-error btn-sm btn-square rounded-pill"
+                                                wire:click.prevent="confirmOrgRemoval({{ $org->id }})">
+                                                <span class="btn-icon icofont-ui-delete"></span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="5" align="center"> No Organization Found!</td>
+                                </tr>
 
-                        <div class="team d-flex align-items-center mb-4">
-                            <strong class="mr-3">Team:</strong>
+                                @endif
 
-                            <img src="../assets/content/doctor-400-1.jpg" width="40" height="40" alt=""
-                                class="team-img rounded-500">
-                            <img src="../assets/content/doctor-400-2.jpg" width="40" height="40" alt=""
-                                class="team-img rounded-500">
-                            <img src="../assets/content/doctor-400-3.jpg" width="40" height="40" alt=""
-                                class="team-img rounded-500">
-                            <button class="btn btn-primary btn-square rounded-pill" type="button">
-                                <span class="btn-icon icofont-plus"></span>
-                            </button>
-                        </div>
 
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio dolore enim, nemo nihil
-                            non omnis temporibus? Blanditiis culpa labore velit.</p>
-
-                        <div class="button-box pb-2">
-                            <button type="button" class="btn btn-outline-primary">
-                                More<span class="btn-icon icofont-prescription ml-2"></span>
-                            </button>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
+                    <br />
+                    {{ $organizations->links() }}
+
+
                 </div>
             </div>
-
-            <div class="col-12 col-md-4">
-                <div class="card department bg-light bg-gradient">
-                    <img src="../assets/content/department-2.jpg" class="card-img-top" width="400" height="250" alt="">
-
-                    <div class="card-body">
-                        <h3 class="h4 mt-0">Dentistry</h3>
-
-                        <div class="team d-flex align-items-center mb-4">
-                            <strong class="mr-3">Prescribers:</strong>
-
-                            <img src="../assets/content/doctor-400-4.jpg" width="40" height="40" alt=""
-                                class="team-img rounded-500">
-                            <img src="../assets/content/doctor-400-2.jpg" width="40" height="40" alt=""
-                                class="team-img rounded-500">
-                            <img src="../assets/content/doctor-400-3.jpg" width="40" height="40" alt=""
-                                class="team-img rounded-500">
-                            <img src="../assets/content/doctor-400-5.jpg" width="40" height="40" alt=""
-                                class="team-img rounded-500">
-
-                        </div>
-
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio dolore enim, nemo nihil
-                            non omnis temporibus? Blanditiis culpa labore velit.</p>
-
-                        <div class="button-box pb-2">
-                            <button type="button" class="btn btn-outline-primary">
-                                More<span class="btn-icon icofont-prescription ml-2"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="add-action-box">
+                <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addOrg">
+                    <span class="btn-icon icofont-plus"></span>
+                </button>
             </div>
-
-            <div class="col-12 col-md-4">
-                <div class="card department bg-light bg-gradient">
-                    <img src="../assets/content/department-3.jpg" class="card-img-top" width="400" height="250" alt="">
-
-                    <div class="card-body">
-                        <h3 class="h4 mt-0">Laboratory</h3>
-
-                        <div class="team d-flex align-items-center mb-4">
-                            <strong class="mr-3">Team:</strong>
-
-                            <img src="../assets/content/doctor-400-6.jpg" width="40" height="40" alt=""
-                                class="team-img rounded-500">
-                            <img src="../assets/content/doctor-400-7.jpg" width="40" height="40" alt=""
-                                class="team-img rounded-500">
-
-                        </div>
-
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio dolore enim, nemo nihil
-                            non omnis temporibus? Blanditiis culpa labore velit.</p>
-
-                        <div class="button-box pb-2">
-                            <button type="button" class="btn btn-outline-primary">
-                                More<span class="btn-icon icofont-prescription ml-2"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="add-action-box">
-            <button class="btn btn-primary btn-lg btn-square rounded-pill" data-toggle="modal"
-                data-target="#add-organization">
-                <span class="btn-icon icofont-plus"></span>
-            </button>
         </div>
     </div>
-</div>
-
-@push('models')
-<!-- Add appointment modals -->
-<div class="modal fade" id="add-organization" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add Organization</h5>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group avatar-box d-flex">
-                        <img src="{{ asset('assets/content/anonymous-400.jpg') }}" width="40" height="40" alt=""
-                            class="rounded-500 mr-4">
-
-                        <input class="btn btn-outline-primary" type="file" accept="image/*">
-                    </div>
-
-                    <div class="form-group">
-                        <input class="form-control" type="text" placeholder="Title">
-                    </div>
-
-                    <div class="form-group">
-                        <textarea class="form-control" placeholder="Descriptions" rows="3"></textarea>
-                    </div>
-
-                    <div>
-                        <label>Employees</label>
-
-                        <div class="social-list">
-                            <div class="social-item">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="col-12 col-sm-6">
-                                                <div class="form-group">
-                                                    <div class="prefix-icon"></div>
-                                                    <input class="form-control" type="text" placeholder="Icon class"
-                                                        value="Dr. Sophie" readonly>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-sm-6">
-                                                <div class="form-group">
-                                                    <input class="form-control" type="text" placeholder="Link"
-                                                        value="assets/content/doctor-1.jpg">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col col-auto">
-                                        <button class="btn btn-outline-danger btn-square rounded-pill" type="button">
-                                            <span class="btn-icon icofont-ui-delete"></span>
-                                        </button>
-                                    </div>
-                                </div>
+    <div class="modal fade" id="add-organization" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        @if($showEditModal)
+                        <span>Edit Organization</span>
+                        @else
+                        <span> New Organization</span>
+                        @endif
+                    </h5>
+                </div>
+                <form autocomplete="off" wire:submit.prevent="{{ $showEditModal ? 'updateOrg' : 'createOrg' }}">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input class="form-control flatpickr-input @error('name') is-invalid @enderror" type="text"
+                                placeholder="Name" wire:model.defer="state.name" id="name" required>
+                            @error('name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
                             </div>
-
-                            <div class="social-item">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="col-12 col-sm-6">
-                                                <div class="form-group">
-                                                    <input class="form-control" type="text" placeholder="Icon class"
-                                                        value="Dr. Liam" readonly>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-sm-6">
-                                                <div class="form-group">
-                                                    <input class="form-control" type="text" placeholder="Link"
-                                                        value="assets/content/doctor-2.jpg">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col col-auto">
-                                        <button class="btn btn-outline-danger btn-square rounded-pill" type="button">
-                                            <span class="btn-icon icofont-ui-delete"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            @enderror
                         </div>
 
-                        <hr class="mt-0">
-
-                        <label>Add employee</label>
-
-                        <div class="social-list">
-                            <div class="social-item">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="col-12 col-sm-6">
-                                                <div class="form-group mb-sm-0">
-                                                    <input class="form-control" type="text" placeholder="Doctor name">
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-sm-6">
-                                                <div class="form-group mb-0">
-                                                    <input class="form-control" type="text" placeholder="Doctor image">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col col-auto">
-                                        <button class="btn btn-outline-primary btn-square rounded-pill" type="button">
-                                            <span class="btn-icon icofont-plus"></span>
-                                        </button>
-                                    </div>
-                                </div>
+                        <div class="form-group">
+                            <select class="form-control @error('organization_type') is-invalid @enderror"
+                                wire:model.defer="state.organization_type" id="organization_type"
+                                name="organization_type">
+                                <option value="">Organization Type</option>
+                                @foreach ($orgTypes as $orgType)
+                                <option value="{{ $orgType->id }}">{{ $orgType->type }}</option>
+                                @endforeach
+                            </select>
+                            @error('organization_type')
+                            <div class="invalid-feedback">
+                                {{ $message }}
                             </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control @error('email') is-invalid @enderror" type="email"
+                                placeholder="email" wire:model.defer="state.email" id="email">
+                            @error('email')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                                placeholder="phone number" wire:model.defer="state.phone_number" id="phoneNumber">
+                            @error('phone_number')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control @error('location') is-invalid @enderror" type="text"
+                                placeholder="Organization Location" wire:model.defer="state.location" id="location">
+                            @error('location')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control @error('region_id') is-invalid @enderror"
+                                wire:model="state.region_id" id="region_id" name="region_id">
+                                <option value="">Select Region</option>
+                                @foreach ($regions as $region)
+                                <option value="{{ $region->id }}">{{ $region->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('region_id')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control @error('district_id') is-invalid @enderror"
+                                wire:model.defer="state.district_id" id="district_id" name="district_id">
+                                <option value="">Select District</option>
+                                @foreach ($districts as $district)
+                                <option value="{{ $district->id }}">{{ $district->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('district_id')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control @error('password') is-invalid @enderror" type="password"
+                                placeholder="password" wire:model.defer="state.password" id="password">
+                            @error('password')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control" type="password" placeholder="confirm password"
+                                wire:model.defer="state.password_confirmation" id="passwordConfirmation">
+                        </div>
+                    </div>
+                    <div class="modal-footer d-block">
+                        <div class="actions justify-content-between">
+                            <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-info">
+                                @if($showEditModal)
+                                <span>Save Changes</span>
+                                @else
+                                <span>Save</span>
+                                @endif
+                            </button>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer d-block">
-                <div class="actions justify-content-between">
-                    <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-info">Add department</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Delete Organization</h5>
+                </div>
+
+                <div class="modal-body">
+                    <h4>Are you sure you want to delete this organization?</h4>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                            class="fa fa-times mr-1"></i>
+                        Cancel</button>
+                    <button type="button" wire:click.prevent="deleteOrg" class="btn btn-danger"><i
+                            class="fa fa-trash mr-1"></i>Delete Organization</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- end Add appointment modals -->
-{{-- <link rel="stylesheet" href="{{ asset('assets/css/icofont.min.css') }}"> --}}
+
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('assets/css/icofont.min.css') }}">
 @endpush
 
 @push('scripts')
-<script src="{{ asset('assets/js/jquery.barrating.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        toastr.options = {
+            "positionClass": "toast-bottom-right",
+            "progressBar": true,
+        }
+
+        window.addEventListener('hide-org-modal', event => {
+            $('#add-organization').modal('hide');
+            toastr.success(event.detail.message, 'Success!');
+        })
+
+        $('#datetimepicker3').datetimepicker({
+            format: 'LT',
+        });
+    });
+</script>
+<script>
+    window.addEventListener('show-org-modal', event => {
+            $('#add-organization').modal('show');
+        })
+
+        window.addEventListener('show-delete-modal', event => {
+            $('#confirmationModal').modal('show');
+        })
+
+        window.addEventListener('hide-delete-modal', event => {
+            $('#confirmationModal').modal('hide');
+            toastr.success(event.detail.message, 'Success!');
+        })
+
+        // window.addEventListener('hide-org-modal', event => {
+        //     $('#add-organization').modal('hide');
+        // })
+</script>
 @endpush
+</div>

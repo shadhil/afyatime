@@ -6,7 +6,11 @@ use App\Http\Livewire\Admin\Patients as AdminPrescribers;
 use App\Http\Livewire\Admin\Prescribers as AdminPatients;
 use App\Http\Livewire\Admin\Regions as AdminRegions;
 use App\Http\Livewire\Admin\Admins as AdminAdmins;
+use App\Http\Livewire\Appointments;
 use App\Http\Livewire\Dashboard;
+use App\Http\Livewire\Patients;
+use App\Http\Livewire\Prescribers;
+use App\Http\Livewire\TreatmentSupporters;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,10 +43,12 @@ Route::get('/dash', Dashboard::class);
 // })->middleware(['auth'])->name('dashboard');
 
 Route::middleware(['auth:user'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('welcome');
-    })->name('dashboard');
-    // Route::get('/dashboard', [WriterController::class, 'writerDashboard'])->name('writer.dashboard');
+    Route::get('/', Dashboard::class)->name('dashboard');
+    Route::get('/appointments', Appointments::class)->name('appointments');
+    Route::get('/patients', Patients::class)->name('patients');
+    Route::get('/prescribers', Prescribers::class)->name('prescribers');
+    Route::get('/treatment-supporters', TreatmentSupporters::class)->name('supporters');
+    Route::get('/admins', AdminAdmins::class)->name('admins');
 });
 
 

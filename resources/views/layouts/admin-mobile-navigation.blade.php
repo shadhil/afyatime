@@ -1,6 +1,6 @@
 @props(['mobile', 'desky'])
 
-<div id="navbar2" class="app-navbar horizontal horizontal-vertical {{ $mobile }} {{ $desky }}">
+<div id="navbar2" class="app-navbar horizontal horizontal-vertical mob-nav">
     <div class="navbar-wrap">
 
         <button class="no-style navbar-toggle navbar-close icofont-close-line d-lg-none"></button>

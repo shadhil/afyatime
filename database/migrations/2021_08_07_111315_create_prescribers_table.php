@@ -17,6 +17,7 @@ class CreatePrescribersTable extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('profile_photo');
             $table->unsignedTinyInteger('prescriber_type')->nullable();
             $table->string('phone_number', 12);
             $table->string('email');
