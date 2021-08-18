@@ -86,8 +86,13 @@
                 <form autocomplete="off" wire:submit.prevent="{{ $showEditModal ? 'updateAdmin' : 'createAdmin' }}">
                     <div class="modal-body">
                         <div class="form-group avatar-box d-flex">
-                            <img src="../assets/content/anonymous-400.jpg" width="40" height="40" alt=""
+                            @if ($photo)
+                            <img src="{{ $photo->temporaryUrl() }}" width="40" height="40" alt=""
                                 class="rounded-500 mr-4">
+                            @else
+                            <img src="{{ $state['profile_photo'] ?? '' }}" width="40" height="40" alt=""
+                                class="rounded-500 mr-4">
+                            @endif
                             <button class="btn btn-outline-primary" id="browseImg" type="button"
                                 onclick="document.getElementById('photo').click();">
                                 @if ($photo)

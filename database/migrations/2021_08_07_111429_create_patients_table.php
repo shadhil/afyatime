@@ -18,8 +18,10 @@ class CreatePatientsTable extends Migration
             $table->string('first_name', 50);
             $table->string('last_name', 50);
             $table->date('date_of_birth')->nullable();
+            $table->string('photo')->nullable();
+            $table->enum('gender', ['male', 'female']);
             $table->string('patient_code')->unique()->nullable();
-            $table->string('phone_number', 12);
+            $table->string('phone_number', 15);
             $table->string('email')->nullable();
             $table->string('location');
             $table->unsignedTinyInteger('district_id')->nullable();

@@ -24,7 +24,8 @@ class User extends Authenticatable
         'password',
         'account_type',
         'account_id',
-        'profile_photo'
+        'profile_photo',
+        'org_id',
     ];
 
     /**

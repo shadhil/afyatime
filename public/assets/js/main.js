@@ -1395,12 +1395,12 @@
       $('#navbar2')[$(this).is(':checked') ? 'addClass' : 'removeClass']('dark');
     });
 
-    layout.find('option').each(function() {
-      if ($('body').hasClass($(this).val())) {
-        layout.selectpicker('val', $(this).val());
-        $(this).prop('selected', true);
-      }
-    });
+    // layout.find('option').each(function() {
+    //   if ($('body').hasClass($(this).val())) {
+    //     layout.selectpicker('val', $(this).val());
+    //     $(this).prop('selected', true);
+    //   }
+    // });
     layout.change(function() {
       var val = $(this).val();
 

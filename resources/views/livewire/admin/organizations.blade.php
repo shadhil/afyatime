@@ -272,5 +272,41 @@
         //     $('#add-organization').modal('hide');
         // })
 </script>
+
+<script>
+    // $('#organization_type').selectpicker({
+    //     style: '',
+    //     styleBase: 'form-control',
+    //     tickIcon: 'icofont-check-alt'
+    // });
+
+    // $('#region_id').selectpicker({
+    //     style: '',
+    //     styleBase: 'form-control',
+    //     tickIcon: 'icofont-check-alt'
+    // });
+
+    // $('#district_id').selectpicker({
+    //     style: '',
+    //     styleBase: 'form-control',
+    //     tickIcon: 'icofont-check-alt'
+    // });
+    // console.log('init select');
+
+
+    // window.livewire.on('setRegionId', id => {
+    //     $('#region_id').selectpicker('val', id);
+    //     console.log('set reg-id');
+    // });
+
+    //  window.livewire.on('setDistrictId', id => {
+    //     $('#district_id').selectpicker('val', id);
+    //     console.log('set dist-id');
+    // });
+
+    //  window.livewire.on('setOrgId', id => {
+    //     $('#organization_type').selectpicker('val', id);
+    // });
+</script>
 @endpush
 </div>

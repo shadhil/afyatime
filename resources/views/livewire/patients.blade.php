@@ -2,6 +2,18 @@
     <div class="main-content-wrap">
         <header class="page-header">
             <h1 class="page-title">Patients</h1>
+            <form class="app-search d-none d-md-block" wire:submit.prevent="searchPatient">
+                <div class="form-group typeahead__container with-suffix-icon mb-0">
+                    <div class="typeahead__field">
+                        <div class="typeahead__query">
+                            <input class="form-control autocomplete-control topbar-search" type="search"
+                                placeholder="Type patient's name" wire:model="searchTerm"
+                                wire:keydown.enter="searchPatient">
+                            <div class="suffix-icon icofont-search"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </header>
 
         <div class="page-content">
@@ -13,7 +25,7 @@
                                 <tr class="bg-primary text-white">
                                     <th scope="col">Photo</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">ID</th>
+                                    <th scope="col">Code</th>
                                     <th scope="col">Age</th>
                                     <th scope="col">Address</th>
                                     <th scope="col">Number</th>
@@ -23,27 +35,30 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if (sizeof($patients)>0)
+                                @foreach ($patients as $patient)
                                 <tr>
                                     <td>
-                                        <img src="../assets/content/user-40-1.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
+                                        <img src="{{ $patient->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($patient->photo) }}"
+                                            alt="" width="40" height="40" class="rounded-500">
                                     </td>
                                     <td>
-                                        <strong>Liam</strong>
+                                        <strong>{{ $patient->first_name }} {{ $patient->first_name }}</strong>
                                     </td>
                                     <td>
-                                        <div class="text-muted">10021</div>
+                                        <div class="text-muted">{{ $patient->patient_code }}</div>
                                     </td>
                                     <td>
-                                        <div class="text-muted text-nowrap">42</div>
+                                        <div class="text-muted text-nowrap">
+                                            {{ \Carbon\Carbon::parse($patient->date_of_birth)->age }}</div>
                                     </td>
                                     <td>
-                                        <div class="address-col">71 Pilgrim Avenue Chevy Chase, MD 20815</div>
+                                        <div class="address-col">{{ $patient->location }}</div>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center nowrap text-primary">
                                             <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
+                                            {{ $patient->phone_number }}
                                         </div>
                                     </td>
                                     <td>
@@ -55,7 +70,8 @@
                                             <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
                                                 <span class="btn-icon icofont-external-link"></span>
                                             </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
+                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
+                                                wire:click="editPatient({{ $patient->id }})">
                                                 <span class="btn-icon icofont-ui-edit"></span>
                                             </button>
                                             <button class="btn btn-error btn-sm btn-square rounded-pill">
@@ -64,375 +80,13 @@
                                         </div>
                                     </td>
                                 </tr>
+                                @endforeach
+                                @else
                                 <tr>
-                                    <td>
-                                        <img src="../assets/content/user-40-2.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>Emma</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">10022</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">21</div>
-                                    </td>
-                                    <td>
-                                        71 Pilgrim Avenue Chevy Chase, MD 20815
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">5 Dec 2019</div>
-                                    </td>
-                                    <td><span class="badge badge-warning">Pending</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
+                                    <td colspan="7" align="center">No Patient Found</td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <img src="../assets/content/user-40-3.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>Olivia</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">10023</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">43</div>
-                                    </td>
-                                    <td>
-                                        71 Pilgrim Avenue Chevy Chase, MD 20815
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">13 Oct 2019</div>
-                                    </td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img src="../assets/content/user-40-4.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>Ava</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">10024</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">21</div>
-                                    </td>
-                                    <td>
-                                        71 Pilgrim Avenue Chevy Chase, MD 20815
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">26 Dec 2019</div>
-                                    </td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img src="../assets/content/user-40-5.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>Noah</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">10025</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">22</div>
-                                    </td>
-                                    <td>
-                                        71 Pilgrim Avenue Chevy Chase, MD 20815
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">15 Jun 2019</div>
-                                    </td>
-                                    <td><span class="badge badge-warning">Pending</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img src="../assets/content/user-40-6.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>Isabella</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">10026</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">35</div>
-                                    </td>
-                                    <td>
-                                        71 Pilgrim Avenue Chevy Chase, MD 20815
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">2 Jul 2019</div>
-                                    </td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img src="../assets/content/user-40-7.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>Sophia</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">10027</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">54</div>
-                                    </td>
-                                    <td>
-                                        71 Pilgrim Avenue Chevy Chase, MD 20815
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">9 Oct 2019</div>
-                                    </td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img src="../assets/content/user-40-8.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>Mia</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">10028</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">24</div>
-                                    </td>
-                                    <td>
-                                        71 Pilgrim Avenue Chevy Chase, MD 20815
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">17 Mar 2019</div>
-                                    </td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img src="../assets/content/user-40-9.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>William</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">10029</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">31</div>
-                                    </td>
-                                    <td>
-                                        71 Pilgrim Avenue Chevy Chase, MD 20815
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">18 Apl 2019</div>
-                                    </td>
-                                    <td><span class="badge badge-info">New</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <img src="../assets/content/user-40-10.jpg" alt="" width="40" height="40"
-                                            class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>James</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">10030</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">39</div>
-                                    </td>
-                                    <td>
-                                        71 Pilgrim Avenue Chevy Chase, MD 20815
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            0126595743
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">6 Apl 2019</div>
-                                    </td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                @endif
+
                             </tbody>
                         </table>
                     </div>
@@ -458,8 +112,7 @@
             </div>
 
             <div class="add-action-box">
-                <button class="btn btn-primary btn-lg btn-square rounded-pill" data-toggle="modal"
-                    data-target="#add-patient">
+                <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addPatient">
                     <span class="btn-icon icofont-plus"></span>
                 </button>
             </div>
@@ -467,61 +120,225 @@
     </div>
 
     <!-- Add patients modals -->
-    <div class="modal fade" id="add-patient" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="modal-patient" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add new patient</h5>
+                    <h5 class="modal-title">
+                        @if($showEditModal)
+                        <span>Edit Patient</span>
+                        @else
+                        <span>Add New Patient</span>
+                        @endif
+                    </h5>
                 </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group avatar-box d-flex">
-                            <img src="../assets/content/anonymous-400.jpg" width="40" height="40" alt=""
+                <form autocomplete="off" wire:submit.prevent="{{ $showEditModal ? 'updatePatient' : 'createPatient' }}">
+                    <div class="modal-body">
+                        <div class="form-group avatar-box d-flex align-items-center">
+                            @if ($photo)
+                            <img src="{{ $photo->temporaryUrl() }}" width="100" height="100" alt=""
                                 class="rounded-500 mr-4">
+                            @else
+                            <img src="{{ $profilePhoto == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($profilePhoto) }}"
+                                width="100" height="100" alt="" class="rounded-500 mr-4">
+                            @endif
 
-                            <button class="btn btn-outline-primary" type="button">
-                                Select image<span class="btn-icon icofont-ui-user ml-2"></span>
+                            <button class="btn btn-outline-primary" type="button"
+                                onclick="document.getElementById('photo').click();">
+                                Change photo
                             </button>
+                            <input wire:model="photo" type="file" accept="image/*" style="display:none;" id="photo"
+                                name="photo">
                         </div>
-
-                        <div class="form-group">
-                            <input class="form-control" type="text" placeholder="Name">
-                        </div>
-
-                        <div class="form-group">
-                            <input class="form-control" type="number" placeholder="Number">
+                        <br />
+                        <div class="row">
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+                                    <input class="form-control @error('first_name') is-invalid @enderror" type="text"
+                                        wire:model.defer="state.first_name" id="first_name" name="first_name"
+                                        placeholder="First name">
+                                    @error('first_name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group ">
+                                    <input class="form-control @error('last_name') is-invalid @enderror"
+                                        wire:model.defer="state.last_name" id="last_name" name="last_name" type="text"
+                                        placeholder="Last name">
+                                    @error('last_name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
-                                    <input class="form-control" type="number" placeholder="Age">
+                                    <x-datepicker wire:model.defer="state.date_of_birth" id="date_of_birth"
+                                        :error="'date_of_birth'" :holder="'date of birth'" />
+                                    @error('date_of_birth')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
-                                    <select class="selectpicker" title="Gender">
+                                    <select class="form-control @error('gender') is-invalid @enderror" title="Gender"
+                                        wire:model.defer="state.gender" id="gender" name="gender">
                                         <option class="d-none">Gender</option>
-                                        <option>Male</option>
-                                        <option>Female</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                     </select>
+                                    @error('gender')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group mb-0">
-                            <textarea class="form-control" placeholder="Address" rows="3"></textarea>
+                        <div class="form-group">
+                            <input class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                                wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
+                                placeholder="Phone Number">
+                            @error('phone_number')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer d-block">
-                    <div class="actions justify-content-between">
-                        <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-info">Add patient</button>
+
+                        <div class="form-group">
+                            <input class="form-control @error('email') is-invalid @enderror" type="text"
+                                wire:model.defer="state.email" id="email" name="email" placeholder="email">
+                            @error('email')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control @error('location') is-invalid @enderror" type="text"
+                                placeholder="Organization Location" wire:model.defer="state.location" id="location">
+                            @error('location')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control @error('region_id') is-invalid @enderror"
+                                wire:model="state.region_id" id="region_id" name="region_id">
+                                <option value="">Select Region</option>
+                                @foreach ($regions as $region)
+                                <option value="{{ $region->id }}">{{ $region->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('region_id')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control @error('district_id') is-invalid @enderror"
+                                wire:model.defer="state.district_id" id="district_id" name="district_id">
+                                <option value="">Select District</option>
+                                @foreach ($districts as $district)
+                                <option value="{{ $district->id }}">{{ $district->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('district_id')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control @error('tensel_leader') is-invalid @enderror" type="text"
+                                placeholder="tensel leader name" wire:model.defer="state.tensel_leader"
+                                id="tensel_leader">
+                            @error('tensel_leader')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control @error('tensel_leader_phone') is-invalid @enderror" type="text"
+                                placeholder="tensel leader phone" wire:model.defer="state.tensel_leader_phone"
+                                id="tensel_leader_phone">
+                            @error('tensel_leader_phone')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
+                    <div class="modal-footer d-block">
+                        <div class="actions justify-content-between">
+                            <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-info">
+                                @if($showEditModal)
+                                <span>Save Changes</span>
+                                @else
+                                <span>Save</span>
+                                @endif
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     <!-- end Add patients modals -->
 </div>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        toastr.options = {
+            "positionClass": "toast-bottom-right",
+            "progressBar": true,
+        }
+
+        window.addEventListener('hide-patient-modal', event => {
+            $('#modal-patient').modal('hide');
+            toastr.success(event.detail.message, 'Success!');
+        })
+    });
+</script>
+<script>
+    window.addEventListener('show-patient-modal', event => {
+        $('#modal-patient').modal('show');
+    })
+
+    window.addEventListener('show-delete-modal', event => {
+        $('#confirmationModal').modal('show');
+    })
+
+    window.addEventListener('hide-delete-modal', event => {
+        $('#confirmationModal').modal('hide');
+        toastr.success(event.detail.message, 'Success!');
+    })
+
+        // window.addEventListener('hide-patient-modal', event => {
+        //     $('#add-admin').modal('hide');
+        // })
+</script>
+@endpush

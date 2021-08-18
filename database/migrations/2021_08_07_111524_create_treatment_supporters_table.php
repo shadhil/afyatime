@@ -16,6 +16,7 @@ class CreateTreatmentSupportersTable extends Migration
         Schema::create('treatment_supporters', function (Blueprint $table) {
             $table->id();
             $table->string('full_name');
+            $table->string('photo')->nullable();
             $table->string('phone_number');
             $table->string('email')->nullable();
             $table->string('location');

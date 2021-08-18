@@ -16,6 +16,7 @@ class Prescriber extends Model
         'phone_number',
         'prescriber_type',
         'organization_id',
-        'profile_photo'
+        'profile_photo',
+        'gender'
     ];
 }

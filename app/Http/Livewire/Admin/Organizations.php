@@ -60,6 +60,7 @@ class Organizations extends Component
                 'password' => Hash::make($this->state['password']),
                 'account_type' => 'organization',
                 'account_id' => $newOrg->id,
+                'org_id' => $newOrg->id,
             ]);
 
             if ($newUser) {
