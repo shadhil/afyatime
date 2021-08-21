@@ -14,6 +14,7 @@ class TreatmentSupporter extends Model
         'email',
         'phone_number',
         'location',
-        'district_id'
+        'district_id',
+        'organization_id'
     ];
 }

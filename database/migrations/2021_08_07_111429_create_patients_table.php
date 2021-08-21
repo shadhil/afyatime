@@ -27,12 +27,14 @@ class CreatePatientsTable extends Migration
             $table->unsignedTinyInteger('district_id')->nullable();
             $table->string('tensel_leader', 100)->nullable();
             $table->string('tensel_leader_phone', 20)->nullable();
+            $table->unsignedBigInteger('supporter_id')->nullable();
             $table->unsignedBigInteger('organization_id')->nullable();
             $table->timestamps();
 
             //FOREIGN KEY CONSTRAINTS
             $table->foreign('organization_id')->references('id')->on('organizations')->onUpdate('cascade')->onDelete('set null');
             $table->foreign('district_id')->references('id')->on('districts')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('supporter_id')->references('id')->on('treatment_supporters')->onUpdate('cascade')->onDelete('set null');
         });
     }
 

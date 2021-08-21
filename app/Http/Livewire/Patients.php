@@ -144,6 +144,7 @@ class Patients extends Component
             'district_id' => 'required',
             'date_of_birth' => 'required',
             'gender' => 'required',
+            'supporter_id' => 'sometimes',
         ])->validate();
 
         DB::transaction(function () use ($validatedData) {
@@ -179,10 +180,9 @@ class Patients extends Component
 
     public function render()
     {
-
-
-
-        $patients = Patient::latest()->paginate(5);
+        $patients = Patient::where('organization_id', Auth::user()->org_id)
+            ->latest()
+            ->paginate(5);
 
         if (!empty($this->state['region_id'])) {
             $this->districts = DB::table('districts')
@@ -196,7 +196,10 @@ class Patients extends Component
         $regions = DB::table('regions')
             ->select('id', 'name')
             ->get();
+        $supporters = DB::table('treatment_supporters')
+            ->select('id', 'full_name', 'phone_number')
+            ->get();
         //dd($prescribers);
-        return view('livewire.patients', ['patients' => $patients, 'regions' => $regions]);
+        return view('livewire.patients', ['patients' => $patients, 'regions' => $regions, 'supporters' => $supporters]);
     }
 }

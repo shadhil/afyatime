@@ -67,7 +67,8 @@
                                     <td><span class="badge badge-success">Approved</span></td>
                                     <td>
                                         <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
+                                            <a href="{{ route('patient-profile', $patient->id) }}"
+                                                class="btn btn-dark btn-sm btn-square rounded-pill">
                                                 <span class="btn-icon icofont-external-link"></span>
                                             </a>
                                             <button class="btn btn-info btn-sm btn-square rounded-pill"
@@ -288,6 +289,17 @@
                                 {{ $message }}
                             </div>
                             @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control" wire:model="state.supporter_id" id="supporter_id"
+                                name="supporter_id">
+                                <option class="d-none">Select Supporter</option>
+                                @foreach ($supporters as $supporter)
+                                <option value="{{ $supporter->id }}">{{ $supporter->full_name }} <small>
+                                        ({{ $supporter->phone_number }}) </small> </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer d-block">

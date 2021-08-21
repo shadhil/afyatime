@@ -30,7 +30,7 @@
 
                             <div class="col col-7">
                                 <h6 class="mt-0 mb-1">Patients</h6>
-                                <div class="count text-primary fs-20">104</div>
+                                <div class="count text-primary fs-20">{{ $totalPatients }}</div>
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
 
                             <div class="col col-7">
                                 <h6 class="mt-0 mb-1">Prescribers</h6>
-                                <div class="count text-primary fs-20">24</div>
+                                <div class="count text-primary fs-20">{{ $totalPrescribers }}</div>
                             </div>
                         </div>
                     </div>
@@ -64,8 +64,8 @@
                             </div>
 
                             <div class="col col-7">
-                                <h6 class="mt-0 mb-1 text-nowrap">SMS Notifications</h6>
-                                <div class="count text-primary fs-20">238</div>
+                                <h6 class="mt-0 mb-1 text-nowrap"> Supporters</h6>
+                                <div class="count text-primary fs-20">{{ $totalSupporters }}</div>
                             </div>
                         </div>
                     </div>
@@ -77,15 +77,15 @@
             <div class="col-12 col-md-4">
                 <div class="card bg-primary text-white">
                     <div class="card-header">
-                        Introduction
+                        {{ $org->name }}
                     </div>
                     <div class="card-body">
                         <h6 class="mt-0 mb-0">Address</h6>
-                        <p>795 Folsom Ave, Suite 600 San Francisco, CADGE 94107</p>
+                        <p>{{ $org->location }} - {{ $org->district }}, {{ $org->region }}</p>
                         <h6 class="mt-0 mb-0">Email</h6>
-                        <p>denta@gmail.com</p>
+                        <p>{{ $org->email }}</p>
                         <h6 class="mt-0 mb-0">Phone</h6>
-                        <p>0126596452</p>
+                        <p>{{ $org->phone_number }}</p>
                     </div>
                 </div>
 
@@ -102,46 +102,20 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach ($patients as $patient)
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="assets/content/user-40-1.jpg" alt="" width="40" height="40"
-                                                class="rounded-500 mr-3">
-                                            <strong>Liam</strong>
+                                            <img src="{{ $patient->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($patient->photo) }}"
+                                                alt="" width="40" height="40" class="rounded-500 mr-3">
+                                            <strong>{{ $patient->first_name }} {{ $patient->last_name }}</strong>
                                         </div>
                                     </td>
-                                    <td class="text-right text-muted">18 Feb 2019</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="assets/content/user-40-2.jpg" alt="" width="40" height="40"
-                                                class="rounded-500 mr-3">
-                                            <strong>Emma</strong>
-                                        </div>
+                                    <td class="text-right text-muted">
+                                        {{ \Carbon\Carbon::parse($patient->created_at)->format('M d, Y') }}
                                     </td>
-                                    <td class="text-right text-muted">17 Feb 2019</td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="assets/content/user-40-3.jpg" alt="" width="40" height="40"
-                                                class="rounded-500 mr-3">
-                                            <strong>Olivia</strong>
-                                        </div>
-                                    </td>
-                                    <td class="text-right text-muted">17 Feb 2019</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="assets/content/user-40-4.jpg" alt="" width="40" height="40"
-                                                class="rounded-500 mr-3">
-                                            <strong>Ava</strong>
-                                        </div>
-                                    </td>
-                                    <td class="text-right text-muted">16 Feb 2019</td>
-                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -149,33 +123,24 @@
 
                 <div class="card mb-md-0">
                     <div class="card-header">
-                        Last payments
+                        Top Supporters
                     </div>
                     <div class="card-body">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col">Date</th>
-                                    <th scope="col" class="text-right">Amount</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col" class="text-center">Patient(S)</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach ($supporters as $supporter)
                                 <tr>
-                                    <td class="text-muted">18 Feb 2019</td>
-                                    <td class="text-right"><span class="badge badge-success rounded-0">$155</span></td>
+                                    <td class="text-muted">{{ $supporter->full_name }}</td>
+                                    <td class="text-center"><span
+                                            class="badge badge-success rounded-0">{{ $supporter->patients }}</span></td>
                                 </tr>
-                                <tr>
-                                    <td class="text-muted">17 Feb 2019</td>
-                                    <td class="text-right"><span class="badge badge-success rounded-0">$365</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">17 Feb 2019</td>
-                                    <td class="text-right"><span class="badge badge-success rounded-0">$234</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">16 Feb 2019</td>
-                                    <td class="text-right"><span class="badge badge-success rounded-0">$190</span></td>
-                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

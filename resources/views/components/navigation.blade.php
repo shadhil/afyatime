@@ -40,7 +40,7 @@
                             <span class="link-text">Treatment Supporters</span>
                         </a>
                     </li>
-                    <li class="menu-item {{ request()->routeIs('prescribers*') ? 'active' : '' }}">
+                    <li class="menu-item {{ request()->routeIs('settings*') ? 'active' : '' }}">
                         <a class="item-link" href="#">
                             <span class="link-text">Settings</span>
                         </a>

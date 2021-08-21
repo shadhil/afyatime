@@ -8,6 +8,7 @@ use App\Http\Livewire\Admin\Regions as AdminRegions;
 use App\Http\Livewire\Admin\Admins as AdminAdmins;
 use App\Http\Livewire\Appointments;
 use App\Http\Livewire\Dashboard;
+use App\Http\Livewire\PatientProfile;
 use App\Http\Livewire\Patients;
 use App\Http\Livewire\Prescribers;
 use App\Http\Livewire\TreatmentSupporters;
@@ -49,6 +50,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/prescribers', Prescribers::class)->name('prescribers');
     Route::get('/treatment-supporters', TreatmentSupporters::class)->name('supporters');
     Route::get('/admins', AdminAdmins::class)->name('admins');
+    Route::get('/patient/{id}', PatientProfile::class)->name('patient-profile');
 });
 
 

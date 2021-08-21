@@ -155,6 +155,7 @@ class Prescribers extends Component
         $prescribers = DB::table('prescribers')
             ->leftJoin('prescriber_types', 'prescriber_types.id', '=', 'prescribers.prescriber_type')
             ->select('prescribers.*', 'prescriber_types.initial', 'prescriber_types.title')
+            ->where('prescribers.organization_id', Auth::user()->org_id)
             ->latest()->paginate(5);
         $prescriberTypes = DB::table('prescriber_types')
             ->select('id', 'title')

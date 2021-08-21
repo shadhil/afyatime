@@ -17,7 +17,10 @@ class CreateAppointmentsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('prescriber_id')->nullable();
+            $table->unsignedBigInteger('condition_id');
             $table->date('date_of_visit');
+            $table->time('time_from')->default(date("08:00:00"));
+            $table->time('time_to')->nullable();
             $table->unsignedBigInteger('organization_id')->nullable();
             $table->timestamps();
 
@@ -25,6 +28,7 @@ class CreateAppointmentsTable extends Migration
             $table->foreign('organization_id')->references('id')->on('organizations')->onUpdate('cascade')->onDelete('set null');
             $table->foreign('prescriber_id')->references('id')->on('prescribers')->onUpdate('cascade')->onDelete('set null');
             $table->foreign('patient_id')->references('id')->on('patients')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('condition_id')->references('id')->on('medical_conditions')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -22,6 +22,7 @@ class Patient extends Model
         'district_id',
         'tensel_leader',
         'tensel_leader_phone',
-        'organization_id'
+        'organization_id',
+        'supporter_id',
     ];
 }
