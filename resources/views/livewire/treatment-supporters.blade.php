@@ -160,7 +160,7 @@
 
                         <div class="form-group">
                             <input class="form-control @error('location') is-invalid @enderror" type="text"
-                                placeholder="Organization Location" wire:model.defer="state.location" id="location">
+                                placeholder="Street/Ward" wire:model.defer="state.location" id="location">
                             @error('location')
                             <div class="invalid-feedback">
                                 {{ $message }}

@@ -213,7 +213,7 @@
                         <div class="custom-control custom-switch mb-3">
                             <input type="checkbox" class="custom-control-input" id="customCheck2"
                                 wire:model.defer="state.is_admin">
-                            <label class="custom-control-label" for="customCheck2">Checkbox label</label>
+                            <label class="custom-control-label" for="customCheck2">Assign as Admin</label>
                         </div>
                     </div>
                     <div class="modal-footer d-block">

@@ -80,6 +80,10 @@ class Patients extends Component
             $this->state['date_of_birth'] = Carbon::createFromFormat('m/d/Y', $this->state['date_of_birth'])->format('Y-m-d');
         }
 
+        if (empty($this->state['email'])) {
+            $this->state['email'] = '';
+        }
+
         $this->state['organization_id'] =  Auth::user()->org_id;
         $this->state['patient_code'] = $this->newCode();
 

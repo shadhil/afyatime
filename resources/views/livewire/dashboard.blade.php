@@ -12,7 +12,7 @@
 
                             <div class="col col-7">
                                 <h6 class="mt-0 mb-1">Appointments</h6>
-                                <div class="count text-primary fs-20">213</div>
+                                <div class="count text-primary fs-20">{{ $totalAppointments }}</div>
                             </div>
                         </div>
                     </div>
@@ -130,7 +130,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
-                                    <th scope="col" class="text-center">Patient(S)</th>
+                                    <th scope="col" class="text-center">Patient(s)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -150,7 +150,7 @@
             <div class="col-12 col-md-8">
                 <div class="card mb-0">
                     <div class="card-header">
-                        Last appointments
+                        Latest Appointments
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -166,44 +166,44 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (sizeof($appointments)>0)
+                                    @foreach ($appointments as $appointment)
                                     <tr>
                                         <td>
-                                            <img src="assets/content/user-40-1.jpg" alt="" width="40" height="40"
-                                                class="rounded-500">
+                                            <img src="{{ $appointment->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($appointment->photo) }}"
+                                                alt="" width="40" height="40" class="rounded-500">
                                         </td>
                                         <td align="center">
-                                            <strong>Liam Hassan</strong>
+                                            <strong>{{ $appointment->pf_name }} {{ $appointment->pl_name }}</strong>
                                         </td>
                                         <td align="center">
-                                            <div class="text-muted text-nowrap">0712 789100</div>
+                                            <div class="text-muted text-nowrap">{{ $appointment->phone_number }}</div>
                                         </td>
                                         <td align="center">
-                                            <div class="text-muted text-nowrap">10 Feb 2018</div>
+                                            <div class="text-muted text-nowrap">
+                                                {{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('d/m/Y')  }}
+                                            </div>
                                         </td>
                                         <td align="center">
-                                            <div class="text-muted text-nowrap">9:15 - 9:45</div>
+                                            <div class="text-muted text-nowrap">
+                                                @if (empty($appointment->time_to))
+                                                {{ \Carbon\Carbon::parse($appointment->time_from)->format('h:i A') }}
+                                                @else
+                                                {{ \Carbon\Carbon::parse($appointment->time_from)->format('h:i A') }}
+                                                -
+                                                {{ \Carbon\Carbon::parse($appointment->time_to)->format('h:i A') }}
+                                                @endif
+                                            </div>
                                         </td>
-                                        <td align="center">Dr. Benjamin Minja</td>
+                                        <td align="center">{{ $appointment->initial }} {{ $appointment->first_name }}
+                                            {{ $appointment->last_name }}</td>
                                     </tr>
+                                    @endforeach
+                                    @else
                                     <tr>
-                                        <td>
-                                            <img src="assets/content/user-40-1.jpg" alt="" width="40" height="40"
-                                                class="rounded-500">
-                                        </td>
-                                        <td align="center">
-                                            <strong>Liam Hassan</strong>
-                                        </td>
-                                        <td align="center">
-                                            <div class="text-muted text-nowrap">0712 789100</div>
-                                        </td>
-                                        <td align="center">
-                                            <div class="text-muted text-nowrap">10 Feb 2018</div>
-                                        </td>
-                                        <td align="center">
-                                            <div class="text-muted text-nowrap">9:15 - 9:45</div>
-                                        </td>
-                                        <td align="center">Dr. Benjamin Minja</td>
+                                        <td colspan="6" align="center">No Appointment Found</td>
                                     </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -211,8 +211,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>
 

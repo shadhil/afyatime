@@ -57,6 +57,9 @@ class TreatmentSupporters extends Component
             $this->state['photo'] = NULL;
         }
 
+        if (empty($this->state['email'])) {
+            $this->state['email'] = '';
+        }
         $this->state['organization_id'] =  Auth::user()->org_id;
 
         DB::transaction(function () {

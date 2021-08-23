@@ -29,8 +29,8 @@
                                     <th scope="col">Age</th>
                                     <th scope="col">Address</th>
                                     <th scope="col">Number</th>
-                                    <th scope="col">Last visit</th>
-                                    <th scope="col">Status</th>
+                                    <th scope="col" align="center">Last visit</th>
+                                    <th scope="col" calss="text-center">Status</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -62,9 +62,9 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="text-muted text-nowrap">18 Dec 2019</div>
+                                        <div class="text-muted text-nowrap text-center">-</div>
                                     </td>
-                                    <td><span class="badge badge-success">Approved</span></td>
+                                    <td align="center"><span class="badge badge-success">Cleared</span></td>
                                     <td>
                                         <div class="actions">
                                             <a href="{{ route('patient-profile', $patient->id) }}"
@@ -84,7 +84,7 @@
                                 @endforeach
                                 @else
                                 <tr>
-                                    <td colspan="7" align="center">No Patient Found</td>
+                                    <td colspan="9" align="center">No Patient Found</td>
                                 </tr>
                                 @endif
 
@@ -92,31 +92,19 @@
                         </table>
                     </div>
 
-                    <nav class="mt-4">
-                        <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" aria-label="Previous" tabindex="-1" aria-disabled="true">
-                                    <span class="icofont-simple-left"></span>
-                                </a>
-                            </li>
-                            <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span class="icofont-simple-right"></span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div class="mt-4">
+                        {{ $patients->links() }}
+                    </div>
                 </div>
             </div>
 
+            @if (Str::contains('prescriber', Auth::user()->org_id) || Auth::user()->account_type == 'organization')
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addPatient">
                     <span class="btn-icon icofont-plus"></span>
                 </button>
             </div>
+            @endif
         </div>
     </div>
 
@@ -231,7 +219,7 @@
 
                         <div class="form-group">
                             <input class="form-control @error('location') is-invalid @enderror" type="text"
-                                placeholder="Organization Location" wire:model.defer="state.location" id="location">
+                                placeholder="Patient's Street/Ward" wire:model.defer="state.location" id="location">
                             @error('location')
                             <div class="invalid-feedback">
                                 {{ $message }}

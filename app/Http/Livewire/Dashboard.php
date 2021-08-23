@@ -10,6 +10,10 @@ class Dashboard extends Component
 {
     public function render()
     {
+        $totalAppointments = DB::table('appointments')
+            ->join('prescribers', 'appointments.prescriber_id', '=', 'prescribers.id')
+            ->where('prescribers.organization_id', Auth::user()->org_id)
+            ->count();
         $totalPatients = DB::table('patients')
             ->where('organization_id', Auth::user()->org_id)
             ->count();
@@ -42,7 +46,19 @@ class Dashboard extends Component
             ->select('organizations.*', 'full_regions.district', 'full_regions.region', 'organization_types.type')
             ->where('organizations.id', Auth::user()->org_id)
             ->first();
+
+        $appointments = DB::table('appointments')
+            ->join('prescribers', 'appointments.prescriber_id', '=', 'prescribers.id')
+            ->join('medical_conditions', 'appointments.condition_id', '=', 'medical_conditions.id')
+            ->join('patients', 'appointments.patient_id', '=', 'patients.id')
+            ->leftJoin('prescriber_types', 'prescribers.prescriber_type', '=', 'prescriber_types.id')
+            ->select('appointments.*', 'prescribers.first_name', 'prescribers.last_name', 'prescriber_types.initial', 'medical_conditions.condition', 'patients.first_name AS pf_name', 'patients.last_name AS pl_name', 'patients.photo', 'patients.phone_number')
+            ->where('patients.organization_id', Auth::user()->org_id)
+            ->groupBy('appointments.id')
+            ->orderByDesc('appointments.date_of_visit')
+            ->paginate(5);
+
         // dd($organizations);
-        return view('livewire.dashboard', ['totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organizations]);
+        return view('livewire.dashboard', ['totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organizations, 'appointments' => $appointments]);
     }
 }
