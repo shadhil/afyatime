@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Jobs\SendEmailJob;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,7 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\DailyReminder::class,
     ];
 
     /**
@@ -24,7 +26,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // /usr/local/bin/php /home/shadhil/Codez/Webz/GROWCRM/application/artisan schedule:run >> /dev/null 2>&1
+        
+        $schedule->command('reminder:daily')->dailyAt('10:34');
         // $schedule->command('inspire')->hourly();
+        // $now = Carbon::now();
+        // $month = $now->format('F');
+        // $year = $now->format('yy');
+
+        // $fourthFridayMonthly = new Carbon('fourth friday of ' . $month . ' ' . $year);
+
+        // $schedule->job(new SendEmailJob)->dailyAt('10:23');
     }
 
     /**
@@ -34,7 +46,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

@@ -2,11 +2,13 @@
 
 namespace App\Http\Livewire;
 
+use App\Mail\Gmail;
 use App\Models\Prescriber;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -34,6 +36,12 @@ class Prescribers extends Component
 
     public function createPrescriber()
     {
+        $email = "shadhil90@gmail.com";
+        $details = [
+            'title' => 'First Time for Everything',
+            'body' => 'I am Kingsley Okpara, a Python and PHP Fullstack Web developer and tech writer, I also have extensive knowledge and experience with JavaScript while working on applications developed with VueJs.'
+        ];
+        Mail::to($email)->send(new Gmail($details));
         //dd($this->state);
         Validator::make($this->state, [
             'first_name' => 'required',
