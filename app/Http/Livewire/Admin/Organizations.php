@@ -163,7 +163,6 @@ class Organizations extends Component
 
     public function render()
     {
-        $organizations = Organization::latest()->paginate(5);
         $orgTypes = OrganizationType::get();
 
         if (!empty($this->state['region_id'])) {
@@ -179,6 +178,16 @@ class Organizations extends Component
             ->select('id', 'name')
             ->get();
         //dd($admins);
+
+        $organizations = DB::table('organizations')
+            ->join('full_regions', 'full_regions.district_id', '=', 'organizations.district_id')
+            ->leftJoin('prescribers', 'prescribers.organization_id', '=', 'organizations.id')
+            ->leftJoin('patients', 'patients.organization_id', '=', 'organizations.id')
+            ->leftJoin('treatment_supporters', 'treatment_supporters.organization_id', '=', 'organizations.id')
+            ->leftJoin('appointments', 'appointments.organization_id', '=', 'organizations.id')
+            ->select('organizations.*', 'full_regions.region', 'full_regions.district', DB::raw('count(patients.id) as patients'), DB::raw('count(prescribers.id) as prescribers'), DB::raw('count(treatment_supporters.id) as supporters'), DB::raw('count(appointments.id) as appointments'))
+            ->groupBy('organizations.id')
+            ->paginate(5);
         return view('livewire.admin.organizations', ['organizations' => $organizations, 'orgTypes' => $orgTypes, 'regions' => $regions]);
     }
 }

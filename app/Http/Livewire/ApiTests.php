@@ -37,7 +37,7 @@ class ApiTests extends Component
             'Authorization' => 'Basic c2hhenk6bXlkdXR5IzMxMTA=',
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->withBody('{"from": "SENDER", "to": "255712793880", "text": "Your message"}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/test/text/single');
+        ])->withBody('{"from": "NEXTSMS", "to": "255712793880", "text": "Your message"}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/test/text/single');
         $body = json_decode($response->body());
 
         dd($body);

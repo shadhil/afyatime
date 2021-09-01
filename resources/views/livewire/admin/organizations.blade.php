@@ -1,71 +1,62 @@
 <div>
     <div class="main-content-wrap">
         <header class="page-header">
-            <h1 class="page-title">Organization</h1>
+            <h1 class="page-title">Organizations</h1>
         </header>
 
         <div class="page-content">
+            <div class="row">
+                @if (sizeof($organizations)>0)
+                @foreach ($organizations as $org)
+                <div class="col-12 col-md-4">
+                    <div class="card text-center mb-md-0 bg-light">
+                        <div class="card-header">
+                            {{ $org->name }}
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="fs-48 mr-2">Jul 3</div>
+                                <div class="text-muted">
+                                    <div class="fs-20">DUE</div>
+                                    <div>date</div>
+                                </div>
+                            </div>
 
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Location</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Prescribers</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (sizeof($organizations)>0)
-                                @foreach ($organizations as $org)
-                                <tr>
-                                    <td>
-                                        <div class="text-muted text-nowrap">{{ $org->name }}</div>
-                                    </td>
-                                    <td><strong>{{ $org->email }}</strong></td>
-                                    <td>
-                                        <div class="text-nowrap text-success">
-                                            <i class="icofont-check-circled"></i> {{ $org->phone_number }}
-                                        </div>
-                                    </td>
-                                    <td><strong>{{ $org->account_type }}.</strong></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
-                                                wire:click.prevent="editOrg({{ $org->id }})">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill"
-                                                wire:click.prevent="confirmOrgRemoval({{ $org->id }})">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                                @else
-                                <tr>
-                                    <td colspan="5" align="center"> No Organization Found!</td>
-                                </tr>
+                            <hr class="mt-4 mb-4">
 
-                                @endif
+                            <ul class="list-unstyled text-left">
+                                <li class="d-flex align-items-center pt-2 pb-2">
+                                    <div class="icon icofont-check-circled text-muted"></div>
+                                    <span class="ml-1">{{ $org->patients }} Total Patients</span>
+                                </li>
+                                <li class="d-flex align-items-center pt-2 pb-2">
+                                    <div class="icon icofont-check-circled text-muted"></div>
+                                    <span class="ml-1">{{ $org->prescribers }} Total Prescribers</span>
+                                </li>
+                                <li class="d-flex align-items-center pt-2 pb-2">
+                                    <div class="icon icofont-check-circled text-muted"></div>
+                                    <span class="ml-1">{{ $org->supporters }} Total Supporters</span>
+                                </li>
+                                <li class="d-flex align-items-center pt-2 pb-2">
+                                    <div class="icon icofont-check-circled text-muted"></div>
+                                    <span class="ml-1">{{ $org->appointments }} Total Appointments</span>
+                                </li>
+                                <li class="d-flex align-items-center pt-2 pb-2">
+                                    <div class="icon icofont-location-pin text-muted"></div>
+                                    <span class="ml-1">{{ $org->district }}, {{ $org->region }}</span>
+                                </li>
+                            </ul>
 
-
-                            </tbody>
-                        </table>
+                            <a href="{{ route('admin.organizations.profile', $org->id) }}"
+                                class="btn btn-primary btn-block mb-3">View Profile</a>
+                        </div>
                     </div>
-                    <br />
-                    {{ $organizations->links() }}
-
-
                 </div>
+                @endforeach
+
+                @else
+
+                @endif
             </div>
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addOrg">
@@ -74,6 +65,8 @@
             </div>
         </div>
     </div>
+
+
     <div class="modal fade" id="add-organization" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

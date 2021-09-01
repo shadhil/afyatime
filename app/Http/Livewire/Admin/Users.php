@@ -2,14 +2,14 @@
 
 namespace App\Http\Livewire\Admin;
 
-use App\Models\Admin;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
-class Admins extends Component
+class Users extends Component
 {
     use WithFileUploads;
     use WithPagination;
@@ -43,11 +43,11 @@ class Admins extends Component
             $this->state['profile_img'] = $this->photo->store('/', 'profiles');
         }
 
-        Admin::create($this->state);
+        User::create($this->state);
 
         // session()->flash('message', 'User added successfully!');
 
-        $this->dispatchBrowserEvent('hide-admin-modal', ['message' => 'Admin added successfully!']);
+        $this->dispatchBrowserEvent('hide-admin-modal', ['message' => 'User added successfully!']);
     }
 
     public function addAdmin()
@@ -58,12 +58,12 @@ class Admins extends Component
         $this->dispatchBrowserEvent('show-admin-modal');
     }
 
-    public function editdmin(Admin $admin)
+    public function editdmin(User $user)
     {
         $this->reset();
         $this->showEditModal = true;
-        $this->admin = $admin;
-        $this->state = $admin->toArray();
+        $this->user = $user;
+        $this->state = $user->toArray();
 
         $this->dispatchBrowserEvent('show-admin-modal');
         //dd($admin);
@@ -94,7 +94,7 @@ class Admins extends Component
 
         // session()->flash('message', 'User added successfully!');
 
-        $this->dispatchBrowserEvent('hide-admin-modal', ['message' => 'Admin updated successfully!']);
+        $this->dispatchBrowserEvent('hide-admin-modal', ['message' => 'User updated successfully!']);
     }
 
     public function confirmAdminRemoval($adminId)
@@ -105,7 +105,7 @@ class Admins extends Component
 
     public function deleteAdmin()
     {
-        $admin = Admin::findOrFail($this->adminIdBeingRemoved);
+        $admin = User::findOrFail($this->adminIdBeingRemoved);
 
         $admin->delete();
 
@@ -114,8 +114,8 @@ class Admins extends Component
 
     public function render()
     {
-        $admins = Admin::latest()->paginate(5);
-        //dd($admins);
-        return view('livewire.admin.admins', ['admins' => $admins]);
+        $users = User::latest()->paginate(5);
+        //dd($users);
+        return view('livewire.admin.users', ['users' => $users]);
     }
 }

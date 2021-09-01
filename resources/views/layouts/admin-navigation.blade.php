@@ -29,13 +29,29 @@
                             <span class="link-text">Prescribers</span>
                         </a>
                     </li>
+                    <li class="menu-item has-sub">
+                        <a class="item-link" href="#">
+                            <span class="link-text">Icons</span>
+                            <span class="link-caret icofont-thin-right"></span>
+                        </a>
+                        <ul class="sub">
+                            <li class="menu-item">
+                                <a class="item-link" href="icons-sli.html"><span class="link-text">Simple line
+                                        icons</span></a>
+                            </li>
+                            <li class="menu-item">
+                                <a class="item-link" href="icons-if.html"><span class="link-text">Icofont
+                                        icons</span></a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="menu-item">
                         <a class="item-link" href="#">
                             <span class="link-text">Patients</span>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a class="item-link" href="#">
+                    <li class="menu-item {{ request()->routeIs('admin.regions*') ? 'active' : '' }}">
+                        <a class="item-link" href="{{ route('admin.regions') }}">
                             <span class="link-text">Regions</span>
                         </a>
                     </li>

@@ -1,7 +1,7 @@
 <div>
     <div class="main-content-wrap">
         <header class="page-header">
-            <h1 class="page-title">Admins</h1>
+            <h1 class="page-title">Users</h1>
         </header>
 
         <div class="page-content">
@@ -12,42 +12,40 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    {{-- <th scope="col"></th> --}}
+                                    <th scope="col"></th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
-                                    <th scope="col">Phone Number</th>
+                                    <th scope="col">Account Type</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @php $i = 1; @endphp
-                                @foreach ($admins as $admin)
+                                @foreach ($users as $user)
                                 <tr>
                                     {{-- <td><strong>{{ $i }}.</strong></td> --}}
-                                    {{-- <td>
-                                        <img src="{{ $admin->profile_img == null ? asset('assets/img/default-profile.png') :Storage::disk('profiles')->url($admin->profile_img) }}"
-                                    width="50" height="50" alt="" class="rounded-500 mr-4">
-                                    </td> --}}
                                     <td>
-                                        <div class="text-muted text-nowrap">{{ $admin->name }}</div>
+                                        <img src="{{ $user->profile_photo == null ? asset('assets/img/default-profile.png') :Storage::disk('profiles')->url($user->profile_photo) }}"
+                                            width="50" height="50" alt="" class="rounded-500 mr-4">
                                     </td>
-                                    <td><strong>{{ $admin->email }}</strong></td>
+                                    <td>
+                                        <div class="text-muted text-nowrap">{{ $user->name }}</div>
+                                    </td>
+                                    <td><strong>{{ $user->email }}</strong></td>
                                     <td>
                                         <div class="text-nowrap text-success">
-                                            <i class="icofont-check-circled"></i> {{ $admin->phone_number }}
+                                            <i class="icofont-check-circled"></i> {{ $user->account_type }}
                                         </div>
                                     </td>
                                     <td>
                                         <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
+                                            <span class="btn btn-dark btn-sm btn-square rounded-pill">
                                                 <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
-                                                wire:click.prevent="editdmin({{ $admin }})">
-                                                <span class="btn-icon icofont-ui-edit"></span>
+                                            </span>
+                                            <button class="btn btn-info btn-sm btn-square rounded-pill">
+                                                <span class=" btn-icon icofont-ui-edit"></span>
                                             </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill"
-                                                wire:click.prevent="confirmAdminRemoval({{ $admin->id }})">
+                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
                                                 <span class="btn-icon icofont-ui-delete"></span>
                                             </button>
                                         </div>
@@ -59,12 +57,12 @@
                             </tbody>
                         </table>
                     </div>
-                    {{ $admins->links() }}
+                    {{ $users->links() }}
 
 
                 </div>
             </div>
-            @if (Auth::user()->admin_type == 'system')
+            @if (Auth::user()->admin_type == 'shazy')
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addAdmin">
                     <span class="btn-icon icofont-plus"></span>
@@ -190,7 +188,6 @@
         </div>
     </div>
 </div>
-</div>
 
 
 @push('styles')
@@ -234,4 +231,3 @@
         // })
 </script>
 @endpush
-</div>

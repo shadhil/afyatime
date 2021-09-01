@@ -14,34 +14,52 @@
         <div class="main-menu">
             <nav class="main-menu-wrap">
                 <ul class="menu-ul">
-                    <li class="menu-item {{ request()->routeIs('admin.dashboard*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('admin.dashboard') }}">
-                            <span class="link-text">Dashboard</span>
-                        </a>
-                    </li>
                     <li class="menu-item {{ request()->routeIs('admin.organizations*') ? 'active' : '' }}">
                         <a class="item-link" href="{{ route('admin.organizations') }}">
-                            <span class="link-text">Organizations</span>
+                            <span class="link-text">Home</span>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a class="item-link" href="#">
-                            <span class="link-text">Prescribers</span>
+                    <li class="menu-item {{ request()->routeIs('admin.appointments*') ? 'active' : '' }}">
+                        <a class="item-link" href="{{ route('admin.appointments') }}">
+                            <span class="link-text">Appointments</span>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a class="item-link" href="#">
-                            <span class="link-text">Patients</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="item-link" href="#">
+                    <li class="menu-item {{ request()->routeIs('admin.regions*') ? 'active' : '' }}">
+                        <a class="item-link" href="{{ route('admin.regions') }}">
                             <span class="link-text">Regions</span>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a class="item-link" href="#">
+                    <li class="menu-item has-sub {{ request()->routeIs('admin.types*') ? 'active' : '' }}">
+                        <spam class="item-link" href="#">
+                            <span class="link-text">Types</span>
+                            <span class="link-caret icofont-thin-right"></span>
+                        </spam>
+                        <ul class="sub">
+                            <li class="menu-item {{ request()->routeIs('admin.types.org') ? 'active' : '' }}">
+                                <a class="item-link" href="{{ route('admin.types.org') }}"><span
+                                        class="link-text">Organization
+                                        Types</span></a>
+                            </li>
+                            <li class="menu-item {{ request()->routeIs('admin.types.prescriber') ? 'active' : '' }}">
+                                <a class="item-link" href="{{ route('admin.types.prescriber') }}"><span
+                                        class="link-text">Prescriber
+                                        Types</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('admin.admins*') ? 'active' : '' }}">
+                        <a class="item-link" href="{{ route('admin.admins') }}">
                             <span class="link-text">Admins</span>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+                        <a class="item-link" href="{{ route('admin.users') }}">
+                            <span class="link-text">Users</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a class="item-link" href="">
+                            <span class="link-text">Subscriptions</span>
                         </a>
                     </li>
                 </ul>

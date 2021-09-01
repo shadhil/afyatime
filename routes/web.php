@@ -6,6 +6,12 @@ use App\Http\Livewire\Admin\Patients as AdminPrescribers;
 use App\Http\Livewire\Admin\Prescribers as AdminPatients;
 use App\Http\Livewire\Admin\Regions as AdminRegions;
 use App\Http\Livewire\Admin\Admins as AdminAdmins;
+use App\Http\Livewire\Admin\Appointments as AdminAppointments;
+use App\Http\Livewire\Admin\District as AdminDistrict;
+use App\Http\Livewire\Admin\OrganizationTypes;
+use App\Http\Livewire\Admin\PrescriberTypes;
+use App\Http\Livewire\Admin\Users as AdminUsers;
+use App\Http\Livewire\Admin\OrgProfile as AdminOrgProfile;
 use App\Http\Livewire\ApiTests;
 use App\Http\Livewire\Appointments;
 use App\Http\Livewire\Dashboard;
@@ -57,12 +63,18 @@ Route::middleware(['auth:user'])->group(function () {
 
 
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
-    Route::get('/', AdminDashboard::class)->name('dashboard');
-    Route::get('/organizations', AdminOrganizations::class)->name('organizations');
+    // Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
+    Route::get('/', AdminOrganizations::class)->name('organizations');
+    Route::get('/organization/{id}', AdminOrgProfile::class)->name('organizations.profile');
     Route::get('/prescribers', AdminPrescribers::class)->name('prescribers');
     Route::get('/patients', AdminPatients::class)->name('patients');
     Route::get('/regions', AdminRegions::class)->name('regions');
+    Route::get('/region/{id}', AdminDistrict::class)->name('regions.district');
     Route::get('/admins', AdminAdmins::class)->name('admins');
+    Route::get('/org-types', OrganizationTypes::class)->name('types.org');
+    Route::get('/prescriber-types', PrescriberTypes::class)->name('types.prescriber');
+    Route::get('/users', AdminUsers::class)->name('users');
+    Route::get('/appointments', AdminAppointments::class)->name('appointments');
 });
 
 
