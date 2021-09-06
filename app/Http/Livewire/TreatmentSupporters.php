@@ -155,7 +155,13 @@ class TreatmentSupporters extends Component
 
     public function render()
     {
-        $supporters = TreatmentSupporter::where('organization_id', Auth::user()->org_id)->latest()->paginate(5);
+        $supporters = DB::table('treatment_supporters')
+            ->leftJoin('patients', 'patients.supporter_id', '=', 'treatment_supporters.id')
+            ->select('treatment_supporters.*', DB::raw('count(patients.id) as patients'))
+            ->where('treatment_supporters.organization_id', Auth::user()->org_id)
+            ->groupBy('treatment_supporters.id')
+            ->latest()
+            ->paginate(5);
 
         if (!empty($this->state['region_id'])) {
             $this->districts = DB::table('districts')

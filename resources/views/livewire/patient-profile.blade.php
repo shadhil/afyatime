@@ -42,6 +42,10 @@
                     <div class="card ">
                         <div class="card-header">
                             Condition(s)
+                            <button class="btn btn-black btn-outline btn-sm btn-square rounded-pill"
+                                wire:click="addCondition">
+                                <span class="btn-icon icofont-ui-add"></span>
+                            </button>
                         </div>
                         <div class="card-body">
                             <table class="table table-hover">
@@ -163,15 +167,13 @@
                                             </td>
                                             <td align="center">
                                                 <div class="actions">
-                                                    <a href="" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                        <span class="btn-icon icofont-external-link"></span>
-                                                    </a>
-                                                    <button class="btn btn-info btn-sm btn-square rounded-pill"
-                                                        wire:click="editAppointment({{ $appointment->id }})">
-                                                        <span class="btn-icon icofont-ui-edit"></span>
+                                                    <button class="btn btn-outline-info"
+                                                        wire:click="editAppointment({{ $appointment->id }})">Edit<span
+                                                            class="btn-icon icofont-edit ml-2"></span>
                                                     </button>
-                                                    <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                        <span class="btn-icon icofont-ui-delete"></span>
+                                                    <button class="btn btn-error btn-square"
+                                                        wire:click="appointmentRemoval({{ $appointment->id }})">
+                                                        <span class="btn-icon icofont-bin"></span>
                                                     </button>
                                                 </div>
                                             </td>
@@ -190,7 +192,7 @@
                     </div>
                 </div>
             </div>
-            @if (Str::contains('prescriber', Auth::user()->org_id))
+            @if (Str::contains('prescriber', Auth::user()->account_type))
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addAppointment">
                     <span class="btn-icon icofont-stethoscope-alt"></span>
@@ -220,7 +222,6 @@
                             <select class="form-control @error('condition_id') is-invalid @enderror"
                                 wire:model="conditionId" id="condition_id" name="condition_id">
                                 <option class="d-none">Select Cause/Condition</option>
-                                <option value="0">New Condition</option>
                                 @foreach ($conditions as $condition)
                                 <option value="{{ $condition->id }}">{{ $condition->condition }}</option>
                                 @endforeach
@@ -297,8 +298,74 @@
         </div>
     </div>
     <!-- end Add appointment modals -->
-</div>
 
+    <!-- Add appointment modals -->
+    <div class="modal fade" id="modal-condition" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        @if($showEditModal)
+                        <span>Edit Condition</span>
+                        @else
+                        <span>Add New Condition</span>
+                        @endif
+                    </h5>
+                </div>
+                <form autocomplete="off"
+                    wire:submit.prevent="{{ $showEditModal ? 'updateCondition' : 'createCondition' }}">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <input class="form-control @error('condition') is-invalid @enderror" type="text"
+                                    wire:model.defer="state.condition" id="condition" name="condition"
+                                    placeholder="New Condition">
+                                @error('condition')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer d-block">
+                            <div class="actions justify-content-between">
+                                <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-info">
+                                    @if($showEditModal)
+                                    <span>Save Changes</span>
+                                    @else
+                                    <span>Save</span>
+                                    @endif
+                                </button>
+                            </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end Add appointment modals -->
+
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+
+            <div class="modal-body">
+                <h4>Are you sure you want to delete this appointment?</h4>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times mr-1"></i>
+                    Cancel</button>
+                <button type="button" wire:click.prevent="deleteAppointment" class="btn btn-danger"><i
+                        class="icofont-bin mr-1"></i>Delete Now</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @push('scripts')
 <script>
@@ -312,6 +379,11 @@
             $('#modal-appointment').modal('hide');
             toastr.success(event.detail.message, 'Success!');
         })
+
+        window.addEventListener('hide-condition-modal', event => {
+            $('#modal-condition').modal('hide');
+            toastr.success(event.detail.message, 'Success!');
+        })
     });
 </script>
 <script>
@@ -319,14 +391,27 @@
         $('#modal-appointment').modal('show');
     })
 
+    window.addEventListener('show-condition-modal', event => {
+        $('#modal-condition').modal('show');
+    })
+
     window.addEventListener('show-delete-modal', event => {
-        $('#confirmationModal').modal('show');
+        $('#delete-modal').modal('show');
     })
 
     window.addEventListener('hide-delete-modal', event => {
-        $('#confirmationModal').modal('hide');
+        $('#delete-modal').modal('hide');
         toastr.success(event.detail.message, 'Success!');
     })
+
+    //  window.addEventListener('show-delete-modal', event => {
+    //     $('#confirmationModal').modal('show');
+    // })
+
+    // window.addEventListener('hide-delete-modal', event => {
+    //     $('#confirmationModal').modal('hide');
+    //     toastr.success(event.detail.message, 'Success!');
+    // })
 
         // window.addEventListener('hide-appointment-modal', event => {
         //     $('#add-admin').modal('hide');

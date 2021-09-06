@@ -51,7 +51,7 @@ class Patients extends Component
                 $isFound = true;
             }
         }
-        return $testCode;
+        return Str::upper($testCode);
     }
 
     public function createPatient()

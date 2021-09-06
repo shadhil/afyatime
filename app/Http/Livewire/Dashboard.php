@@ -2,12 +2,44 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\OrganizationSubscription;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
+    public $state = [];
+    public $subscriberId;
+
+    public $showEditModal = false;
+
+    public function addSubscription()
+    {
+        $this->reset('state', 'subscriberId');
+        $this->showEditModal = false;
+        $this->dispatchBrowserEvent('show-subscription-modal');
+    }
+
+    public function createSubscription()
+    {
+        Validator::make($this->state, [
+            'package_id' => 'required',
+            'payment_ref' => 'required',
+            'total_price' => 'required',
+        ])->validate();
+
+        $this->state['paid_by'] = Auth::user()->id;
+        $this->state['organization_id'] = Auth::user()->org_id;
+        $this->state['status'] = 'Paid';
+        $newSubscription = OrganizationSubscription::create($this->state);
+
+        if ($newSubscription) {
+            $this->dispatchBrowserEvent('hide-subscription-modal', ['message' => 'Subscriber added successfully!']);
+        }
+    }
+
     public function render()
     {
         $totalAppointments = DB::table('appointments')
@@ -58,7 +90,15 @@ class Dashboard extends Component
             ->orderByDesc('appointments.date_of_visit')
             ->paginate(5);
 
+        $subscription = DB::table('organization_subscriptions')
+            ->where('organization_id', Auth::user()->org_id)
+            ->latest()
+            ->first();
+
+        $packages = DB::table('subscription_packages')
+            ->get();
+
         // dd($organizations);
-        return view('livewire.dashboard', ['totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organizations, 'appointments' => $appointments]);
+        return view('livewire.dashboard', ['totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organizations, 'appointments' => $appointments, 'subscription' => $subscription, 'packages' => $packages]);
     }
 }

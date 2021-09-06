@@ -53,16 +53,13 @@
                                     </td>
                                     <td>
                                         <div class="text-muted text-nowrap">
-                                            {{ $supporter->id }}</div>
+                                            {{ $supporter->patients }}</div>
                                     </td>
                                     <td>
                                         <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
+                                            <button class="btn btn-primary btn-sm "
                                                 wire:click="editSupporter({{ $supporter->id }})">
-                                                <span class="btn-icon icofont-ui-edit"></span>
+                                                <span class="btn-icon icofont-ui-edit"> Edit</span>
                                             </button>
                                             <button class="btn btn-error btn-sm btn-square rounded-pill">
                                                 <span class="btn-icon icofont-ui-delete"></span>

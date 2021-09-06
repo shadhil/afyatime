@@ -73,6 +73,7 @@
             @endif
         </div>
     </div>
+    
     <div class="modal fade" id="add-admin" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -189,7 +190,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 
 

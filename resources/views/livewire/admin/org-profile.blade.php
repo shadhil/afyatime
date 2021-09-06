@@ -85,15 +85,33 @@
                         <h6 class="mt-0 mb-0">Address</h6>
                         <p>{{ $org->location }} - {{ $org->district }}, {{ $org->region }}</p>
                         <h6 class="mt-0 mb-0">Email</h6>
-                        <p>{{ $org->email }}</p>
+                        <p>{{ $org->email }} </p>
                         <h6 class="mt-0 mb-0">Phone</h6>
                         <p>{{ $org->phone_number }}</p>
+
+                        @if ($subscription->status == 'Paid')
+                        <a href="{{ route('admin.subscriptions', $org->id) }}" class="btn btn-secondary">
+                            Confirm Now!<span class="btn-icon icofont-question-circle ml-2"></span>
+                        </a>
+                        @elseif ($subscription->status == 'Subscribed')
+                        <a href="{{ route('admin.subscriptions', $org->id) }}" class="btn btn-outline-light">
+                            Subscribed<span class="btn-icon icofont-check-circled ml-2"></span>
+                        </a>
+                        @elseif ($subscription->status == 'UnSubscribed' || empty($subscription->status))
+                        <a href="{{ route('admin.subscriptions', $org->id) }}" class="btn btn-warning">
+                            UnSubscribed<span class="btn-icon icofont-lock ml-2"></span>
+                        </a>
+                        @elseif ($subscription->status == 'Blocked')
+                        <a href="{{ route('admin.subscriptions', $org->id) }}" class=" btn btn-danger">
+                            Blocked<span class="btn-icon icofont-ban ml-2"></span>
+                        </a>
+                        @endif
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        Last patients
+                        Latest Patients
                     </div>
                     <div class="card-body">
                         <table class="table table-hover">
@@ -120,7 +138,8 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <a href="" type="submit" class="btn btn-secondary btn-block">View All</a>
+                        <a href="{{ route('admin.patients', [$org->id]) }}" type="button"
+                            class="btn btn-secondary btn-block">View All</a>
                     </div>
                 </div>
 
@@ -146,7 +165,8 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <a href="" type="submit" class="btn btn-secondary btn-block">View All</a>
+                        <a href="{{ route('admin.supporters', [$org->id]) }}" type="submit"
+                            class="btn btn-secondary btn-block">View All</a>
                     </div>
                 </div>
             </div>
@@ -213,7 +233,8 @@
                         </div>
 
                     </div>
-                    <button class="btn btn-block btn-outline-primary">View All Appointments</button>
+                    <a href="{{ route('admin.appointments', [$org->id]) }}"
+                        class="btn btn-block btn-outline-primary">View All Appointments</a>
                 </div>
                 <br><br>
 
@@ -267,7 +288,8 @@
                         </div>
 
                     </div>
-                    <button class="btn btn-block btn-outline-primary">View All Prescriber</button>
+                    <a href="{{ route('admin.prescribers', [$org->id]) }}"
+                        class="btn btn-block btn-outline-primary">View All Prescriber</a>
                 </div>
 
             </div>

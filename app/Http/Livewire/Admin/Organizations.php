@@ -181,13 +181,10 @@ class Organizations extends Component
 
         $organizations = DB::table('organizations')
             ->join('full_regions', 'full_regions.district_id', '=', 'organizations.district_id')
-            ->leftJoin('prescribers', 'prescribers.organization_id', '=', 'organizations.id')
-            ->leftJoin('patients', 'patients.organization_id', '=', 'organizations.id')
-            ->leftJoin('treatment_supporters', 'treatment_supporters.organization_id', '=', 'organizations.id')
-            ->leftJoin('appointments', 'appointments.organization_id', '=', 'organizations.id')
-            ->select('organizations.*', 'full_regions.region', 'full_regions.district', DB::raw('count(patients.id) as patients'), DB::raw('count(prescribers.id) as prescribers'), DB::raw('count(treatment_supporters.id) as supporters'), DB::raw('count(appointments.id) as appointments'))
+            ->select('organizations.*', 'full_regions.region', 'full_regions.district', DB::raw("(SELECT COUNT(prescribers.id) FROM prescribers WHERE prescribers.organization_id = organizations.id GROUP BY prescribers.organization_id) as prescribers"), DB::raw("(SELECT COUNT(patients.id) FROM patients WHERE patients.organization_id = organizations.id GROUP BY patients.organization_id) as patients"), DB::raw("(SELECT COUNT(treatment_supporters.id) FROM treatment_supporters WHERE treatment_supporters.organization_id = organizations.id GROUP BY treatment_supporters.organization_id) as supporters"), DB::raw("(SELECT COUNT(appointments.id) FROM appointments WHERE appointments.organization_id = organizations.id GROUP BY appointments.organization_id) as appointments"))
             ->groupBy('organizations.id')
             ->paginate(5);
+        // dd($organizations);
         return view('livewire.admin.organizations', ['organizations' => $organizations, 'orgTypes' => $orgTypes, 'regions' => $regions]);
     }
 }

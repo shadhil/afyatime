@@ -21,6 +21,7 @@ class PatientProfile extends Component
 
     public $patientId;
     public $appointmentId;
+    public $removeAppointmentId;
 
     public $conditionId = '';
 
@@ -48,13 +49,13 @@ class PatientProfile extends Component
         $this->state['patient_id'] = $this->patientId;
         $this->state['organization_id'] = Auth::user()->org_id;
 
-        if ($this->conditionId == '0') {
-            $this->state['condition_id'] = DB::table('medical_conditions')
-                ->insertGetId([
-                    'condition' => $this->state['new_condition'],
-                    'patient_id' => $this->patientId,
-                ]);
-        }
+        // if ($this->conditionId == '0') {
+        //     $this->state['condition_id'] = DB::table('medical_conditions')
+        //         ->insertGetId([
+        //             'condition' => $this->state['new_condition'],
+        //             'patient_id' => $this->patientId,
+        //         ]);
+        // }
 
         if (!empty($this->state['date_of_visit'])) {
             $this->state['date_of_visit'] = Carbon::createFromFormat('m/d/Y', $this->state['date_of_visit'])->format('Y-m-d');
@@ -75,6 +76,27 @@ class PatientProfile extends Component
         }
     }
 
+
+    public function addCondition()
+    {
+        $this->reset('state', 'conditionId');
+        $this->showEditModal = false;
+        $this->dispatchBrowserEvent('show-condition-modal');
+    }
+
+    public function createCondition()
+    {
+        Validator::make($this->state, [
+            'condition' => 'required',
+        ])->validate();
+
+        $this->state['patient_id'] = $this->patientId;
+        $newAppointment = DB::table('medical_conditions')->insert($this->state);
+
+        if ($newAppointment) {
+            $this->dispatchBrowserEvent('hide-condition-modal', ['message' => 'Condition added successfully!']);
+        }
+    }
 
     public function addAppointment()
     {
@@ -147,6 +169,22 @@ class PatientProfile extends Component
                 $this->dispatchBrowserEvent('hide-appointment-modal', ['message' => 'Appointment updated successfully!']);
             }
         });
+    }
+
+    public function appointmentRemoval($appointmentId)
+    {
+
+        $this->removeAppointmentId = $appointmentId;
+        $this->dispatchBrowserEvent('show-delete-modal');
+    }
+
+    public function deleteAppointment()
+    {
+        $appointment = Appointment::findOrFail($this->removeAppointmentId);
+
+        $appointment->delete();
+
+        $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Appointment deleted successfully!']);
     }
 
 

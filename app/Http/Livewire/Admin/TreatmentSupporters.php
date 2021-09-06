@@ -2,11 +2,11 @@
 
 namespace App\Http\Livewire\Admin;
 
-use App\Models\Patient;
+use App\Models\TreatmentSupporter;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class Patients extends Component
+class TreatmentSupporters extends Component
 {
     public $orgId;
 
@@ -18,9 +18,7 @@ class Patients extends Component
     public function render()
     {
         $org = DB::table('organizations')->select('name')->find($this->orgId);
-        $patients = Patient::where('organization_id', $this->orgId)
-            ->latest()
-            ->paginate(5);
-        return view('livewire.admin.patients', ['patients' =>$patients, 'org' => $org]);
+        $supporters = TreatmentSupporter::where('organization_id', $this->orgId)->latest()->paginate(5);
+        return view('livewire.admin.treatment-supporters', ['supporters' => $supporters, 'org' => $org]);
     }
 }

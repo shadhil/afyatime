@@ -20,7 +20,7 @@
                         </a>
                     </li>
                     <li class="menu-item {{ request()->routeIs('admin.appointments*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('admin.appointments') }}">
+                        <a class="item-link" href="{{ route('admin.appointments.all',) }}">
                             <span class="link-text">Appointments</span>
                         </a>
                     </li>
@@ -57,9 +57,9 @@
                             <span class="link-text">Users</span>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a class="item-link" href="">
-                            <span class="link-text">Subscriptions</span>
+                    <li class="menu-item {{ request()->routeIs('admin.invoices*') ? 'active' : '' }}">
+                        <a class="item-link" href="{{ route('admin.invoices') }}">
+                            <span class="link-text">Invoices</span>
                         </a>
                     </li>
                 </ul>

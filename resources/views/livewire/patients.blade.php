@@ -98,7 +98,8 @@
                 </div>
             </div>
 
-            @if (Str::contains('prescriber', Auth::user()->org_id) || Auth::user()->account_type == 'organization')
+            @if (Str::contains('prescriber', Auth::user()->account_type) || Auth::user()->account_type ==
+            'organization')
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addPatient">
                     <span class="btn-icon icofont-plus"></span>

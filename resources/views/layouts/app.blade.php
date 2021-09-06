@@ -73,7 +73,7 @@
                             <button class="no-style dropdown-toggle" type="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false" data-offset="0, 12">
                                 <span class="icon icofont-notification"></span>
-                                <span class="badge badge-danger badge-sm">5</span>
+                                <span class="badge badge-danger badge-sm"></span>
                             </button>
 
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-w-280">
@@ -149,8 +149,8 @@
                             <button class="no-style dropdown-toggle" type="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false" data-offset="0, 10">
                                 <span class="d-flex align-items-center">
-                                    <img src="{{ asset('assets/content/user-400-1.jpg') }}" alt="" width="40"
-                                        height="40" class="rounded-500 mr-1">
+                                    <img src="{{ empty(Auth::user()->profile_photo) ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url(Auth::user()->profile_photo) }}"
+                                        alt="" width="40" height="40" class="rounded-500 mr-1">
                                     <i class="icofont-simple-down"></i>
                                 </span>
                             </button>
@@ -158,26 +158,14 @@
                                 <ul class="list">
                                     <li>
                                         <a href="#" class="align-items-center">
-                                            <span class="icon icofont-ui-home"></span>
-                                            Edit account
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="align-items-center">
                                             <span class="icon icofont-ui-user"></span>
-                                            User profile
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="align-items-center">
-                                            <span class="icon icofont-ui-calendar"></span>
                                             {{ Auth::user()->name }}
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#" class="align-items-center">
-                                            <span class="icon icofont-ui-settings"></span>
-                                            Settings
+                                            <span class="icon icofont-ui-edit"></span>
+                                            Edit account
                                         </a>
                                     </li>
                                     <li>

@@ -36,12 +36,12 @@ class Prescribers extends Component
 
     public function createPrescriber()
     {
-        $email = "shadhil90@gmail.com";
-        $details = [
-            'title' => 'First Time for Everything',
-            'body' => 'I am Kingsley Okpara, a Python and PHP Fullstack Web developer and tech writer, I also have extensive knowledge and experience with JavaScript while working on applications developed with VueJs.'
-        ];
-        Mail::to($email)->send(new Gmail($details));
+        // $email = "shadhil90@gmail.com";
+        // $details = [
+        //     'title' => 'First Time for Everything',
+        //     'body' => 'I am Kingsley Okpara, a Python and PHP Fullstack Web developer and tech writer, I also have extensive knowledge and experience with JavaScript while working on applications developed with VueJs.'
+        // ];
+        // Mail::to($email)->send(new Gmail($details));
         //dd($this->state);
         Validator::make($this->state, [
             'first_name' => 'required',
@@ -72,7 +72,7 @@ class Prescribers extends Component
                 'email' => $this->state['email'],
                 'profile_photo' => $this->state['profile_photo'],
                 'password' => Hash::make($this->state['password']),
-                'account_type' => $this->state['is_admin'] ? 'prescriber-admin' : 'prescriber',
+                'account_type' => $this->state['is_admin'] ?? false ? 'prescriber-admin' : 'prescriber',
                 'account_id' => $newPrescriber->id,
                 'org_id' => Auth::user()->org_id,
             ]);

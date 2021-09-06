@@ -48,11 +48,16 @@ class OrgProfile extends Component
             ->limit(5)
             ->get();
 
-        $organizations = DB::table('organizations')
+        $organization = DB::table('organizations')
             ->leftJoin('organization_types', 'organizations.organization_type', '=', 'organization_types.id')
             ->join('full_regions', 'full_regions.district_id', '=', 'organizations.district_id')
             ->select('organizations.*', 'full_regions.district', 'full_regions.region', 'organization_types.type')
             ->where('organizations.id', $this->orgId)
+            ->first();
+
+        $subscription = DB::table('organization_subscriptions')
+            ->where('organization_id', $this->orgId)
+            ->latest()
             ->first();
 
         $appointments = DB::table('appointments')
@@ -72,7 +77,7 @@ class OrgProfile extends Component
             ->where('prescribers.organization_id', $this->orgId)
             ->latest()->paginate(5);
 
-        // dd($organizations);
-        return view('livewire.admin.org-profile', ['totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organizations, 'appointments' => $appointments, 'prescribers' => $prescribers]);
+        // dd($totalPatients);
+        return view('livewire.admin.org-profile', ['totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organization, 'appointments' => $appointments, 'prescribers' => $prescribers, 'subscription' => $subscription]);
     }
 }

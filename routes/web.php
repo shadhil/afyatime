@@ -2,16 +2,20 @@
 
 use App\Http\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Http\Livewire\Admin\Organizations as AdminOrganizations;
-use App\Http\Livewire\Admin\Patients as AdminPrescribers;
-use App\Http\Livewire\Admin\Prescribers as AdminPatients;
+use App\Http\Livewire\Admin\Patients as AdminPatients;
+use App\Http\Livewire\Admin\Prescribers as AdminPrescribers;
 use App\Http\Livewire\Admin\Regions as AdminRegions;
 use App\Http\Livewire\Admin\Admins as AdminAdmins;
+use App\Http\Livewire\Admin\AllAppointments as AdminAllAppointments;
 use App\Http\Livewire\Admin\Appointments as AdminAppointments;
 use App\Http\Livewire\Admin\District as AdminDistrict;
+use App\Http\Livewire\Admin\Invoices as AdminInvoices;
+use App\Http\Livewire\Admin\OrganizationSubscriptions;
 use App\Http\Livewire\Admin\OrganizationTypes;
 use App\Http\Livewire\Admin\PrescriberTypes;
 use App\Http\Livewire\Admin\Users as AdminUsers;
 use App\Http\Livewire\Admin\OrgProfile as AdminOrgProfile;
+use App\Http\Livewire\Admin\TreatmentSupporters as AdminTreatmentSupporters;
 use App\Http\Livewire\ApiTests;
 use App\Http\Livewire\Appointments;
 use App\Http\Livewire\Dashboard;
@@ -66,15 +70,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     // Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
     Route::get('/', AdminOrganizations::class)->name('organizations');
     Route::get('/organization/{id}', AdminOrgProfile::class)->name('organizations.profile');
-    Route::get('/prescribers', AdminPrescribers::class)->name('prescribers');
-    Route::get('/patients', AdminPatients::class)->name('patients');
+    Route::get('/all-appointments', AdminAllAppointments::class)->name('appointments.all');
     Route::get('/regions', AdminRegions::class)->name('regions');
     Route::get('/region/{id}', AdminDistrict::class)->name('regions.district');
     Route::get('/admins', AdminAdmins::class)->name('admins');
     Route::get('/org-types', OrganizationTypes::class)->name('types.org');
     Route::get('/prescriber-types', PrescriberTypes::class)->name('types.prescriber');
     Route::get('/users', AdminUsers::class)->name('users');
-    Route::get('/appointments', AdminAppointments::class)->name('appointments');
+    Route::get('/invoices', AdminInvoices::class)->name('invoices');
+    Route::get('/subscriptions/{id}', OrganizationSubscriptions::class)->name('subscriptions');
+    Route::get('/appointments/{id}', AdminAppointments::class)->name('appointments');
+    Route::get('/prescribers/{id}', AdminPrescribers::class)->name('prescribers');
+    Route::get('/patients/{id}', AdminPatients::class)->name('patients');
+    Route::get('/treatment-supporters/{id}', AdminTreatmentSupporters::class)->name('supporters');
 });
 
 

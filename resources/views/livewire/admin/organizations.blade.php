@@ -27,19 +27,19 @@
                             <ul class="list-unstyled text-left">
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-check-circled text-muted"></div>
-                                    <span class="ml-1">{{ $org->patients }} Total Patients</span>
+                                    <span class="ml-1">{{ $org->patients ?? '0' }} Total Patients</span>
                                 </li>
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-check-circled text-muted"></div>
-                                    <span class="ml-1">{{ $org->prescribers }} Total Prescribers</span>
+                                    <span class="ml-1">{{ $org->prescribers ?? '0' }} Total Prescribers</span>
                                 </li>
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-check-circled text-muted"></div>
-                                    <span class="ml-1">{{ $org->supporters }} Total Supporters</span>
+                                    <span class="ml-1">{{ $org->supporters ?? '0' }} Total Supporters</span>
                                 </li>
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-check-circled text-muted"></div>
-                                    <span class="ml-1">{{ $org->appointments }} Total Appointments</span>
+                                    <span class="ml-1">{{ $org->appointments ?? '0' }} Total Appointments</span>
                                 </li>
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-location-pin text-muted"></div>
