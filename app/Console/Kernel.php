@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\DailyReminder::class,
+        Commands\SubscriptionCheck::class,
     ];
 
     /**
@@ -27,8 +28,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // /usr/local/bin/php /home/shadhil/Codez/Webz/GROWCRM/application/artisan schedule:run >> /dev/null 2>&1
-        
-        $schedule->command('reminder:daily')->dailyAt('10:34');
+
+        $schedule->command('subscription:check')->daily();
+        $schedule->command('reminder:daily')->everyFiveMinutes();
+        // $schedule->command('reminder:daily')->twiceDaily(5, 8);
         // $schedule->command('inspire')->hourly();
         // $now = Carbon::now();
         // $month = $now->format('F');

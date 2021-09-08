@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Events\FirstAppointment;
 use App\Models\Appointment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,11 @@ class PatientProfile extends Component
     public $patientId;
     public $appointmentId;
     public $removeAppointmentId;
+
+    public $firstTime = false;
+    public $patientName = '';
+    public $patientPhone = '';
+    public $patientEmail = 'none';
 
     public $conditionId = '';
 
@@ -72,6 +78,13 @@ class PatientProfile extends Component
         $newAppointment = Appointment::create($this->state);
 
         if ($newAppointment) {
+            if ($this->firstTime) {
+                $details = [
+                    'name' => $this->patientName,
+                    'phone' => $this->patientPhone
+                ];
+                event(new FirstAppointment($details));
+            }
             $this->dispatchBrowserEvent('hide-appointment-modal', ['message' => 'Appointment added successfully!']);
         }
     }
@@ -201,6 +214,11 @@ class PatientProfile extends Component
             ->select('patients.*', 'full_regions.district', 'full_regions.region', 'treatment_supporters.full_name')
             ->where('patients.id', $this->patientId)
             ->first();
+        $this->patientName = $patient->first_name . ' ' . $patient->last_name;
+        $this->patientPhone = $patient->phone_number;
+        if ($patient->email) {
+            $this->patientEmail = $patient->email;
+        }
 
         $prescribers = DB::table('prescribers')
             ->join('appointments', 'appointments.prescriber_id', '=', 'prescribers.id')
@@ -219,8 +237,11 @@ class PatientProfile extends Component
             ->orderByDesc('appointments.date_of_visit')
             ->limit(5)
             ->get();
+        if (sizeof($appointments) == 0) {
+            $this->firstTime = true;
+        }
 
-        // dd($patient);
+        // dd(sizeof($appointments));
         return view('livewire.patient-profile', ['patient' => $patient, 'conditions' => $conditions, 'prescribers' => $prescribers, 'appointments' => $appointments]);
     }
 }

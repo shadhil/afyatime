@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Events\SubscriptionPaid;
 use App\Models\OrganizationSubscription;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,7 @@ class Dashboard extends Component
     public $subscriberId;
 
     public $showEditModal = false;
+    public $orgName = '';
 
     public function addSubscription()
     {
@@ -36,6 +38,10 @@ class Dashboard extends Component
         $newSubscription = OrganizationSubscription::create($this->state);
 
         if ($newSubscription) {
+            $details = [
+                'organization' => $this->orgName,
+            ];
+            event(new SubscriptionPaid($details));
             $this->dispatchBrowserEvent('hide-subscription-modal', ['message' => 'Subscriber added successfully!']);
         }
     }
@@ -72,12 +78,13 @@ class Dashboard extends Component
             ->limit(5)
             ->get();
 
-        $organizations = DB::table('organizations')
+        $organization = DB::table('organizations')
             ->leftJoin('organization_types', 'organizations.organization_type', '=', 'organization_types.id')
             ->join('full_regions', 'full_regions.district_id', '=', 'organizations.district_id')
             ->select('organizations.*', 'full_regions.district', 'full_regions.region', 'organization_types.type')
             ->where('organizations.id', Auth::user()->org_id)
             ->first();
+        $this->orgName = $organization->name;
 
         $appointments = DB::table('appointments')
             ->join('prescribers', 'appointments.prescriber_id', '=', 'prescribers.id')
@@ -92,6 +99,7 @@ class Dashboard extends Component
 
         $subscription = DB::table('organization_subscriptions')
             ->where('organization_id', Auth::user()->org_id)
+            ->whereNotNull('end_date')
             ->latest()
             ->first();
 
@@ -99,6 +107,6 @@ class Dashboard extends Component
             ->get();
 
         // dd($organizations);
-        return view('livewire.dashboard', ['totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organizations, 'appointments' => $appointments, 'subscription' => $subscription, 'packages' => $packages]);
+        return view('livewire.dashboard', ['totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organization, 'appointments' => $appointments, 'subscription' => $subscription, 'packages' => $packages]);
     }
 }

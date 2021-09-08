@@ -16,7 +16,6 @@
                                     class="btn btn-danger rounded-500">#{{ $patient->patient_code }}</button>
                             </div>
 
-
                             <p class="text-muted">{{ $patient->first_name }} {{ $patient->last_name }}</p>
 
                             <h6 class="mt-0 mb-0">Date of Birth</h6>
@@ -35,7 +34,6 @@
                             @endif
                             <h6 class="mt-0 mb-0">Treatment Supporter</h6>
                             <p>{{ $patient->full_name ?? '-' }}</p>
-
                         </div>
                     </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Events\PrescriberRegistered;
 use App\Mail\Gmail;
 use App\Models\Prescriber;
 use App\Models\User;
@@ -78,6 +79,13 @@ class Prescribers extends Component
             ]);
 
             if ($newUser) {
+                $details = [
+                    'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
+                    'email' => $this->state['email'],
+                    'password' => $this->state['password'],
+                    'org_id' => Auth::user()->org_id,
+                ];
+                event(new PrescriberRegistered($details));
                 $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'Prescriber added successfully!']);
             }
         });

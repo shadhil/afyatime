@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Events\OrganizationRegistered;
 use App\Models\Admin;
 use App\Models\Organization;
 use App\Models\OrganizationType;
@@ -64,6 +65,13 @@ class Organizations extends Component
             ]);
 
             if ($newUser) {
+                $details = [
+                    'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
+                    'email' => $this->state['email'],
+                    'password' => $this->state['password'],
+                    'org_id' => $newOrg->id,
+                ];
+                event(new OrganizationRegistered($details));
                 $this->dispatchBrowserEvent('hide-org-modal', ['message' => 'Organization added successfully!']);
             }
         });
