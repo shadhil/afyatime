@@ -81,7 +81,8 @@ class PatientProfile extends Component
             if ($this->firstTime) {
                 $details = [
                     'name' => $this->patientName,
-                    'phone' => $this->patientPhone
+                    'phone' => $this->patientPhone,
+                    'email' => $this->patientEmail
                 ];
                 event(new FirstAppointment($details));
             }

@@ -106,7 +106,7 @@ class Dashboard extends Component
         $packages = DB::table('subscription_packages')
             ->get();
 
-        // dd($organizations);
+        // dd(Auth::user()->org_id);
         return view('livewire.dashboard', ['totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organization, 'appointments' => $appointments, 'subscription' => $subscription, 'packages' => $packages]);
     }
 }

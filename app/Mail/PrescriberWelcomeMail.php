@@ -30,8 +30,8 @@ class PrescriberWelcomeMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Welcome to AfyaTime')
-        ->view('emails.subscription-paid-mail.blade')
-        ->from('notifications@afyatime.co.tz');
+        return $this->subject($this->details['title'])
+            ->view('emails.subscription-paid-mail')
+            ->from('notifications@afyatime.co.tz');
     }
 }

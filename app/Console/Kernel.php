@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         // /usr/local/bin/php /home/shadhil/Codez/Webz/GROWCRM/application/artisan schedule:run >> /dev/null 2>&1
 
         $schedule->command('subscription:check')->daily();
-        $schedule->command('reminder:daily')->everyFiveMinutes();
+        $schedule->command('reminder:daily')->everyMinute();
         // $schedule->command('reminder:daily')->twiceDaily(5, 8);
         // $schedule->command('inspire')->hourly();
         // $now = Carbon::now();

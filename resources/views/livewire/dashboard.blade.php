@@ -87,6 +87,8 @@
                             <p>{{ $org->email }}</p>
                             <h6 class="mt-0 mb-0">Phone</h6>
                             <p>{{ $org->phone_number }}</p>
+
+                            @if (!empty($subscription->status))
                             @if (Auth::user()->account_type == 'prescriber-admin' || Auth::user()->account_type ==
                             'organization')
                             @if ($subscription->status == 'Paid')
@@ -106,6 +108,7 @@
                             <button class=" btn btn-danger">
                                 Blocked<span class="btn-icon icofont-ban ml-2"></span>
                             </button>
+                            @endif
                             @endif
                             @endif
                         </div>

@@ -34,7 +34,7 @@ class SendWelcomeTextToPatient
 
         $patientInfo = $event->patient;
 
-        $phone = Str::replace(' ', '', $patientInfo->phone);
+        $phone = Str::replace(' ', '', $patientInfo['phone']);
         $phone = Str::start(Str::substr($phone, -9), '255');
 
         $response = Http::withHeaders([
@@ -42,6 +42,6 @@ class SendWelcomeTextToPatient
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "Habari! Umeunganishwa kwenye mfumo wa AfyaTime, ambao utakusaidia kukumbusha siku zako za kuja hospitali zinapokaribia, bure bila malipo yoyote yale. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
-        return json_decode($response->body());
+        // return json_decode($response->body());
     }
 }

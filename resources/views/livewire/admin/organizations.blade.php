@@ -46,9 +46,19 @@
                                     <span class="ml-1">{{ $org->district }}, {{ $org->region }}</span>
                                 </li>
                             </ul>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button wire:click="editOrg({{ $org->id }})"
+                                        class="btn btn-success btn-outline btn-block mb-3">Edit
+                                        Profile</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ route('admin.organizations.profile', $org->id) }}"
+                                        class="btn btn-primary btn-block mb-3">View Profile</a>
+                                </div>
+                            </div>
 
-                            <a href="{{ route('admin.organizations.profile', $org->id) }}"
-                                class="btn btn-primary btn-block mb-3">View Profile</a>
+
                         </div>
                     </div>
                 </div>

@@ -202,6 +202,7 @@ class Patients extends Component
             ->get();
         $supporters = DB::table('treatment_supporters')
             ->select('id', 'full_name', 'phone_number')
+            ->where('organization_id', Auth::user()->org_id)
             ->get();
         //dd($prescribers);
         return view('livewire.patients', ['patients' => $patients, 'regions' => $regions, 'supporters' => $supporters]);

@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Admin;
 use App\Events\OrganizationRegistered;
 use App\Models\Admin;
 use App\Models\Organization;
+use App\Models\OrganizationSubscription;
 use App\Models\OrganizationType;
 use App\Models\User;
 use Carbon\Carbon;
@@ -66,7 +67,7 @@ class Organizations extends Component
 
             if ($newUser) {
                 $details = [
-                    'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
+                    'name' => $this->state['name'],
                     'email' => $this->state['email'],
                     'password' => $this->state['password'],
                     'org_id' => $newOrg->id,
@@ -186,6 +187,8 @@ class Organizations extends Component
             ->select('id', 'name')
             ->get();
         //dd($admins);
+        $packages = DB::table('subscription_packages')
+            ->get();
 
         $organizations = DB::table('organizations')
             ->join('full_regions', 'full_regions.district_id', '=', 'organizations.district_id')
@@ -193,6 +196,6 @@ class Organizations extends Component
             ->groupBy('organizations.id')
             ->paginate(5);
         // dd($organizations);
-        return view('livewire.admin.organizations', ['organizations' => $organizations, 'orgTypes' => $orgTypes, 'regions' => $regions]);
+        return view('livewire.admin.organizations', ['organizations' => $organizations, 'orgTypes' => $orgTypes, 'regions' => $regions, 'packages' => $packages]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\FirstAppointment;
+use App\Mail\Gmail;
 use App\Mail\SubscriptionPaidMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -29,13 +30,14 @@ class SendWelcomeEmailToPatient
     public function handle(FirstAppointment $event)
     {
         $patientInfo = $event->patient;
-        if ($patientInfo->email) {
-            $email = $patientInfo->email;
+        if ($patientInfo['email'] != 'none') {
+            $email = $patientInfo['email'];
             $details = [
                 'title' => 'Welcome to AfyaTime',
                 'body' => 'Habari! Umeunganishwa kwenye mfumo wa AfyaTime, ambao utakusaidia kukumbusha siku zako za kuja hospitali zinapokaribia, bure bila malipo yoyote yale.'
             ];
             Mail::to($email)->send(new SubscriptionPaidMail($details));
+            // Mail::to($email)->send(new Gmail($details));
         }
     }
 }

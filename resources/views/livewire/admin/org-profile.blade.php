@@ -89,6 +89,7 @@
                         <h6 class="mt-0 mb-0">Phone</h6>
                         <p>{{ $org->phone_number }}</p>
 
+                        @if (!empty($subscription->status))
                         @if ($subscription->status == 'Paid')
                         <a href="{{ route('admin.subscriptions', $org->id) }}" class="btn btn-secondary">
                             Confirm Now!<span class="btn-icon icofont-question-circle ml-2"></span>
@@ -104,6 +105,12 @@
                         @elseif ($subscription->status == 'Blocked')
                         <a href="{{ route('admin.subscriptions', $org->id) }}" class=" btn btn-danger">
                             Blocked<span class="btn-icon icofont-ban ml-2"></span>
+                        </a>
+                        @endif
+                        @else
+                        <a href="{{ route('admin.subscriptions', $org->id) }}"
+                            class="btn btn-outline btn-light text-light">
+                            Add Subscriptions<span class="btn-icon icofont-plus ml-2"></span>
                         </a>
                         @endif
                     </div>

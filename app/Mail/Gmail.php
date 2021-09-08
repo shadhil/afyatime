@@ -30,8 +30,8 @@ class Gmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Mail from Laravel 8 Gmail')
+        return $this->subject($this->details['title'])
             ->view('emails.gmail')
-            ->from('Kingsconsult001@gmail.com');
+            ->from('kijiwe1337@gmail.com');
     }
 }
