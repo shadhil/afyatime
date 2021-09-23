@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\PrescriberType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,19 +15,19 @@ class PrescriberRolesSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('prescriber_types')->insert(
-            array(
-                0 =>
-                array(
-                    'title' => 'Doctor',
-                    'initial' => 'Dr.',
-                ),
-                1 =>
-                array(
-                    'title' => 'Nurse',
-                    'initial' => NULL,
-                ),
-            )
-        );
+        PrescriberType::create([
+            [
+                'title' => 'Admin',
+            ],
+            [
+                'title' => 'Doctor',
+            ],
+            [
+                'title' => 'Nurse'
+            ],
+            [
+                'title' => 'Other'
+            ]
+        ]);
     }
 }

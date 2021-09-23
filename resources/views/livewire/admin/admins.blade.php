@@ -39,9 +39,9 @@
                                     </td>
                                     <td>
                                         <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
+                                            {{-- <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
                                                 <span class="btn-icon icofont-external-link"></span>
-                                            </a>
+                                            </a> --}}
                                             <button class="btn btn-info btn-sm btn-square rounded-pill"
                                                 wire:click.prevent="editdmin({{ $admin }})">
                                                 <span class="btn-icon icofont-ui-edit"></span>
@@ -64,7 +64,7 @@
 
                 </div>
             </div>
-            @if (Auth::user()->admin_type == 'system')
+            @if (Auth::user()->admin_type == 2)
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addAdmin">
                     <span class="btn-icon icofont-plus"></span>
@@ -73,7 +73,7 @@
             @endif
         </div>
     </div>
-    
+
     <div class="modal fade" id="add-admin" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

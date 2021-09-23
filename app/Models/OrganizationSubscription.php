@@ -2,20 +2,50 @@
 
 namespace App\Models;
 
+use App\Events\SubscriptionConfirmed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrganizationSubscription extends Model
 {
-    use HasFactory;
-    protected $fillable = [
-        'paid_by',
-        'start_date',
-        'end_date',
-        'organization_id',
-        'package_id',
-        'payment_ref',
-        'total_price',
-        'status'
+    use HasFactory, SoftDeletes;
+
+    const UNSUBSCRIBED = 1;
+    const SUBSCRIBED = 2;
+    const PAID = 3;
+    const BLOCKED = 4;
+
+    protected $casts = [
+        'status' => 'integer',
+        'monthly_cost' => 'decimal',
     ];
+
+    protected $guarded = [];
+
+    protected $dispatchesEvents = [
+        'created' => SubscriptionConfirmed::class,
+    ];
+
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
+    }
+
+    public function package(): BelongsTo
+    {
+        return $this->belongsTo(SubscriptionPackage::class, 'package_id');
+    }
+
+    public function payer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'paid_by');
+    }
+
+    public function confirmedBy(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'confirmed_by');
+    }
 }

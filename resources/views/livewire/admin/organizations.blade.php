@@ -15,7 +15,9 @@
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-center align-items-center">
-                                <div class="fs-48 mr-2">Jul 3</div>
+                                <div class="fs-48 mr-2">
+                                    {{ $org->subscriptions()->latest()->first() == null ? '- - -' : \Carbon\Carbon::parse($org->subscriptions()->latest()->first()->end_date)->format('M j') }}
+                                </div>
                                 <div class="text-muted">
                                     <div class="fs-20">DUE</div>
                                     <div>date</div>
@@ -27,23 +29,24 @@
                             <ul class="list-unstyled text-left">
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-check-circled text-muted"></div>
-                                    <span class="ml-1">{{ $org->patients ?? '0' }} Total Patients</span>
+                                    <span class="ml-1">{{ $org->patients()->count() }} Total Patients</span>
                                 </li>
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-check-circled text-muted"></div>
-                                    <span class="ml-1">{{ $org->prescribers ?? '0' }} Total Prescribers</span>
+                                    <span class="ml-1">{{ $org->prescribers()->count() }} Total Prescribers</span>
                                 </li>
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-check-circled text-muted"></div>
-                                    <span class="ml-1">{{ $org->supporters ?? '0' }} Total Supporters</span>
+                                    <span class="ml-1">{{ $org->supporters()->count() }} Total Supporters</span>
                                 </li>
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-check-circled text-muted"></div>
-                                    <span class="ml-1">{{ $org->appointments ?? '0' }} Total Appointments</span>
+                                    <span class="ml-1">{{ $org->appointments()->count() }} Total Appointments</span>
                                 </li>
                                 <li class="d-flex align-items-center pt-2 pb-2">
                                     <div class="icon icofont-location-pin text-muted"></div>
-                                    <span class="ml-1">{{ $org->district }}, {{ $org->region }}</span>
+                                    <span class="ml-1">{{ $org->district->name }},
+                                        {{ $org->district->region->name }}</span>
                                 </li>
                             </ul>
                             <div class="row">
@@ -57,15 +60,18 @@
                                         class="btn btn-primary btn-block mb-3">View Profile</a>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
                 @endforeach
-
                 @else
-
+                <div class="col-12 col-md-12">
+                    <div class="card text-center mb-md-0 bg-light">
+                        <div class="card-header">
+                            No Organization Found!
+                        </div>
+                    </div>
+                </div>
                 @endif
             </div>
             <div class="add-action-box">
@@ -92,8 +98,8 @@
                 <form autocomplete="off" wire:submit.prevent="{{ $showEditModal ? 'updateOrg' : 'createOrg' }}">
                     <div class="modal-body">
                         <div class="form-group">
-                            <input class="form-control flatpickr-input @error('name') is-invalid @enderror" type="text"
-                                placeholder="Name" wire:model.defer="state.name" id="name" required>
+                            <input class="form-control rounded flatpickr-input @error('name') is-invalid @enderror"
+                                type="text" placeholder="Name" wire:model.defer="state.name" id="name" required>
                             @error('name')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -102,10 +108,10 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control @error('organization_type') is-invalid @enderror"
+                            <select class="form-control rounded @error('organization_type') is-invalid @enderror"
                                 wire:model.defer="state.organization_type" id="organization_type"
                                 name="organization_type">
-                                <option value="">Organization Type</option>
+                                <option class="d-none">Organization Type</option>
                                 @foreach ($orgTypes as $orgType)
                                 <option value="{{ $orgType->id }}">{{ $orgType->type }}</option>
                                 @endforeach
@@ -118,7 +124,17 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('email') is-invalid @enderror" type="email"
+                            <input class="form-control rounded @error('known_as') is-invalid @enderror" type="text"
+                                placeholder="Comon Nama (a.k.a)" wire:model.defer="state.known_as" id="known_as">
+                            @error('known_as')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control rounded @error('email') is-invalid @enderror" type="email"
                                 placeholder="email" wire:model.defer="state.email" id="email">
                             @error('email')
                             <div class="invalid-feedback">
@@ -128,7 +144,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('phone_number') is-invalid @enderror" type="text"
                                 placeholder="phone number" wire:model.defer="state.phone_number" id="phoneNumber">
                             @error('phone_number')
                             <div class="invalid-feedback">
@@ -138,7 +154,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('location') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('location') is-invalid @enderror" type="text"
                                 placeholder="Organization Location" wire:model.defer="state.location" id="location">
                             @error('location')
                             <div class="invalid-feedback">
@@ -148,7 +164,7 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control @error('region_id') is-invalid @enderror"
+                            <select class="form-control rounded @error('region_id') is-invalid @enderror"
                                 wire:model="state.region_id" id="region_id" name="region_id">
                                 <option value="">Select Region</option>
                                 @foreach ($regions as $region)
@@ -163,7 +179,7 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control @error('district_id') is-invalid @enderror"
+                            <select class="form-control rounded @error('district_id') is-invalid @enderror"
                                 wire:model.defer="state.district_id" id="district_id" name="district_id">
                                 <option value="">Select District</option>
                                 @foreach ($districts as $district)
@@ -176,9 +192,9 @@
                             </div>
                             @enderror
                         </div>
-
+                        @if($showEditModal)
                         <div class="form-group">
-                            <input class="form-control @error('password') is-invalid @enderror" type="password"
+                            <input class="form-control rounded @error('password') is-invalid @enderror" type="password"
                                 placeholder="password" wire:model.defer="state.password" id="password">
                             @error('password')
                             <div class="invalid-feedback">
@@ -188,14 +204,21 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control" type="password" placeholder="confirm password"
+                            <input class="form-control rounded" type="password" placeholder="confirm password"
                                 wire:model.defer="state.password_confirmation" id="passwordConfirmation">
                         </div>
+                        @endif
                     </div>
                     <div class="modal-footer d-block">
                         <div class="actions justify-content-between">
                             <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-info">
+
+                            <button type="button" class="btn btn-info btn-load" wire:loading
+                                wire:target="{{ $showEditModal ? 'updateOrg' : 'createOrg' }}">
+                                <span class="btn-loader icofont-spinner"></span>
+                            </button>
+
+                            <button type="submit" class="btn btn-info" wire:loading.attr="hidden">
                                 @if($showEditModal)
                                 <span>Save Changes</span>
                                 @else

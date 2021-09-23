@@ -18,6 +18,7 @@ class CreateAppointmentsTable extends Migration
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('prescriber_id')->nullable();
             $table->unsignedBigInteger('condition_id');
+            $table->enum('app_type', ['weekly', 'daily']);
             $table->date('date_of_visit');
             $table->time('time_from')->default(date("08:00:00"));
             $table->time('time_to')->nullable();

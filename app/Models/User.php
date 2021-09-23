@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class User extends Authenticatable
 {
@@ -13,20 +16,7 @@ class User extends Authenticatable
 
     protected $guard = 'user';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'account_type',
-        'account_id',
-        'profile_photo',
-        'org_id',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -45,5 +35,24 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_admin' => 'integer',
     ];
+
+    public function account(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function paid_subscriptions(): HasMany
+    {
+        return $this->hasMany(OrganizationSubscription::class, 'paid_by');
+    }
+
+    public function isAdmin(): bool
+    {
+        if ($this->account_type == 'organization' || $this->is_admin == 1) {
+            return true;
+        }
+        return false;
+    }
 }

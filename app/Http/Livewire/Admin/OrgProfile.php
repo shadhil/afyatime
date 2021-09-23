@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -18,6 +19,7 @@ class OrgProfile extends Component
 
     public function render()
     {
+        $org = Organization::find($this->orgId);
         $totalAppointments = DB::table('appointments')
             ->join('prescribers', 'appointments.prescriber_id', '=', 'prescribers.id')
             ->where('prescribers.organization_id', $this->orgId)
@@ -55,8 +57,7 @@ class OrgProfile extends Component
             ->where('organizations.id', $this->orgId)
             ->first();
 
-        $subscription = DB::table('organization_subscriptions')
-            ->where('organization_id', $this->orgId)
+        $subscription = $org->subscriptions()
             ->latest()
             ->first();
 
@@ -78,6 +79,6 @@ class OrgProfile extends Component
             ->latest()->paginate(5);
 
         // dd($totalPatients);
-        return view('livewire.admin.org-profile', ['totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'org' => $organization, 'appointments' => $appointments, 'prescribers' => $prescribers, 'subscription' => $subscription]);
+        return view('livewire.admin.org-profile', ['org' => $org, 'totalAppointments' => $totalAppointments, 'totalPatients' => $totalPatients, 'totalPrescribers' => $totalPrescribers, 'totalSupporters' => $totalSupporters, 'patients' => $patients, 'supporters' => $supporters, 'appointments' => $appointments, 'prescribers' => $prescribers, 'subscription' => $subscription]);
     }
 }

@@ -37,7 +37,7 @@ class Admins extends Component
             'password' => 'required|confirmed',
         ])->validate();
         $this->state['password'] = bcrypt($validatedData['password']);
-        $this->state['admin_type'] = 'admin';
+        $this->state['admin_type'] = '1';
 
         if ($this->photo) {
             $this->state['profile_img'] = $this->photo->store('/', 'profiles');

@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
+
+    const ADMIN = 1;
+    const SYSTEM = 2;
 
     protected $guard = 'admin';
     /**
@@ -24,8 +28,6 @@ class Admin extends Authenticatable
         'phone_number',
         'admin_type',
         'password',
-        'b_date',
-        'b_time',
         'profile_img',
     ];
 
@@ -49,6 +51,11 @@ class Admin extends Authenticatable
         // 'b_date' => 'date',
         // 'b_time' => 'time',
     ];
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(OrganizationSubscription::class, 'confirmed_by');
+    }
 
     // public function getBDateAttribute($value)
     // {

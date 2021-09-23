@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Event;
 use App\Events\PrescriberRegistered;
 use App\Events\FirstAppointment;
 use App\Events\OrganizationRegistered;
+use App\Events\SubscriptionConfirmed;
+use App\Events\OrganizationUnsubscribed;
+use App\Events\OrganizationBlocked;
 use App\Listeners\SendWelcomeEmailToOrganization;
 use App\Listeners\SendWelcomeEmailToPrescriber;
 use App\Listeners\SendWelcomeTextToPatient;
@@ -16,6 +19,9 @@ use App\Listeners\SendWelcomeEmailToPatient;
 use App\Events\SubscriptionPaid;
 use App\Listeners\SendPaymentEmailToAdmin;
 use App\Listeners\SendPaymentTextToAdmin;
+use App\Listeners\SendSubscriptionRisitMail;
+use App\Listeners\SendOrgUnsubscribedEmail;
+use App\Listeners\SendOrgBlockedEmail;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -41,7 +47,16 @@ class EventServiceProvider extends ServiceProvider
         SubscriptionPaid::class => [
             SendPaymentEmailToAdmin::class,
             SendPaymentTextToAdmin::class,
-        ]
+        ],
+        SubscriptionConfirmed::class => [
+            SendSubscriptionRisitMail::class,
+        ],
+        OrganizationUnsubscribed::class => [
+            SendOrgUnsubscribedEmail::class,
+        ],
+        OrganizationBlocked::class => [
+            SendOrgBlockedEmail::class,
+        ],
     ];
 
     /**

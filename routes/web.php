@@ -19,6 +19,7 @@ use App\Http\Livewire\Admin\TreatmentSupporters as AdminTreatmentSupporters;
 use App\Http\Livewire\ApiTests;
 use App\Http\Livewire\Appointments;
 use App\Http\Livewire\Dashboard;
+use App\Http\Livewire\Home;
 use App\Http\Livewire\PatientProfile;
 use App\Http\Livewire\Patients;
 use App\Http\Livewire\Prescribers;
@@ -36,11 +37,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/dash', Dashboard::class);
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 
 // Route::get('/admin', AdminDashboard::class)->name('admin.dash');
@@ -55,7 +54,7 @@ Route::get('/dash', Dashboard::class);
 // })->middleware(['auth'])->name('dashboard');
 
 Route::middleware(['auth:user'])->group(function () {
-    Route::get('/', Dashboard::class)->name('dashboard');
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/appointments', Appointments::class)->name('appointments');
     Route::get('/patients', Patients::class)->name('patients');
     Route::get('/prescribers', Prescribers::class)->name('prescribers');
@@ -87,3 +86,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
 
 
 require __DIR__ . '/auth.php';
+
+Route::get('/mail', function () {
+    return view('vendor.mail.html.message');
+});
+
+Route::get('/{action?}/{package?}', Home::class)->name('home');

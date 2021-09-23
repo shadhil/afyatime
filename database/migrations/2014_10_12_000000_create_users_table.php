@@ -18,9 +18,10 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('profile_photo')->nullable();
-            $table->enum('account_type', ['organization', 'prescriber-admin', 'prescriber', 'patient', 'supporter']);
+            $table->morphs('account');
+            // $table->enum('account_type', ['organization', 'prescriber-admin', 'prescriber', 'patient', 'supporter']);
             // $table->unsignedTinyInteger('account_type')->nullable();
-            $table->unsignedBigInteger('account_id')->nullable();
+            // $table->unsignedBigInteger('account_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

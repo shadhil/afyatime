@@ -26,12 +26,12 @@
                                 @foreach ($subscriptions as $subscription)
                                 <tr>
                                     <td>
-                                        <strong>{{ $subscription->package }}</strong>
+                                        <strong>{{ $subscription->package->name }}</strong>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center nowrap text-primary">
                                             <span class="icofont-ui-user p-0 mr-2"></span>
-                                            {{ $subscription->name }}
+                                            {{ $subscription->payer->name }}
                                         </div>
                                     </td>
                                     <td>
@@ -48,30 +48,34 @@
                                     <td>{{ $subscription->total_price }}</td>
                                     <td>
                                         <div class="actions">
-                                            @if ($subscription->status == 'Paid')
-                                            <a href="#" class="badge badge-secondary">{{ $subscription->status }}</a>
+                                            @if ($subscription->status == 3)
+                                            <a href="#" class="badge badge-secondary">Paid</a>
                                             @endif
-                                            @if ($subscription->status == 'Subscribed')
-                                            <a href="#" class="badge badge-success">{{ $subscription->status }}</a>
+                                            @if ($subscription->status == 2)
+                                            <a href="#" class="badge badge-success">Subscribed</a>
                                             @endif
-                                            @if ($subscription->status == 'UnSubscribed')
-                                            <a href="#" class="badge badge-warning">{{ $subscription->status }}</a>
+                                            @if ($subscription->status == 1)
+                                            <a href="#" class="badge badge-warning">UnSubscribed</a>
                                             @endif
-                                            @if ($subscription->status == 'Blocked')
-                                            <a href="#" class="badge badge-danger">{{ $subscription->status }}</a>
+                                            @if ($subscription->status == 4)
+                                            <a href="#" class="badge badge-danger">Blocked</a>
                                             @endif
                                         </div>
                                     </td>
                                     <td>
                                         <div class="actions">
 
-                                            <button class="btn btn-info btn-sm rounded-pill"
+                                            <button class="btn btn-info btn-sm "
                                                 wire:click="editSubscription({{ $subscription->id }})">
                                                 <span class="btn-icon icofont-ui-edit "> Edit</span>
                                             </button>
-                                            {{-- <button class="btn btn-error btn-sm btn-square rounded-pill">
+                                            @if (Auth::user()->admin_type == 2)
+                                            <button class="btn btn-error btn-sm btn-square "
+                                                wire:click="deleteSubModal({{ $subscription->id }})">
                                                 <span class="btn-icon icofont-ui-delete"></span>
-                                            </button> --}}
+                                            </button>
+                                            @endif
+
                                         </div>
                                     </td>
                                 </tr>
@@ -108,7 +112,7 @@
                         @if($showEditModal)
                         <span> Subscription</span>
                         @else
-                        <span>Add New Subscription</span>
+                        <span> New Subscription</span>
                         @endif
                     </h5>
                 </div>
@@ -116,12 +120,12 @@
                     wire:submit.prevent="{{ $showEditModal ? 'updateSubscription' : 'createSubscription' }}">
                     <div class="modal-body">
                         <div class="form-group">
-                            <select class="form-control @error('package_id') is-invalid @enderror"
+                            <select class="form-control rounded @error('package_id') is-invalid @enderror"
                                 wire:model.defer="state.package_id" id="package_id" name="package_id">
                                 <option class="d-none">Select Subscription Package</option>
                                 @foreach ($packages as $package)
-                                <option value="{{ $package->id }}">{{ $package->name }}
-                                    {{ ' (@ '.$package->monthly_cost.'.00 TZS)' }}</option>
+                                <option value="{{ $package->id }}">
+                                    {{ $package->name .'  (@'.$package->monthly_cost.' TZS)'}}</option>
                                 @endforeach
                             </select>
                             @error('package_id')
@@ -132,7 +136,7 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control @error('paid_by') is-invalid @enderror"
+                            <select class="form-control rounded @error('paid_by') is-invalid @enderror"
                                 wire:model.defer="state.paid_by" id="paid_by" name="paid_by">
                                 <option class="d-none">Subscription Paid By</option>
                                 @foreach ($users as $user)
@@ -145,15 +149,15 @@
                             </div>
                             @enderror
                         </div>
-
+                        @if($showEditModal)
                         <div class="form-group">
-                            <select class="form-control @error('status') is-invalid @enderror"
+                            <select class="form-control rounded @error('status') is-invalid @enderror"
                                 wire:model.defer="state.status" id="status" name="status">
                                 <option class="d-none">Subscription Status</option>
-                                <option value="Paid">Paid </option>
-                                <option value="Subscribed">Subscribed </option>
-                                <option value="UnSubscribed">UnSubscribed </option>
-                                <option value="Blocked">Blocked </option>
+                                <option value="3">Paid </option>
+                                <option value="2">Subscribed </option>
+                                <option value="1">UnSubscribed </option>
+                                <option value="4">Blocked </option>
                             </select>
                             @error('status')
                             <div class="invalid-feedback">
@@ -161,9 +165,10 @@
                             </div>
                             @enderror
                         </div>
+                        @endif
 
                         <div class="form-group">
-                            <input class="form-control @error('payment_ref') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('payment_ref') is-invalid @enderror" type="text"
                                 wire:model.defer="state.payment_ref" id="payment_ref" name="payment_ref"
                                 placeholder="Payment Reference">
                             @error('payment_ref')
@@ -173,16 +178,19 @@
                             @enderror
                         </div>
 
+                        @if ($showEditModal)
                         <div class="form-group">
-                            <input class="form-control @error('total_price') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('total_price') is-invalid @enderror" type="text"
                                 wire:model.defer="state.total_price" id="total_price" name="total_price"
-                                placeholder="Total Price">
+                                placeholder="Total Price" {{ Auth::user()->admin_type == '2' ? 'disabled' : '' }}>
                             @error('total_price')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                             @enderror
                         </div>
+                        @endif
+
 
                         <div class="form-group">
                             <x-datepicker wire:model.defer="state.start_date" id="start_date" :error="'start_date'"
@@ -208,7 +216,16 @@
                     <div class="modal-footer d-block">
                         <div class="actions justify-content-between">
                             <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-info">
+
+                            <button type="button" class="btn btn-info btn-load" wire:loading
+                                wire:target="createSubscription">
+                                <span class="btn-loader icofont-spinner"></span>
+                            </button>
+                            <button type="button" class="btn btn-info btn-load" wire:loading wire:target="updateSubscription">
+                                <span class="btn-loader icofont-spinner"></span>
+                            </button>
+
+                            <button type="submit" class="btn btn-info" wire:loading.attr="hidden">
                                 @if($showEditModal)
                                 <span>Save Changes</span>
                                 @else
@@ -222,6 +239,27 @@
         </div>
     </div>
     <!-- end Add appointment modals -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+
+                <div class="modal-body">
+                    <h4>Are you sure you want to delete this subscription?</h4>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                            class="fa fa-times mr-1"></i>
+                        Cancel</button>
+                    <button type="button" wire:click.prevent="deleteSubscription" class="btn btn-danger"><i
+                            class="icofont-bin mr-1"></i>Delete Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @push('scripts')
@@ -235,6 +273,10 @@
         window.addEventListener('hide-subscription-modal', event => {
             $('#modal-subscription').modal('hide');
             toastr.success(event.detail.message, 'Success!');
+        });
+
+        window.addEventListener('show-error-toastr', event => {
+            toastr.error(event.detail.message, 'Error!');
         })
     });
 </script>
@@ -243,14 +285,16 @@
         $('#modal-subscription').modal('show');
     })
 
-    // window.addEventListener('show-delete-modal', event => {
-    //     $('#confirmationModal').modal('show');
-    // })
 
-    // window.addEventListener('hide-delete-modal', event => {
-    //     $('#confirmationModal').modal('hide');
-    //     toastr.success(event.detail.message, 'Success!');
-    // })
+    window.addEventListener('show-delete-modal', event => {
+        $('#delete-modal').modal('show');
+    })
+
+    window.addEventListener('hide-delete-modal', event => {
+        $('#delete-modal').modal('hide');
+        toastr.success(event.detail.message, 'Success!');
+    })
+
 
         // window.addEventListener('hide-appointment-modal', event => {
         //     $('#add-admin').modal('hide');

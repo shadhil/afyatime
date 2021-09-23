@@ -47,33 +47,38 @@ class Organizations extends Component
             'region_id' => 'required',
             'district_id' => 'required',
             'organization_type' => 'required',
-            'password' => 'required|confirmed',
+            'known_as' => 'string',
+            // 'password' => 'required|confirmed',
         ])->validate();
-        //$this->state['password'] = bcrypt($this->state['password']);
+
+        $this->state['password'] = Str::random(10);
+        if (empty($this->state['known_as'])) {
+            $this->state['known_as'] = $this->state['name'];
+        }
+        $phone = Str::replace(' ', '', $this->state['phone_number']);
+        $this->state['phone_number'] = Str::start(Str::substr($phone, -9), '0');
         //$this->state['admin_type'] = 'admin';
 
         DB::transaction(function () {
 
             $newOrg = Organization::create($this->state);
 
-            $newUser = User::create([
+            $newOrg->accounts()->create([
                 'name' => $this->state['name'],
                 'email' => $this->state['email'],
                 'password' => Hash::make($this->state['password']),
-                'account_type' => 'organization',
-                'account_id' => $newOrg->id,
                 'org_id' => $newOrg->id,
             ]);
 
-            if ($newUser) {
+            if ($newOrg) {
+                $this->dispatchBrowserEvent('hide-org-modal', ['message' => 'Organization added successfully!']);
                 $details = [
                     'name' => $this->state['name'],
                     'email' => $this->state['email'],
                     'password' => $this->state['password'],
-                    'org_id' => $newOrg->id,
                 ];
-                event(new OrganizationRegistered($details));
-                $this->dispatchBrowserEvent('hide-org-modal', ['message' => 'Organization added successfully!']);
+                OrganizationRegistered::dispatch($details);
+                // event(new OrganizationRegistered($details));
             }
         });
     }
@@ -115,6 +120,7 @@ class Organizations extends Component
             'location' => 'required',
             'region_id' => 'required',
             'district_id' => 'required',
+            'known_as' => 'required',
             'organization_type' => 'required',
             'password' => 'sometimes|confirmed',
         ])->validate();
@@ -122,19 +128,24 @@ class Organizations extends Component
         DB::transaction(function () use ($validatedData) {
 
             if (!empty($validatedData['password'])) {
-                $this->editState['password'] = bcrypt($validatedData['password']);
+                $this->editState['password'] = Hash::make($validatedData['password']);
             }
             $this->editState['name'] = $validatedData['name'];
             $this->editState['email'] = $validatedData['email'];
 
-            Organization::find($this->orgIdSelected)->update($this->state);
+            if (empty($this->state['known_as'])) {
+                $this->editState['known_as'] = $this->state['name'];
+            }
+            $phone = Str::replace(' ', '', $this->state['phone_number']);
+            $this->editState['phone_number'] = Str::start(Str::substr($phone, -9), '0');
+
+            $updatedOrg = Organization::find($this->orgIdSelected);
+            $updatedOrg->update($this->state);
             // $this->organization->update($this->state);
 
-            $updatedUser = User::where('account_id', $this->orgIdSelected)
-                ->where('account_type', 'organization')
-                ->update($this->editState);
+            $updatedOrg->accounts()->update($this->editState);
 
-            if ($updatedUser) {
+            if ($updatedOrg) {
                 $this->dispatchBrowserEvent('hide-org-modal', ['message' => 'Organization updated successfully!']);
             }
 
@@ -190,12 +201,16 @@ class Organizations extends Component
         $packages = DB::table('subscription_packages')
             ->get();
 
-        $organizations = DB::table('organizations')
-            ->join('full_regions', 'full_regions.district_id', '=', 'organizations.district_id')
-            ->select('organizations.*', 'full_regions.region', 'full_regions.district', DB::raw("(SELECT COUNT(prescribers.id) FROM prescribers WHERE prescribers.organization_id = organizations.id GROUP BY prescribers.organization_id) as prescribers"), DB::raw("(SELECT COUNT(patients.id) FROM patients WHERE patients.organization_id = organizations.id GROUP BY patients.organization_id) as patients"), DB::raw("(SELECT COUNT(treatment_supporters.id) FROM treatment_supporters WHERE treatment_supporters.organization_id = organizations.id GROUP BY treatment_supporters.organization_id) as supporters"), DB::raw("(SELECT COUNT(appointments.id) FROM appointments WHERE appointments.organization_id = organizations.id GROUP BY appointments.organization_id) as appointments"))
-            ->groupBy('organizations.id')
-            ->paginate(5);
+        // $organizations = DB::table('organizations')
+        //     ->join('full_regions', 'full_regions.district_id', '=', 'organizations.district_id')
+        //     ->select('organizations.*', 'full_regions.region', 'full_regions.district', DB::raw("(SELECT COUNT(prescribers.id) FROM prescribers WHERE prescribers.organization_id = organizations.id GROUP BY prescribers.organization_id) as prescribers"), DB::raw("(SELECT COUNT(patients.id) FROM patients WHERE patients.organization_id = organizations.id GROUP BY patients.organization_id) as patients"), DB::raw("(SELECT COUNT(treatment_supporters.id) FROM treatment_supporters WHERE treatment_supporters.organization_id = organizations.id GROUP BY treatment_supporters.organization_id) as supporters"), DB::raw("(SELECT COUNT(appointments.id) FROM appointments WHERE appointments.organization_id = organizations.id GROUP BY appointments.organization_id) as appointments"))
+        //     ->groupBy('organizations.id')
+        //     ->paginate(5);
         // dd($organizations);
+
+        $organizations = Organization::query()->paginate(6);
+        // $org = $organizations[0];
+        // dd($org->subscriptions()->latest()->first());
         return view('livewire.admin.organizations', ['organizations' => $organizations, 'orgTypes' => $orgTypes, 'regions' => $regions, 'packages' => $packages]);
     }
 }

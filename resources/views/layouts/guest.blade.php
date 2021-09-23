@@ -26,7 +26,7 @@
     <div class="app-loader main-loader">
         <div class="loader-box">
             <div class="bounceball"></div>
-            <div class="text">Medic<span>app</span></div>
+            <div class="text">Afya<span>Time</span></div>
         </div>
     </div>
     <!-- .main-loader -->
@@ -37,12 +37,52 @@
                 <div class="content-header">
                     <div class="app-logo">
                         <div class="logo-wrap">
-                            <img src="{{ asset('assets/img/logo.svg') }}" alt="" width="147" height="33" class="logo-img">
+                            <a href="{{ route('home') }}">
+                                <img src="{{ asset('assets/img/logo.svg') }}" alt="" width="147" height="33"
+                                    class="logo-img">
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 {{ $slot }}
+            </div>
+            <div class="app-footer">
+                <div class="footer-wrap">
+                    <div class="row h-100 align-items-center">
+                        <div class="col-12 col-md-6 d-none d-md-block">
+                            <span>Copyright © 2021, <a href="https://njiwa.tech" target="_blank">Njiwa
+                                    Technologies</a></span>
+                        </div>
+
+                        <div class="col-12 col-md-6 text-right">
+                            <div class="d-flex align-items-center justify-content-center justify-content-md-end">
+                                <span>Version 1.0.0</span>
+                                <button class="no-style ml-2 settings-btn">
+                                    <span class="icon icofont-ui-settings text-primary"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-skeleton">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-md-6 d-none d-md-block">
+                                <ul class="page-breadcrumbs">
+                                    <li class="item bg-1 animated-bg"></li>
+                                    <li class="item bg animated-bg"></li>
+                                </ul>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="info justify-content-center justify-content-md-end">
+                                    <div class="version bg animated-bg"></div>
+                                    <div class="settings animated-bg"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Cronjobs\ReminderCron;
 use App\Jobs\SendEmailJob;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
@@ -28,9 +29,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // /usr/local/bin/php /home/shadhil/Codez/Webz/GROWCRM/application/artisan schedule:run >> /dev/null 2>&1
-
+        //send regular queued emails
+        $schedule->call(new ReminderCron)->everyMinute();
         $schedule->command('subscription:check')->daily();
-        $schedule->command('reminder:daily')->everyMinute();
+        $schedule->command('reminder:daily')->hourly();
         // $schedule->command('reminder:daily')->twiceDaily(5, 8);
         // $schedule->command('inspire')->hourly();
         // $now = Carbon::now();

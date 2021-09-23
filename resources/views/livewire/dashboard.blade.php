@@ -13,7 +13,7 @@
 
                                 <div class="col col-7">
                                     <h6 class="mt-0 mb-1">Appointments</h6>
-                                    <div class="count text-primary fs-20">{{ $totalAppointments }}</div>
+                                    <div class="count text-primary fs-20">{{ $org->appointments()->count() }}</div>
                                 </div>
                             </div>
                         </div>
@@ -31,7 +31,7 @@
 
                                 <div class="col col-7">
                                     <h6 class="mt-0 mb-1">Patients</h6>
-                                    <div class="count text-primary fs-20">{{ $totalPatients }}</div>
+                                    <div class="count text-primary fs-20">{{ $org->patients()->count() }}</div>
                                 </div>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
 
                                 <div class="col col-7">
                                     <h6 class="mt-0 mb-1">Prescribers</h6>
-                                    <div class="count text-primary fs-20">{{ $totalPrescribers }}</div>
+                                    <div class="count text-primary fs-20">{{ $org->prescribers()->count() }}</div>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +66,7 @@
 
                                 <div class="col col-7">
                                     <h6 class="mt-0 mb-1 text-nowrap"> Supporters</h6>
-                                    <div class="count text-primary fs-20">{{ $totalSupporters }}</div>
+                                    <div class="count text-primary fs-20">{{ $org->supporters()->count() }}</div>
                                 </div>
                             </div>
                         </div>
@@ -82,29 +82,29 @@
                         </div>
                         <div class="card-body">
                             <h6 class="mt-0 mb-0">Address</h6>
-                            <p>{{ $org->location }} - {{ $org->district }}, {{ $org->region }}</p>
+                            <p>{{ $org->location }} - {{ $org->district->name }}, {{ $org->district->region->name }}</p>
                             <h6 class="mt-0 mb-0">Email</h6>
                             <p>{{ $org->email }}</p>
                             <h6 class="mt-0 mb-0">Phone</h6>
                             <p>{{ $org->phone_number }}</p>
 
                             @if (!empty($subscription->status))
-                            @if (Auth::user()->account_type == 'prescriber-admin' || Auth::user()->account_type ==
-                            'organization')
-                            @if ($subscription->status == 'Paid')
+                            @if (Auth::user()->isAdmin())
+                            @if ($subscription->status == \App\Models\OrganizationSubscription::PAID)
                             <button class="btn btn-secondary">
                                 Waiting Confirmation<span class="btn-icon icofont-question-circle ml-2"></span>
                             </button>
-                            @elseif ($subscription->status == 'Subscribed')
+                            @elseif ($subscription->status == \App\Models\OrganizationSubscription::SUBSCRIBED)
                             <button class="btn btn-outline-light" wire:click="addSubscription">
                                 Due Date - {{ $subscription->end_date }}<span
                                     class="btn-icon icofont-check-circled ml-2"></span>
                             </button>
-                            @elseif ($subscription->status == 'UnSubscribed' || empty($subscription->status))
+                            @elseif ($subscription->status == \App\Models\OrganizationSubscription::UNSUBSCRIBED ||
+                            empty($subscription->status))
                             <button class="btn btn-warning" wire:click="addSubscription">
                                 UnSubscribed<span class="btn-icon icofont-lock ml-2"></span>
                             </button>
-                            @elseif ($subscription->status == 'Blocked')
+                            @elseif ($subscription->status == \App\Models\OrganizationSubscription::BLOCKED)
                             <button class=" btn btn-danger">
                                 Blocked<span class="btn-icon icofont-ban ml-2"></span>
                             </button>
@@ -264,7 +264,7 @@
                                 <option class="d-none">Select Package</option>
                                 @foreach ($packages as $package)
                                 <option value="{{ $package->id }}">{{ $package->name }}
-                                    {{ ' - @ TSh. '.$package->monthly_cost.' ('.$package->max_patients.')' }}</option>
+                                    {{ ' - @ TSh. '.$package->monthly_cost }}</option>
                                 @endforeach
                             </select>
                             @error('package_id')

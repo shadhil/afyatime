@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SubscriptionPackage;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,22 +15,30 @@ class PackageSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('subscription_packages')->insert([
+        SubscriptionPackage::create(
             [
-                'name' => 'Package A',
-                'max_patients' => '50',
-                'monthly_cost' => '300000'
-            ],
-            [
-                'name' => 'Package B',
-                'max_patients' => '100',
-                'monthly_cost' => '500000'
-            ],
-            [
-                'name' => 'Package C',
-                'max_patients' => '1000',
-                'monthly_cost' => '1000000'
+                [
+                    'name' => 'Starter',
+                    'max_prescribers' => 2,
+                    'app_reminders' => 1,
+                    'monthly_appointments' => 150,
+                    'monthly_cost' => 150000,
+                ],
+                [
+                    'name' => 'Business',
+                    'max_prescribers' => 10,
+                    'app_reminders' => 2,
+                    'monthly_appointments' => 250,
+                    'monthly_cost' => 300000,
+                ],
+                [
+                    'name' => 'Premium',
+                    'max_prescribers' => 100,
+                    'app_reminders' => 3,
+                    'monthly_appointments' => 1000,
+                    'monthly_cost' => 500000,
+                ]
             ]
-        ]);
+        );
     }
 }

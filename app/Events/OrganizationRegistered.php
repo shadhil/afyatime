@@ -15,12 +15,7 @@ class OrganizationRegistered
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $details;
-
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
+    
     public function __construct($details)
     {
         $this->details = $details;

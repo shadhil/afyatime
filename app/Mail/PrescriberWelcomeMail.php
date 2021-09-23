@@ -31,7 +31,7 @@ class PrescriberWelcomeMail extends Mailable
     public function build()
     {
         return $this->subject($this->details['title'])
-            ->view('emails.subscription-paid-mail')
-            ->from('notifications@afyatime.co.tz');
+            ->view('emails.subscription-paid-mail', $this->details)
+            ->from('no-reply@afyatime.co.tz', 'AfyaTime - Patient Reminder Sysytem');
     }
 }

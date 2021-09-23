@@ -4,7 +4,10 @@ namespace App\Http\Livewire;
 
 use App\Events\PrescriberRegistered;
 use App\Mail\Gmail;
+use App\Models\Organization;
+use App\Models\OrganizationSubscription;
 use App\Models\Prescriber;
+use App\Models\PrescriberType;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Illuminate\Support\Str;
 
 class Prescribers extends Component
 {
@@ -29,6 +33,7 @@ class Prescribers extends Component
 
     public $prescriberId = null;
     public $userId = null;
+    protected $packageSubscribers = 2;
 
     public $searchTerm = null;
 
@@ -37,64 +42,71 @@ class Prescribers extends Component
 
     public function createPrescriber()
     {
-        // $email = "shadhil90@gmail.com";
-        // $details = [
-        //     'title' => 'First Time for Everything',
-        //     'body' => 'I am Kingsley Okpara, a Python and PHP Fullstack Web developer and tech writer, I also have extensive knowledge and experience with JavaScript while working on applications developed with VueJs.'
-        // ];
-        // Mail::to($email)->send(new Gmail($details));
-        //dd($this->state);
-        Validator::make($this->state, [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email|unique:users',
-            'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-            'prescriber_type' => 'required',
-            'gender' => 'required',
-            'password' => 'required|confirmed',
-        ])->validate();
-        //$this->state['password'] = bcrypt($this->state['password']);
-        //$this->state['admin_type'] = 'admin';
+        // dd($this->state['is_admin']);
 
-        if ($this->photo) {
-            $this->state['profile_photo'] = $this->photo->store('/', 'profiles');
+        $allPrescribers = Prescriber::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->count();
+
+        if ($allPrescribers >= $this->packageSubscribers) {
+            $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'You can not add New Prescriber, the list is full']);
         } else {
-            $this->state['profile_photo'] = NULL;
-        }
 
-        $this->state['organization_id'] =  Auth::user()->org_id;
+            Validator::make($this->state, [
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'email' => 'required|email|unique:users',
+                'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+                'prescriber_type' => 'required',
+                'gender' => 'required',
+            ])->validate();
+            //$this->state['password'] = bcrypt($this->state['password']);
+            //$this->state['admin_type'] = 'admin';
 
-        DB::transaction(function () {
+            if ($this->photo) {
+                $this->state['profile_photo'] = $this->photo->store('/', 'profiles');
+            } else {
+                $this->state['profile_photo'] = NULL;
+            }
 
-            $newPrescriber = Prescriber::create($this->state);
+            $this->state['password'] = Str::random(10);
+            $this->state['organization_id'] =  Auth::user()->org_id;
+            $this->state['is_admin'] = $this->state['is_admin'] == true ? 1 : 0;
+            $phone = Str::replace(' ', '', $this->state['phone_number']);
+            $this->state['phone_number'] = Str::start(Str::substr($phone, -9), '0');
 
-            $newUser = User::create([
-                'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
-                'email' => $this->state['email'],
-                'profile_photo' => $this->state['profile_photo'],
-                'password' => Hash::make($this->state['password']),
-                'account_type' => $this->state['is_admin'] ?? false ? 'prescriber-admin' : 'prescriber',
-                'account_id' => $newPrescriber->id,
-                'org_id' => Auth::user()->org_id,
-            ]);
+            DB::transaction(function () {
 
-            if ($newUser) {
-                $details = [
+                $newPrescriber = Prescriber::create($this->state);
+
+                $newPrescriber->accounts()->create([
                     'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
                     'email' => $this->state['email'],
-                    'password' => $this->state['password'],
+                    'profile_photo' => $this->state['profile_photo'],
+                    'password' => Hash::make($this->state['password']),
                     'org_id' => Auth::user()->org_id,
-                ];
-                event(new PrescriberRegistered($details));
-                $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'Prescriber added successfully!']);
-            }
-        });
+                    'is_admin' => $this->state['is_admin'],
+                ]);
+
+                if ($newPrescriber) {
+                    // $details = [
+                    //     'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
+                    //     'email' => $this->state['email'],
+                    //     'password' => $this->state['password'],
+                    //     'org_id' => Auth::user()->org_id,
+                    // ];
+                    // event(new PrescriberRegistered($details));
+                    $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'Prescriber added successfully!']);
+                }
+            });
+        }
     }
 
     public function addPrescriber()
     {
         $this->reset('state', 'photo', 'profilePhoto');
         $this->showEditModal = false;
+        $this->state['is_admin'] = false;
         $this->dispatchBrowserEvent('show-prescriber-modal');
     }
 
@@ -102,19 +114,21 @@ class Prescribers extends Component
     {
         $this->reset('state', 'photo', 'profilePhoto');
         $this->showEditModal = true;
-        $prescriber = DB::table('prescribers')
-            ->join('users', 'users.email', '=', 'prescribers.email')
-            ->select('prescribers.*', 'users.account_type', 'users.id AS user_id')
-            ->where('prescribers.id', $prescriberId)
-            ->first();
-
-        $collection = collect($prescriber);
+        // $prescriber = DB::table('prescribers')
+        //     ->join('users', 'users.email', '=', 'prescribers.email')
+        //     ->select('prescribers.*', 'users.account_type', 'users.id AS user_id')
+        //     ->where('prescribers.id', $prescriberId)
+        //     ->first();
+        $prescriber = Prescriber::find($prescriberId);
+        // $collection = collect($prescriber);
         $this->prescriberId = $prescriber->id;
-        $this->userId = $prescriber->user_id;
-
-        $this->state = $collection->toArray();
-        $this->state['is_admin'] = $prescriber->account_type == 'prescriber-admin' ? true : false;
         $this->profilePhoto = $prescriber->profile_photo;
+
+        $this->state = $prescriber->toArray();
+
+        $user = $prescriber->accounts()->where('account_id', $prescriberId)->first();
+        $this->userId = $user->id;
+        $this->state['is_admin'] = $user->is_admin == 1 ? true : false;
 
         // dd($this->state);
 
@@ -147,13 +161,16 @@ class Prescribers extends Component
                 $this->state['profile_photo'] = $this->photo->store('/', 'profiles');
             }
 
-            Prescriber::find($this->prescriberId)->update($this->state);
+            // $this->state['is_admin'] = $this->state['is_admin'] == true ? 1 : 0;
+            $phone = Str::replace(' ', '', $this->state['phone_number']);
+            $this->state['phone_number'] = Str::start(Str::substr($phone, -9), '0');
 
-            $updatedUser = User::where('account_id', $this->prescriberId)
-                ->where('account_type', 'like', 'prescriber' . '%')
-                ->update($this->editState);
+            $updatedPresc = Prescriber::find($this->prescriberId);
+            $updatedPresc->update($this->state);
 
-            if ($updatedUser) {
+            $updatedPresc->accounts()->update($this->editState);
+
+            if ($updatedPresc) {
                 $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'Prescriber updated successfully!']);
             }
         });
@@ -163,20 +180,33 @@ class Prescribers extends Component
 
     public function searchPrescriber()
     {
-        dd($this->searchTerm);
+        // dd($this->searchTerm);
     }
 
     public function render()
     {
-        $prescribers = DB::table('prescribers')
-            ->leftJoin('prescriber_types', 'prescriber_types.id', '=', 'prescribers.prescriber_type')
-            ->select('prescribers.*', 'prescriber_types.initial', 'prescriber_types.title')
-            ->where('prescribers.organization_id', Auth::user()->org_id)
-            ->latest()->paginate(5);
-        $prescriberTypes = DB::table('prescriber_types')
-            ->select('id', 'title')
-            ->get();
-        //dd($prescribers);
+        $orgSub = OrganizationSubscription::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->latest()->first();
+        $this->packageSubscribers = $orgSub->package->max_prescribers;
+
+        if ($this->searchTerm != null) {
+            $prescribers = Prescriber::query()
+                ->where('organization_id', Auth::user()->org_id)
+                ->where(function ($query) {
+                    $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                        ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%');
+                })
+                ->latest()->limit($this->packageSubscribers)->paginate(5);
+        } else {
+            $prescribers = Prescriber::query()
+                ->where('prescribers.organization_id', Auth::user()->org_id)
+                ->latest()->limit($this->packageSubscribers)->paginate(5);
+        }
+
+        $prescriberTypes = PrescriberType::all();
+
+        // dd($this->packageSubscribers);
         return view('livewire.prescribers', ['prescribers' => $prescribers, 'prescriberTypes' => $prescriberTypes]);
     }
 }

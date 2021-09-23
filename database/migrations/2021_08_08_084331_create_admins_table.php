@@ -18,7 +18,7 @@ class CreateAdminsTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone_number', 20)->nullable();
-            $table->enum('admin_type', ['admin', 'system']);
+            $table->tinyInteger('admin_type');
             // $table->unsignedTinyInteger('account_type')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

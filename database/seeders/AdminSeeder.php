@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -18,7 +19,7 @@ class AdminSeeder extends Seeder
         DB::table('admins')->insert([
             'name' => 'System Admin',
             'email' => 'admin@afyatime.co.tz',
-            'admin_type' => 'system',
+            'admin_type' => Admin::SYSTEM,
             'password' => Hash::make('admin')
         ]);
     }
