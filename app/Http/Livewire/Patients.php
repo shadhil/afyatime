@@ -67,8 +67,6 @@ class Patients extends Component
             'gender' => 'required',
             'date_of_birth' => 'required',
         ])->validate();
-        //$this->state['password'] = bcrypt($this->state['password']);
-        //$this->state['admin_type'] = 'admin';
 
         if ($this->photo) {
             $this->state['photo'] = $this->photo->store('/', 'profiles');
@@ -76,32 +74,30 @@ class Patients extends Component
             $this->state['photo'] = NULL;
         }
 
-        if (!empty($this->state['date_of_birth'])) {
-            $this->state['date_of_birth'] = Carbon::createFromFormat('m/d/Y', $this->state['date_of_birth'])->format('Y-m-d');
-        }
-
         if (empty($this->state['email'])) {
-            $this->state['email'] = '';
+            $this->state['email'] = NULL;
         }
 
         $this->state['organization_id'] =  Auth::user()->org_id;
         $this->state['patient_code'] = $this->newCode();
+        $this->state['phone_number'] = trim_phone_number($this->state['phone_number']);
+        $this->state['date_of_birth'] = db_date($this->state['date_of_birth']);
 
         DB::transaction(function () {
 
             $newPatient = Patient::create($this->state);
 
-            $newUser = User::create([
-                'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
-                'email' => $this->state['email'] == null ? 'patient_' . $newPatient->id . '@afyatime.co.tz' : $this->state['email'],
-                'profile_photo' => $this->state['photo'],
-                'password' => Hash::make($this->state['phone_number']),
-                'account_type' =>  'patient',
-                'account_id' => $newPatient->id,
-                'org_id' => Auth::user()->org_id,
-            ]);
+            if ($this->state['email'] != NULL) {
+                $newPatient->accounts()->create([
+                    'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
+                    'email' => $this->state['email'],
+                    'profile_photo' => $this->state['photo'],
+                    'password' => Hash::make($this->state['phone_number']),
+                    'org_id' => Auth::user()->org_id,
+                ]);
+            }
 
-            if ($newUser) {
+            if ($newPatient) {
                 $this->dispatchBrowserEvent('hide-patient-modal', ['message' => 'Patient added successfully!']);
             }
         });
@@ -118,19 +114,24 @@ class Patients extends Component
     {
         $this->reset('state', 'photo', 'profilePhoto', 'patientId');
         $this->showEditModal = true;
-        $patient = DB::table('patients')
-            ->leftJoin('users', 'users.email', '=', 'patients.email')
-            ->join('full_regions', 'full_regions.district_id', '=', 'patients.district_id')
-            ->select('patients.*', 'users.account_type', 'users.id AS user_id', 'full_regions.region_id')
-            ->where('patients.id', $patientId)
-            ->first();
 
-        $collection = collect($patient);
+        $patient = Patient::find($patientId);
+
         $this->patientId = $patient->id;
-        $this->userId = $patient->user_id;
-
-        $this->state = $collection->toArray();
         $this->profilePhoto = $patient->photo;
+
+        $user = $patient->accounts()->where('account_id', $patientId)->first();
+        // dd($user);
+        if ($user != null) {
+            $this->userId = $user->id;
+        } else {
+            $this->userId = null;
+        }
+
+        $this->state = $patient->toArray();
+        $this->state['region_id'] = $patient->district->region_id;
+        $this->state['district_id'] = $patient->district_id;
+        $this->state['date_of_birth'] = form_date($patient->date_of_birth);
 
         $this->dispatchBrowserEvent('show-patient-modal');
         //dd($admin);
@@ -138,38 +139,46 @@ class Patients extends Component
 
     public function updatePatient()
     {
+        $this->state['user_id'] = $this->userId;
         //dd($this->state);
         $validatedData = Validator::make($this->state, [
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'sometimes|email|unique:users,email,' . $this->userId,
+            'email' => 'exclude_if:user_id,null|sometimes|email|unique:users,email,' . $this->userId,
             'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'location' => 'required',
             'district_id' => 'required',
             'date_of_birth' => 'required',
             'gender' => 'required',
             'supporter_id' => 'sometimes',
+            // 'password' => 'sometimes|confirmed',
         ])->validate();
 
         DB::transaction(function () use ($validatedData) {
-
+            // if (!empty($validatedData['password'])) {
+            //     $this->editState['password'] = bcrypt($validatedData['password']);
+            // }
             if (!empty($validatedData['email'])) {
                 $this->editState['email'] = $validatedData['email'];
             }
             $this->editState['name'] = $validatedData['first_name'] . ' ' . $validatedData['last_name'];
+
+            $validatedData['phone_number'] = trim_phone_number($validatedData['phone_number']);
+            $validatedData['date_of_birth'] = db_date($validatedData['date_of_birth']);
+
+
             if ($this->photo) {
                 $img = $this->photo->store('/', 'profiles');
                 $this->editState['profile_photo'] = $img;
                 $validatedData['photo'] = $img;
             }
 
-            Patient::find($this->patientId)->update($validatedData);
+            $updatedPatient = Patient::find($this->patientId);
+            $updatedPatient->update($validatedData);
 
-            $updatedUser = User::where('account_id', $this->patientId)
-                ->where('account_type', 'patient')
-                ->update($this->editState);
+            $updatedPatient->accounts()->update($this->editState);
 
-            if ($updatedUser) {
+            if ($updatedPatient) {
                 $this->dispatchBrowserEvent('hide-patient-modal', ['message' => 'Patient updated successfully!']);
             }
         });

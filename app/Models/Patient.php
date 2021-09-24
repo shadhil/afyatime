@@ -12,7 +12,22 @@ class Patient extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'date_of_birth',
+        'photo',
+        'gender',
+        'patient_code',
+        'phone_number',
+        'email',
+        'location',
+        'district_id',
+        'tensel_leader',
+        'tensel_leader_phone',
+        'supporter_id',
+        'organization_id',
+    ];
 
     public function organization(): BelongsTo
     {

@@ -20,8 +20,7 @@ class CreateAppointmentsTable extends Migration
             $table->unsignedBigInteger('condition_id');
             $table->enum('app_type', ['weekly', 'daily']);
             $table->date('date_of_visit');
-            $table->time('time_from')->default(date("08:00:00"));
-            $table->time('time_to')->nullable();
+            $table->time('visit_time')->default(date("08:00:00"));
             $table->unsignedBigInteger('organization_id')->nullable();
             $table->timestamps();
 

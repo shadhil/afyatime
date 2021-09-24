@@ -89,14 +89,14 @@ class Prescribers extends Component
                 ]);
 
                 if ($newPrescriber) {
-                    // $details = [
-                    //     'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
-                    //     'email' => $this->state['email'],
-                    //     'password' => $this->state['password'],
-                    //     'org_id' => Auth::user()->org_id,
-                    // ];
-                    // event(new PrescriberRegistered($details));
                     $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'Prescriber added successfully!']);
+                    $details = [
+                        'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
+                        'email' => $this->state['email'],
+                        'password' => $this->state['password'],
+                        'organization' => $newPrescriber->organization->name,
+                    ];
+                    PrescriberRegistered::dispatch($details);
                 }
             });
         }
@@ -161,9 +161,7 @@ class Prescribers extends Component
                 $this->state['profile_photo'] = $this->photo->store('/', 'profiles');
             }
 
-            // $this->state['is_admin'] = $this->state['is_admin'] == true ? 1 : 0;
-            $phone = Str::replace(' ', '', $this->state['phone_number']);
-            $this->state['phone_number'] = Str::start(Str::substr($phone, -9), '0');
+            $this->state['phone_number'] = trim_phone_number($this->state['phone_number']);
 
             $updatedPresc = Prescriber::find($this->prescriberId);
             $updatedPresc->update($this->state);
@@ -174,6 +172,21 @@ class Prescribers extends Component
                 $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'Prescriber updated successfully!']);
             }
         });
+    }
+
+    public function deleteModal($prescriberId)
+    {
+        $this->prescriberId = $prescriberId;
+        $this->dispatchBrowserEvent('show-delete-modal');
+    }
+
+    public function deletePrescriber()
+    {
+        $prescriber = Prescriber::findOrFail($this->prescriberId);
+
+        $prescriber->delete();
+
+        $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Prescriber deleted successfully!']);
     }
 
 

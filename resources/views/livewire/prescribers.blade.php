@@ -77,7 +77,8 @@
                                                 wire:click.prevent="editPrescriber({{ $prescriber->id }})">
                                                 <span class="btn-icon icofont-ui-edit"></span>
                                             </button>
-                                            <button class="btn btn-error btn-sm btn-square">
+                                            <button class="btn btn-error btn-sm btn-square"
+                                                wire:click="deleteModal({{ $prescriber->id }})">
                                                 <span class="btn-icon icofont-ui-delete"></span>
                                             </button>
                                         </div>
@@ -334,6 +335,27 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+
+                <div class="modal-body">
+                    <h4>Are you sure you want to delete this prescriber?</h4>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                            class="fa fa-times mr-1"></i>
+                        Cancel</button>
+                    <button type="button" wire:click.prevent="deletePrescriber" class="btn btn-danger"><i
+                            class="icofont-bin mr-1"></i>Delete Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- end Add appointment modals -->
 
@@ -357,11 +379,11 @@
     })
 
     window.addEventListener('show-delete-modal', event => {
-        $('#confirmationModal').modal('show');
+        $('#delete-modal').modal('show');
     })
 
     window.addEventListener('hide-delete-modal', event => {
-        $('#confirmationModal').modal('hide');
+        $('#delete-modal').modal('hide');
         toastr.success(event.detail.message, 'Success!');
     })
 

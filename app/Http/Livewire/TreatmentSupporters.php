@@ -48,8 +48,6 @@ class TreatmentSupporters extends Component
             'location' => 'required',
             'district_id' => 'required',
         ])->validate();
-        //$this->state['password'] = bcrypt($this->state['password']);
-        //$this->state['admin_type'] = 'admin';
 
         if ($this->photo) {
             $this->state['photo'] = $this->photo->store('/', 'profiles');
@@ -58,25 +56,23 @@ class TreatmentSupporters extends Component
         }
 
         if (empty($this->state['email'])) {
-            $this->state['email'] = '';
+            $this->state['email'] = NULL;
         }
-        $this->state['organization_id'] =  Auth::user()->org_id;
+        $this->state['organization_id'] = Auth::user()->org_id;
+        $this->state['phone_number'] = trim_phone_number($this->state['phone_number']);
 
         DB::transaction(function () {
-
             $newSupporter = TreatmentSupporter::create($this->state);
-
-            $newUser = User::create([
-                'name' => $this->state['full_name'],
-                'email' => $this->state['email'] == null ? 'supporter_' . $newSupporter->id . '@afyatime.co.tz' : $this->state['email'],
-                'profile_photo' => $this->state['photo'],
-                'password' => Hash::make($this->state['phone_number']),
-                'account_type' =>  'supporter',
-                'account_id' => $newSupporter->id,
-                'org_id' => Auth::user()->org_id,
-            ]);
-
-            if ($newUser) {
+            if ($this->state['email'] != NULL) {
+                $newSupporter->accounts()->create([
+                    'name' => $this->state['full_name'],
+                    'email' => $this->state['email'],
+                    'profile_photo' => $this->state['photo'],
+                    'password' => Hash::make($this->state['phone_number']),
+                    'org_id' => Auth::user()->org_id,
+                ]);
+            }
+            if ($newSupporter) {
                 $this->dispatchBrowserEvent('hide-supporter-modal', ['message' => 'Supporter added successfully!']);
             }
         });
@@ -93,19 +89,22 @@ class TreatmentSupporters extends Component
     {
         $this->reset('state', 'photo', 'profilePhoto', 'supporterId');
         $this->showEditModal = true;
-        $supporter = DB::table('treatment_supporters')
-            ->leftJoin('users', 'users.email', '=', 'treatment_supporters.email')
-            ->join('full_regions', 'full_regions.district_id', '=', 'treatment_supporters.district_id')
-            ->select('treatment_supporters.*', 'users.account_type', 'users.id AS user_id', 'full_regions.region_id')
-            ->where('treatment_supporters.id', $supporterId)
-            ->first();
+        $supporter = TreatmentSupporter::find($supporterId);
 
-        $collection = collect($supporter);
         $this->supporterId = $supporter->id;
-        $this->userId = $supporter->user_id;
-
-        $this->state = $collection->toArray();
         $this->profilePhoto = $supporter->photo;
+
+        $user = $supporter->accounts()->where('account_id', $supporterId)->first();
+        // dd($user);
+        if ($user != null) {
+            $this->userId = $user->id;
+        } else {
+            $this->userId = null;
+        }
+
+        $this->state = $supporter->toArray();
+        $this->state['region_id'] = $supporter->district->region_id;
+        $this->state['district_id'] = $supporter->district_id;
 
         $this->dispatchBrowserEvent('show-supporter-modal');
         //dd($admin);
@@ -113,10 +112,11 @@ class TreatmentSupporters extends Component
 
     public function updateSupporter()
     {
+        $this->state['user_id'] = $this->userId;
         //dd($this->state);
         $validatedData = Validator::make($this->state, [
             'full_name' => 'required',
-            'email' => 'sometimes|email|unique:users,email,' . $this->userId,
+            'email' => 'exclude_if:user_id,null|sometimes|email|unique:users,email,' . $this->userId,
             'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'location' => 'required',
             'district_id' => 'required',
@@ -127,6 +127,7 @@ class TreatmentSupporters extends Component
             if (!empty($validatedData['email'])) {
                 $this->editState['email'] = $validatedData['email'];
             }
+            $validatedData['phone_number'] = trim_phone_number($validatedData['phone_number']);
             $this->editState['name'] = $validatedData['full_name'];
             if ($this->photo) {
                 $img = $this->photo->store('/', 'profiles');
@@ -134,18 +135,31 @@ class TreatmentSupporters extends Component
                 $validatedData['photo'] = $img;
             }
 
-            TreatmentSupporter::find($this->supporterId)->update($validatedData);
+            $updatedSupporter = TreatmentSupporter::find($this->supporterId);
+            $updatedSupporter->update($validatedData);
 
-            $updatedUser = User::where('account_id', $this->supporterId)
-                ->where('account_type', 'supporter')
-                ->update($this->editState);
+            $updatedSupporter->accounts()->update($this->editState);
 
-            if ($updatedUser) {
+            if ($updatedSupporter) {
                 $this->dispatchBrowserEvent('hide-supporter-modal', ['message' => 'Supporter updated successfully!']);
             }
         });
     }
 
+    public function supporterRemoval($supporterId)
+    {
+        $this->supporterId = $supporterId;
+        $this->dispatchBrowserEvent('show-delete-modal');
+    }
+
+    public function deleteSupporter()
+    {
+        $supporter = TreatmentSupporter::findOrFail($this->supporterId);
+
+        $supporter->delete();
+
+        $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Appointment deleted successfully!']);
+    }
 
 
     public function searchPrescriber()
@@ -155,11 +169,8 @@ class TreatmentSupporters extends Component
 
     public function render()
     {
-        $supporters = DB::table('treatment_supporters')
-            ->leftJoin('patients', 'patients.supporter_id', '=', 'treatment_supporters.id')
-            ->select('treatment_supporters.*', DB::raw('count(patients.id) as patients'))
-            ->where('treatment_supporters.organization_id', Auth::user()->org_id)
-            ->groupBy('treatment_supporters.id')
+        $supporters = TreatmentSupporter::query()
+            ->where('organization_id', Auth::user()->org_id)
             ->latest()
             ->paginate(5);
 

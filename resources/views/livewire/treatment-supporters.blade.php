@@ -6,7 +6,7 @@
                 <div class="form-group typeahead__container with-suffix-icon mb-0">
                     <div class="typeahead__field">
                         <div class="typeahead__query">
-                            <input class="form-control autocomplete-control topbar-search" type="search"
+                            <input class="form-control rounded autocomplete-control topbar-search" type="search"
                                 placeholder="Type supporter's name" wire:model="searchTerm"
                                 wire:keydown.enter="searchPatient">
                             <div class="suffix-icon icofont-search"></div>
@@ -43,7 +43,9 @@
                                         <strong>{{ $supporter->full_name }} </strong>
                                     </td>
                                     <td>
-                                        <div class="address-col">{{ $supporter->location }}</div>
+                                        <div class="address-col">{{ $supporter->location }} -
+                                            {{ $supporter->district->name }}, {{ $supporter->district->region->name }}
+                                        </div>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center nowrap text-primary">
@@ -53,15 +55,16 @@
                                     </td>
                                     <td>
                                         <div class="text-muted text-nowrap">
-                                            {{ $supporter->patients }}</div>
+                                            {{ $supporter->patients()->count() }}</div>
                                     </td>
                                     <td>
                                         <div class="actions">
-                                            <button class="btn btn-primary btn-sm "
+                                            <button class="btn btn-primary btn-sm rounded"
                                                 wire:click="editSupporter({{ $supporter->id }})">
                                                 <span class="btn-icon icofont-ui-edit"> Edit</span>
                                             </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
+                                            <button class="btn btn-error btn-sm btn-square"
+                                                wire:click="supporterRemoval({{ $supporter->id }})">
                                                 <span class="btn-icon icofont-ui-delete"></span>
                                             </button>
                                         </div>
@@ -99,7 +102,7 @@
                         @if($showEditModal)
                         <span>Edit Supporter</span>
                         @else
-                        <span>Add New Supporter</span>
+                        <span> New Supporter</span>
                         @endif
                     </h5>
                 </div>
@@ -124,7 +127,7 @@
                         </div>
                         <br />
                         <div class="form-group">
-                            <input class="form-control @error('full_name') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('full_name') is-invalid @enderror" type="text"
                                 wire:model.defer="state.full_name" id="full_name" name="full_name"
                                 placeholder="Full name">
                             @error('full_name')
@@ -135,7 +138,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('phone_number') is-invalid @enderror" type="text"
                                 wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
                                 placeholder="Phone Number">
                             @error('phone_number')
@@ -146,7 +149,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('email') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('email') is-invalid @enderror" type="text"
                                 wire:model.defer="state.email" id="email" name="email" placeholder="email">
                             @error('email')
                             <div class="invalid-feedback">
@@ -156,7 +159,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('location') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('location') is-invalid @enderror" type="text"
                                 placeholder="Street/Ward" wire:model.defer="state.location" id="location">
                             @error('location')
                             <div class="invalid-feedback">
@@ -166,7 +169,7 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control @error('region_id') is-invalid @enderror"
+                            <select class="form-control rounded @error('region_id') is-invalid @enderror"
                                 wire:model="state.region_id" id="region_id" name="region_id">
                                 <option value="">Select Region</option>
                                 @foreach ($regions as $region)
@@ -181,7 +184,7 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control @error('district_id') is-invalid @enderror"
+                            <select class="form-control rounded @error('district_id') is-invalid @enderror"
                                 wire:model.defer="state.district_id" id="district_id" name="district_id">
                                 <option value="">Select District</option>
                                 @foreach ($districts as $district)
@@ -198,7 +201,13 @@
                     <div class="modal-footer d-block">
                         <div class="actions justify-content-between">
                             <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-info">
+
+                            <button type="button" class="btn btn-info btn-load" wire:loading
+                                wire:target="{{ $showEditModal ? 'updateSupporter' : 'createSupporter' }}">
+                                <span class="btn-loader icofont-spinner"></span>
+                            </button>
+
+                            <button type="submit" class="btn btn-info" wire:loading.attr="hidden">
                                 @if($showEditModal)
                                 <span>Save Changes</span>
                                 @else
@@ -212,6 +221,31 @@
         </div>
     </div>
     <!-- end Add patients modals -->
+
+    <!-- start Delete supporter modals -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <h4>Are you sure you want to delete this supporter?</h4>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                            class="fa fa-times mr-1"></i>
+                        Cancel</button>
+
+                    <button type="button" class="btn btn-danger btn-load" wire:loading wire:target="deleteAppointment">
+                        <span class="btn-loader icofont-spinner"></span>
+                    </button>
+
+                    <button type="button" wire:click.prevent="deleteSupporter" class="btn btn-danger"
+                        wire:loading.attr="hidden"><i class="icofont-bin mr-1"></i>Delete Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @push('scripts')
@@ -234,11 +268,11 @@
     })
 
     window.addEventListener('show-delete-modal', event => {
-        $('#confirmationModal').modal('show');
+        $('#delete-modal').modal('show');
     })
 
     window.addEventListener('hide-delete-modal', event => {
-        $('#confirmationModal').modal('hide');
+        $('#delete-modal').modal('hide');
         toastr.success(event.detail.message, 'Success!');
     })
 

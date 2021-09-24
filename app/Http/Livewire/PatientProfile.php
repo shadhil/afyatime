@@ -4,7 +4,11 @@ namespace App\Http\Livewire;
 
 use App\Events\FirstAppointment;
 use App\Models\Appointment;
+use App\Models\MedicalCondition;
+use App\Models\Patient;
+use App\Models\Prescriber;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -48,31 +52,18 @@ class PatientProfile extends Component
         Validator::make($this->state, [
             'condition_id' => 'required',
             'date_of_visit' => 'required',
-            'new_condition' => 'sometimes|string',
         ])->validate();
 
         $this->state['prescriber_id'] = Auth::user()->account_id;
         $this->state['patient_id'] = $this->patientId;
         $this->state['organization_id'] = Auth::user()->org_id;
 
-        // if ($this->conditionId == '0') {
-        //     $this->state['condition_id'] = DB::table('medical_conditions')
-        //         ->insertGetId([
-        //             'condition' => $this->state['new_condition'],
-        //             'patient_id' => $this->patientId,
-        //         ]);
-        // }
-
         if (!empty($this->state['date_of_visit'])) {
-            $this->state['date_of_visit'] = Carbon::createFromFormat('m/d/Y', $this->state['date_of_visit'])->format('Y-m-d');
+            $this->state['date_of_visit'] = db_date($this->state['date_of_visit']);
         }
 
-        if (!empty($this->state['time_from'])) {
-            $this->state['time_from'] = Carbon::createFromFormat('h:i A', $this->state['time_from'])->format('H:i:s');
-        }
-
-        if (!empty($this->state['time_to'])) {
-            $this->state['time_to'] = Carbon::createFromFormat('h:i A', $this->state['time_to'])->format('H:i:s');
+        if (!empty($this->state['visit_time'])) {
+            $this->state['visit_time'] = Carbon::createFromFormat('h:i A', $this->state['visit_time'])->format('H:i:s');
         }
 
         $newAppointment = Appointment::create($this->state);
@@ -94,6 +85,7 @@ class PatientProfile extends Component
     public function addCondition()
     {
         $this->reset('state', 'conditionId');
+        $this->state['app_type'] = 'weekly';
         $this->showEditModal = false;
         $this->dispatchBrowserEvent('show-condition-modal');
     }
@@ -105,7 +97,7 @@ class PatientProfile extends Component
         ])->validate();
 
         $this->state['patient_id'] = $this->patientId;
-        $newAppointment = DB::table('medical_conditions')->insert($this->state);
+        $newAppointment = MedicalCondition::create($this->state);
 
         if ($newAppointment) {
             $this->dispatchBrowserEvent('hide-condition-modal', ['message' => 'Condition added successfully!']);
@@ -123,23 +115,24 @@ class PatientProfile extends Component
     {
         $this->reset('state', 'conditionId');
         $this->showEditModal = true;
-        $appointment = DB::table('appointments')->find($appointmentId);
+        $appointment = Appointment::find($appointmentId);
 
-        $collection = collect($appointment);
+        // $collection = collect($appointment);
         $this->appointmentId = $appointment->id;
         $this->conditionId = $appointment->condition_id;
 
-        $this->state = $collection->toArray();
+        $this->state = $appointment->toArray();
         if (!empty($appointment->date_of_visit)) {
-            $this->state['date_of_visit'] = Carbon::createFromFormat('Y-m-d', $appointment->date_of_visit)->format('m/d/Y');
+            $this->state['date_of_visit'] = form_date($appointment->date_of_visit);
         }
 
-        if (!empty($appointment->time_from)) {
-            $this->state['time_from'] = Carbon::createFromFormat('H:i:s', $appointment->time_from)->format('h:i A');
+        if (!empty($appointment->visit_time)) {
+            $this->state['visit_time'] = Carbon::createFromFormat('H:i:s', $appointment->visit_time)->format('h:i A');
         }
-
-        if (!empty($appointment->time_to)) {
-            $this->state['time_to'] = Carbon::createFromFormat('H:i:s', $appointment->time_to)->format('h:i A');
+        if (empty($appointment->receiver_id)) {
+            $this->state['receiver_id'] = false;
+        } else {
+            $this->state['receiver_id'] = true;
         }
 
         $this->dispatchBrowserEvent('show-appointment-modal');
@@ -148,34 +141,23 @@ class PatientProfile extends Component
 
     public function updateAppointment()
     {
-        $this->state['condition_id'] = $this->conditionId;
+        // $this->state['condition_id'] = $this->conditionId;
         $validatedData = Validator::make($this->state, [
             'condition_id' => 'required',
             'date_of_visit' => 'required',
-            'new_condition' => 'sometimes|string',
         ])->validate();
 
         DB::transaction(function () use ($validatedData) {
 
-            if ($this->conditionId == '0') {
-                $this->state['condition_id'] = DB::table('medical_conditions')
-                    ->insertGetId([
-                        'condition' => $this->state['new_condition'],
-                        'patient_id' => $this->patientId,
-                    ]);
-            }
-
             if (!empty($this->state['date_of_visit'])) {
-                $this->state['date_of_visit'] = Carbon::createFromFormat('m/d/Y', $this->state['date_of_visit'])->format('Y-m-d');
+                $this->state['date_of_visit'] = db_date($this->state['date_of_visit']);
             }
 
-            if (!empty($this->state['time_from'])) {
-                $this->state['time_from'] = Carbon::createFromFormat('h:i A', $this->state['time_from'])->format('H:i:s');
+            if (!empty($this->state['visit_time'])) {
+                $this->state['visit_time'] = Carbon::createFromFormat('h:i A', $this->state['visit_time'])->format('H:i:s');
             }
 
-            if (!empty($this->state['time_to'])) {
-                $this->state['time_to'] = Carbon::createFromFormat('h:i A', $this->state['time_to'])->format('H:i:s');
-            }
+            $this->state['receiver_id'] = $this->state['receiver_id'] == true ? Auth::user()->account_id : NULL;
 
             $updatedAppointment = Appointment::find($this->appointmentId)->update($this->state);
 
@@ -187,7 +169,6 @@ class PatientProfile extends Component
 
     public function appointmentRemoval($appointmentId)
     {
-
         $this->removeAppointmentId = $appointmentId;
         $this->dispatchBrowserEvent('show-delete-modal');
     }
@@ -209,40 +190,36 @@ class PatientProfile extends Component
             ->where('patient_id', $this->patientId)
             ->get();
 
-        $patient = DB::table('patients')
-            ->leftJoin('treatment_supporters', 'treatment_supporters.id', '=', 'patients.supporter_id')
-            ->join('full_regions', 'full_regions.district_id', '=', 'patients.district_id')
-            ->select('patients.*', 'full_regions.district', 'full_regions.region', 'treatment_supporters.full_name')
-            ->where('patients.id', $this->patientId)
-            ->first();
+        $patient = Patient::query()->find($this->patientId);
+
         $this->patientName = $patient->first_name . ' ' . $patient->last_name;
         $this->patientPhone = $patient->phone_number;
         if ($patient->email) {
             $this->patientEmail = $patient->email;
         }
 
-        $prescribers = DB::table('prescribers')
-            ->join('appointments', 'appointments.prescriber_id', '=', 'prescribers.id')
-            ->select('prescribers.id', 'prescribers.first_name', 'prescribers.last_name', 'prescribers.profile_photo')
-            ->where('appointments.patient_id', $this->patientId)
-            ->groupBy('prescribers.id')
-            ->limit(5)
-            ->get();
+        $prescribers = Prescriber::where('organization_id', Auth::user()->org_id)
+            ->whereHas('appointments', function (Builder $query) {
+                $query->where('patient_id', $this->patientId);
+            })->limit(7)->get();
 
-        $appointments = DB::table('appointments')
-            ->join('prescribers', 'appointments.prescriber_id', '=', 'prescribers.id')
-            ->join('medical_conditions', 'appointments.condition_id', '=', 'medical_conditions.id')
-            ->select('appointments.*', 'prescribers.first_name', 'prescribers.last_name', 'medical_conditions.condition')
-            ->where('appointments.patient_id', $this->patientId)
-            ->groupBy('appointments.id')
-            ->orderByDesc('appointments.date_of_visit')
-            ->limit(5)
-            ->get();
+        // dd($prescribers);
+        // query()->where('organization_id', Auth::user()->org_id)->get();
+        // $prescribers->appointments
+        //     ->where('appointments.patient_id', $this->patientId)
+        //     ->groupBy('prescribers.id')
+        //     ->limit(5)
+        //     ->get();
+
+        $appointments = $patient->appontments()
+            ->orderByDesc('date_of_visit')
+            ->paginate(12);
+
         if (sizeof($appointments) == 0) {
             $this->firstTime = true;
         }
 
-        // dd(sizeof($appointments));
+        // dd($appointments->);
         return view('livewire.patient-profile', ['patient' => $patient, 'conditions' => $conditions, 'prescribers' => $prescribers, 'appointments' => $appointments]);
     }
 }

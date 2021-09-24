@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-12 col-md-4">
                     <div class="card bg-light personal-info-card">
-                        <img src="{{ asset('assets/content/user-profile.jpg') }}" class="card-img-top" alt="">
+                        <img src="{{ asset('assets/content/patient-banner.jpg') }}" class="card-img-top" alt="">
 
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-3 user-actions">
@@ -23,7 +23,8 @@
                             <h6 class="mt-0 mb-0">Gender</h6>
                             <p>{{ $patient->gender }}</p>
                             <h6 class="mt-0 mb-0">Address</h6>
-                            <p>{{ $patient->location }} - {{ $patient->district }}, {{ $patient->region }}</p>
+                            <p>{{ $patient->location }} - {{ $patient->district->name }},
+                                {{ $patient->district->region->name }}</p>
                             <h6 class="mt-0 mb-0">Email</h6>
                             <p>{{ $patient->email }}</p>
                             <h6 class="mt-0 mb-0">Phone</h6>
@@ -33,7 +34,7 @@
                             <p>{{ $patient->tensel_leader }} <small>({{ $patient->tensel_leader_phone }})</small> </p>
                             @endif
                             <h6 class="mt-0 mb-0">Treatment Supporter</h6>
-                            <p>{{ $patient->full_name ?? '-' }}</p>
+                            <p>{{ $patient->supporter->full_name ?? '-' }}</p>
                         </div>
                     </div>
 
@@ -127,10 +128,11 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th scope="col" class="text-center">Date</th>
-                                            <th scope="col" class="text-center">Visit Time</th>
+                                            <th scope="col" class="text-center">Visit Date</th>
+                                            <th scope="col" class="text-center"> Time</th>
                                             <th scope="col" class="text-center">Prescriber</th>
                                             <th scope="col" class="text-center">Candition</th>
+                                            <th scope="col" class="text-center">Reminder</th>
                                             <th scope="col" class="text-center">Actions</th>
                                         </tr>
                                     </thead>
@@ -143,36 +145,36 @@
                                                 </p>
                                             </td>
                                             <td align="center">
-                                                @if (empty($appointment->time_to))
                                                 <p class="text-nowrap">
-                                                    {{ \Carbon\Carbon::parse($appointment->time_from)->format('h:i A') }}
+                                                    {{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}
                                                 </p>
-                                                @else
-                                                <p class="text-nowrap">
-                                                    {{ \Carbon\Carbon::parse($appointment->time_from)->format('h:i A') }}
-                                                    -
-                                                    {{ \Carbon\Carbon::parse($appointment->time_to)->format('h:i A') }}
-                                                </p>
-                                                @endif
 
                                             </td>
                                             <td align="center">
-                                                <strong>{{ $appointment->first_name }}
-                                                    {{ $appointment->last_name }}</strong>
+                                                <strong>{{ $appointment->prescriber->first_name }}
+                                                    {{ $appointment->prescriber->last_name }}</strong>
                                             </td>
                                             <td align="center">
-                                                <p>{{ $appointment->condition }}</p>
+                                                <p>{{ $appointment->condition->condition }}</p>
+                                            </td>
+                                            <td align="center">
+                                                <span class="badge badge-sm text-white {{ ($appointment->app_type == 'weekly') ? 'badge-success' : 'badge-danger'
+                                                }} ">{{ Str::upper($appointment->app_type) }} VISIT</span>
                                             </td>
                                             <td align="center">
                                                 <div class="actions">
-                                                    <button class="btn btn-outline-info"
-                                                        wire:click="editAppointment({{ $appointment->id }})">Edit<span
+                                                    @if ($appointment->receiver_id == NULL)
+                                                    <button class="btn btn-info text-white"
+                                                        wire:click="editAppointment({{ $appointment->id }})">Update<span
                                                             class="btn-icon icofont-edit ml-2"></span>
                                                     </button>
                                                     <button class="btn btn-error btn-square"
                                                         wire:click="appointmentRemoval({{ $appointment->id }})">
                                                         <span class="btn-icon icofont-bin"></span>
                                                     </button>
+                                                    @else
+                                                    <button type="button" class="btn btn-light btn-block">DONE</button>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -190,7 +192,7 @@
                     </div>
                 </div>
             </div>
-            @if (Str::contains('prescriber', Auth::user()->account_type))
+            @if (Auth::user()->account_type == 'prescriber')
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addAppointment">
                     <span class="btn-icon icofont-stethoscope-alt"></span>
@@ -209,7 +211,7 @@
                         @if($showEditModal)
                         <span>Edit Appointment</span>
                         @else
-                        <span>Add New Appointment</span>
+                        <span>New Appointment</span>
                         @endif
                     </h5>
                 </div>
@@ -217,7 +219,7 @@
                     wire:submit.prevent="{{ $showEditModal ? 'updateAppointment' : 'createAppointment' }}">
                     <div class="modal-body">
                         <div class="form-group">
-                            <select class="form-control @error('condition_id') is-invalid @enderror"
+                            <select class="form-control rounded @error('condition_id') is-invalid @enderror"
                                 wire:model="conditionId" id="condition_id" name="condition_id">
                                 <option class="d-none">Select Cause/Condition</option>
                                 @foreach ($conditions as $condition)
@@ -231,35 +233,12 @@
                             @enderror
                         </div>
 
-                        @if ($conditionId == '0')
-                        <div class="form-group">
-                            <input class="form-control @error('new_condition') is-invalid @enderror" type="text"
-                                wire:model.defer="state.new_condition" id="new_condition" name="new_condition"
-                                placeholder="New Condition">
-                            @error('new_condition')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-                        @endif
-
-                        <div class="form-group">
-                            <x-datepicker wire:model.defer="state.date_of_visit" id="date_of_visit"
-                                :error="'date_of_visit'" :holder="'date of birth'" />
-                            @error('date_of_visit')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-
                         <div class="row">
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
-                                    <x-timepicker wire:model.defer="state.time_from" id="time_from" :error="'time_from'"
-                                        :holder="'08:00 AM'" />
-                                    @error('time_from')
+                                    <x-datepicker wire:model.defer="state.date_of_visit" id="date_of_visit"
+                                        :error="'date_of_visit'" :holder="'date of visit'" />
+                                    @error('date_of_visit')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -268,9 +247,9 @@
                             </div>
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
-                                    <x-timepicker wire:model.defer="state.time_to" id="time_to" :error="'time_to'"
-                                        :holder="'End Time (Optional)'" />
-                                    @error('time_to')
+                                    <x-timepicker wire:model.defer="state.visit_time" id="visit_time"
+                                        :error="'visit_time'" :holder="'08:00 AM'" />
+                                    @error('visit_time')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -278,11 +257,32 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <select class="form-control rounded" wire:model="state.app_type" id="app_type"
+                                name="app_type">
+                                <option value="weekly">Weekly Visits</option>
+                                <option value="daily">Daily Visits</option>
+                            </select>
+                        </div>
+                        @if($showEditModal)
+                        <div class="custom-control custom-checkbox mb-3">
+                            <input type="checkbox" class="custom-control-input" id="receiver_id" name="receiver_id"
+                                wire:model.defer="state.receiver_id">
+                            <label class="custom-control-label" for="receiver_id">Patient Come & Received</label>
+                        </div>
+                        @endif
                     </div>
                     <div class="modal-footer d-block">
                         <div class="actions justify-content-between">
                             <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-info">
+
+                            <button type="button" class="btn btn-info btn-load" wire:loading
+                                wire:target="{{ $showEditModal ? 'updateAppointment' : 'createAppointment' }}">
+                                <span class="btn-loader icofont-spinner"></span>
+                            </button>
+
+                            <button type="submit" class="btn btn-info" wire:loading.attr="hidden">
                                 @if($showEditModal)
                                 <span>Save Changes</span>
                                 @else
@@ -304,9 +304,9 @@
                 <div class="modal-header">
                     <h5 class="modal-title">
                         @if($showEditModal)
-                        <span>Edit Condition</span>
+                        <span>Edit Condition/Disease</span>
                         @else
-                        <span>Add New Condition</span>
+                        <span>New Condition/Disease</span>
                         @endif
                     </h5>
                 </div>
@@ -315,7 +315,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="form-group">
-                                <input class="form-control @error('condition') is-invalid @enderror" type="text"
+                                <input class="form-control rounded @error('condition') is-invalid @enderror" type="text"
                                     wire:model.defer="state.condition" id="condition" name="condition"
                                     placeholder="New Condition">
                                 @error('condition')
@@ -328,7 +328,13 @@
                         <div class="modal-footer d-block">
                             <div class="actions justify-content-between">
                                 <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-info">
+
+                                <button type="button" class="btn btn-info btn-load" wire:loading
+                                    wire:target="{{ $showEditModal ? 'updateCondition' : 'createCondition' }}">
+                                    <span class="btn-loader icofont-spinner"></span>
+                                </button>
+
+                                <button type="submit" class="btn btn-info" wire:loading.attr="hidden">
                                     @if($showEditModal)
                                     <span>Save Changes</span>
                                     @else
@@ -350,7 +356,6 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
-
             <div class="modal-body">
                 <h4>Are you sure you want to delete this appointment?</h4>
             </div>
@@ -358,8 +363,13 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times mr-1"></i>
                     Cancel</button>
-                <button type="button" wire:click.prevent="deleteAppointment" class="btn btn-danger"><i
-                        class="icofont-bin mr-1"></i>Delete Now</button>
+
+                <button type="button" class="btn btn-danger btn-load" wire:loading wire:target="deleteAppointment">
+                    <span class="btn-loader icofont-spinner"></span>
+                </button>
+
+                <button type="button" wire:click.prevent="deleteAppointment" class="btn btn-danger"
+                    wire:loading.attr="hidden"><i class="icofont-bin mr-1"></i>Delete Now</button>
             </div>
         </div>
     </div>

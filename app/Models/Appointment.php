@@ -11,7 +11,16 @@ class Appointment extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'patient_id',
+        'prescriber_id',
+        'condition_id',
+        'app_type',
+        'date_of_visit',
+        'visit_time',
+        'organization_id',
+        'receiver_id',
+    ];
 
     public function organization(): BelongsTo
     {

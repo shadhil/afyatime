@@ -1,7 +1,7 @@
 @component('vendor.mail.html.layout')
 {{-- Header --}}
 @slot('header')
-@component('vendor.mail.html.header', ['url' => 'https://afyatime.co.tz/assets/img/logo.svg'])
+@component('vendor.mail.html.header', ['url' => 'https://afyatime.co.tz'])
 {{ config('app.name') }}
 @endcomponent
 @endslot

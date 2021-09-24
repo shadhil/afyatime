@@ -14,12 +14,9 @@ use Illuminate\Queue\SerializesModels;
 class SubscriptionConfirmed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    
     public $orgSub;
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
+
     public function __construct(OrganizationSubscription $orgSub)
     {
         $this->orgSub = $orgSub;

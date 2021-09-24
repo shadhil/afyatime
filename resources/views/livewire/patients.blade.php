@@ -6,7 +6,7 @@
                 <div class="form-group typeahead__container with-suffix-icon mb-0">
                     <div class="typeahead__field">
                         <div class="typeahead__query">
-                            <input class="form-control autocomplete-control topbar-search" type="search"
+                            <input class="form-control rounded autocomplete-control topbar-search" type="search"
                                 placeholder="Type patient's name" wire:model="searchTerm"
                                 wire:keydown.enter="searchPatient">
                             <div class="suffix-icon icofont-search"></div>
@@ -43,7 +43,7 @@
                                             alt="" width="40" height="40" class="rounded-500">
                                     </td>
                                     <td>
-                                        <strong>{{ $patient->first_name }} {{ $patient->first_name }}</strong>
+                                        <strong>{{ $patient->first_name }} {{ $patient->last_name }}</strong>
                                     </td>
                                     <td>
                                         <div class="text-muted">{{ $patient->patient_code }}</div>
@@ -53,7 +53,8 @@
                                             {{ \Carbon\Carbon::parse($patient->date_of_birth)->age }}</div>
                                     </td>
                                     <td>
-                                        <div class="address-col">{{ $patient->location }}</div>
+                                        <div class="address-col">{{ $patient->location }},
+                                            {{ $patient->district->name }}</div>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center nowrap text-primary">
@@ -118,7 +119,7 @@
                         @if($showEditModal)
                         <span>Edit Patient</span>
                         @else
-                        <span>Add New Patient</span>
+                        <span> New Patient</span>
                         @endif
                     </h5>
                 </div>
@@ -144,9 +145,9 @@
                         <div class="row">
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
-                                    <input class="form-control @error('first_name') is-invalid @enderror" type="text"
-                                        wire:model.defer="state.first_name" id="first_name" name="first_name"
-                                        placeholder="First name">
+                                    <input class="form-control rounded @error('first_name') is-invalid @enderror"
+                                        type="text" wire:model.defer="state.first_name" id="first_name"
+                                        name="first_name" placeholder="First name">
                                     @error('first_name')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -156,7 +157,7 @@
                             </div>
                             <div class="col-12 col-sm-6">
                                 <div class="form-group ">
-                                    <input class="form-control @error('last_name') is-invalid @enderror"
+                                    <input class="form-control rounded @error('last_name') is-invalid @enderror"
                                         wire:model.defer="state.last_name" id="last_name" name="last_name" type="text"
                                         placeholder="Last name">
                                     @error('last_name')
@@ -182,11 +183,11 @@
                             </div>
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
-                                    <select class="form-control @error('gender') is-invalid @enderror" title="Gender"
-                                        wire:model.defer="state.gender" id="gender" name="gender">
+                                    <select class="form-control rounded @error('gender') is-invalid @enderror"
+                                        title="Gender" wire:model.defer="state.gender" id="gender" name="gender">
                                         <option class="d-none">Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
                                     </select>
                                     @error('gender')
                                     <div class="invalid-feedback">
@@ -198,7 +199,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('phone_number') is-invalid @enderror" type="text"
                                 wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
                                 placeholder="Phone Number">
                             @error('phone_number')
@@ -209,7 +210,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('email') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('email') is-invalid @enderror" type="text"
                                 wire:model.defer="state.email" id="email" name="email" placeholder="email">
                             @error('email')
                             <div class="invalid-feedback">
@@ -219,7 +220,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('location') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('location') is-invalid @enderror" type="text"
                                 placeholder="Patient's Street/Ward" wire:model.defer="state.location" id="location">
                             @error('location')
                             <div class="invalid-feedback">
@@ -229,7 +230,7 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control @error('region_id') is-invalid @enderror"
+                            <select class="form-control rounded @error('region_id') is-invalid @enderror"
                                 wire:model="state.region_id" id="region_id" name="region_id">
                                 <option value="">Select Region</option>
                                 @foreach ($regions as $region)
@@ -244,7 +245,7 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control @error('district_id') is-invalid @enderror"
+                            <select class="form-control rounded @error('district_id') is-invalid @enderror"
                                 wire:model.defer="state.district_id" id="district_id" name="district_id">
                                 <option value="">Select District</option>
                                 @foreach ($districts as $district)
@@ -259,7 +260,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('tensel_leader') is-invalid @enderror" type="text"
+                            <input class="form-control rounded @error('tensel_leader') is-invalid @enderror" type="text"
                                 placeholder="tensel leader name" wire:model.defer="state.tensel_leader"
                                 id="tensel_leader">
                             @error('tensel_leader')
@@ -270,9 +271,9 @@
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control @error('tensel_leader_phone') is-invalid @enderror" type="text"
-                                placeholder="tensel leader phone" wire:model.defer="state.tensel_leader_phone"
-                                id="tensel_leader_phone">
+                            <input class="form-control rounded @error('tensel_leader_phone') is-invalid @enderror"
+                                type="text" placeholder="tensel leader phone"
+                                wire:model.defer="state.tensel_leader_phone" id="tensel_leader_phone">
                             @error('tensel_leader_phone')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -281,7 +282,7 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control" wire:model="state.supporter_id" id="supporter_id"
+                            <select class="form-control rounded" wire:model="state.supporter_id" id="supporter_id"
                                 name="supporter_id">
                                 <option class="d-none">Select Supporter</option>
                                 @foreach ($supporters as $supporter)
@@ -294,7 +295,13 @@
                     <div class="modal-footer d-block">
                         <div class="actions justify-content-between">
                             <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-info">
+
+                            <button type="button" class="btn btn-info btn-load" wire:loading
+                                wire:target="{{ $showEditModal ? 'updatePatient' : 'createPatient' }}">
+                                <span class="btn-loader icofont-spinner"></span>
+                            </button>
+
+                            <button type="submit" class="btn btn-info" wire:loading.attr="hidden">
                                 @if($showEditModal)
                                 <span>Save Changes</span>
                                 @else

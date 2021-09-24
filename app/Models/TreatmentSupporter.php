@@ -12,7 +12,15 @@ class TreatmentSupporter extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'full_name',
+        'photo',
+        'phone_number',
+        'email',
+        'location',
+        'district_id',
+        'organization_id',
+    ];
 
     public function patients(): HasMany
     {
