@@ -7,6 +7,7 @@ use App\Jobs\PatientWelcomeJob;
 use App\Jobs\WelcomePatientJob;
 use App\Models\Appointment;
 use App\Models\MedicalCondition;
+use App\Models\OrganizationSubscription;
 use App\Models\Patient;
 use App\Models\Prescriber;
 use Carbon\Carbon;
@@ -40,6 +41,10 @@ class PatientProfile extends Component
     public $showEditModal = false;
 
     public $searchTerm = null;
+
+    public $packageAppointments = 150;
+    public $currentAppointments = 0;
+    public $packageStatus = 4;
 
     public function mount($id)
     {
@@ -189,6 +194,22 @@ class PatientProfile extends Component
 
     public function render()
     {
+        $orgSub = OrganizationSubscription::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->where('status', 2)
+            ->latest()->first();
+        if ($orgSub == null) {
+            $this->packageAppointments = 0;
+            $this->currentAppointments = 0;
+            $this->packageStatus = 4;
+        } else {
+            $this->packageAppointments = $orgSub->package->monthly_appointments;
+            $this->currentAppointments = $orgSub->logs()->count();
+            $this->packageStatus = $orgSub->status;
+        }
+        // dd($this->packageAppointments);
+
+
         $conditions = DB::table('medical_conditions')
             ->select('id', 'condition', 'created_at')
             ->where('patient_id', $this->patientId)
@@ -207,17 +228,9 @@ class PatientProfile extends Component
                 $query->where('patient_id', $this->patientId);
             })->limit(7)->get();
 
-        // dd($prescribers);
-        // query()->where('organization_id', Auth::user()->org_id)->get();
-        // $prescribers->appointments
-        //     ->where('appointments.patient_id', $this->patientId)
-        //     ->groupBy('prescribers.id')
-        //     ->limit(5)
-        //     ->get();
-
         $appointments = $patient->appontments()
             ->orderByDesc('date_of_visit')
-            ->paginate(12);
+            ->paginate(15);
 
         if (sizeof($appointments) == 0) {
             $this->firstTime = true;

@@ -16,7 +16,8 @@ class OrganizationSubscription extends Model
     const UNSUBSCRIBED = 1;
     const SUBSCRIBED = 2;
     const PAID = 3;
-    const BLOCKED = 4;
+    const CONFIRMED = 4;
+    const BLOCKED = 5;
 
     protected $casts = [
         'status' => 'integer',
@@ -47,5 +48,10 @@ class OrganizationSubscription extends Model
     public function confirmedBy(): BelongsTo
     {
         return $this->belongsTo(Admin::class, 'confirmed_by');
+    }
+
+    public function logs(): HasMany
+    {
+        return $this->hasMany(AppointmentsLog::class, 'org_subscription_id');
     }
 }

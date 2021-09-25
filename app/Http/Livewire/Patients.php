@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Events\FirstAppointment;
+use App\Models\OrganizationSubscription;
 use App\Models\Patient;
 use App\Models\User;
 use Carbon\Carbon;
@@ -37,6 +38,8 @@ class Patients extends Component
     public $profilePhoto;
 
     public $districts = [];
+
+    public $packageStatus = 4;
 
     public function newCode()
     {
@@ -194,6 +197,16 @@ class Patients extends Component
 
     public function render()
     {
+        $orgSub = OrganizationSubscription::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->where('status', 2)
+            ->latest()->first();
+        if ($orgSub == null) {
+            $this->packageStatus = 4;
+        } else {
+            $this->packageStatus = $orgSub->status;
+        }
+
         if ($this->searchTerm != null) {
             $patients = Patient::where('organization_id', Auth::user()->org_id)
                 ->where(function ($query) {
@@ -201,10 +214,10 @@ class Patients extends Component
                         ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
                         ->orWhere('patient_code', 'like', '%' . $this->searchTerm . '%');
                 })
-                ->latest()->paginate(5);
+                ->latest()->paginate(15);
         } else {
             $patients = Patient::where('organization_id', Auth::user()->org_id)
-                ->latest()->paginate(5);
+                ->latest()->paginate(15);
         }
 
 

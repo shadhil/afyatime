@@ -47,11 +47,37 @@ if (!function_exists('send_sms')) {
 }
 
 if (!function_exists('store_appointments_logs')) {
-    function store_appointments_logs($appId, $orgId)
+    function store_appointments_logs($appId, $subId)
     {
         \App\Models\AppointmentsLog::create([
             'appointment_id' => $appId,
-            'organization_id' => $orgId,
+            'org_subscription_id' => $subId,
         ]);
+    }
+}
+
+if (!function_exists('is_subscription_paid')) {
+    function is_subscription_paid($orgId)
+    {
+        $result = \App\Models\OrganizationSubscription::query()
+            ->where('organization_id', $orgId)
+            ->where(function ($query) {
+                $query->where('status', '1')
+                    ->orWhere('status', '4');
+            })->first();
+
+        return $result == null ? false : true;
+    }
+}
+
+if (!function_exists('organization_admins')) {
+    function organization_admins($orgId)
+    {
+        $result = \App\Models\User::query()
+            ->where('org_id', $orgId)
+            ->where('is_admin', 1)
+            ->get();
+
+        return $result;
     }
 }

@@ -6,6 +6,7 @@ use App\Mail\EndSubscriptionMail;
 use App\Mail\RenewSubscriptionMail;
 use App\Models\OrganizationSubscription;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -43,32 +44,37 @@ class SubscriptionCheck extends Command
      */
     public function handle()
     {
-        $subscriptions = DB::table('organization_subscriptions')
-            ->join('organizations', 'organizations.id', '=', 'organization_subscriptions.organization_id')
-            ->select('organizations.id', 'organizations.name', 'organizations.email', 'organizations.phone_number', 'organization_subscriptions.end_date')
-            ->where('organization_subscriptions.status', 'Subscribed')->get();
+        $today = CarbonImmutable::parse(\Carbon\Carbon::now()->format('Y-m-d'));
 
-        $currentDate = Carbon::now('Africa/Dar_es_Salaam');
-        foreach ($subscriptions as $subscription) {
-            $dateDiff = Carbon::parse($subscription->end_date)->diffInDays($currentDate, false);
-            if ($dateDiff == 7 || $dateDiff == 3 || $dateDiff == 0) {
-                $details = [
-                    'title' => 'Please Renew Subscription',
-                    'body' => 'Hi! ' . $subscription->name . ' your subscription is about, ' . $dateDiff . ' day(s) have remained. Please follow the required steps to renew the organization subscription account'
-                ];
-                Mail::to($subscription->email)->send(new RenewSubscriptionMail($details));
-            } elseif ($dateDiff == -1) {
-                $updatedUser = OrganizationSubscription::where('organization_id', $subscription->id)
-                    ->where('status', 'Subscribed')
-                    ->update(['status' => 'UnSubscribed']);
-                $details = [
-                    'title' => 'Please Renew Subscription',
-                    'body' => 'Hi! ' . $subscription->name . ' your subscription is about, ' . $dateDiff . ' day(s) have remained. Please follow the required steps to renew the organization subscription account'
-                ];
-                Mail::to($subscription->email)->send(new EndSubscriptionMail($details));
+        $endSubs = OrganizationSubscription::query()
+            ->where('end_date', '<', $today)
+            ->where('status', 2)
+            ->get();
+
+        foreach ($endSubs as $subscription) {
+            $endDate = CarbonImmutable::parse($subscription->end_date);
+            $diffDay = $today->diffInDays($endDate, false);
+            if ($diffDay == -2) {
+                $subscription->status = 1;
+                $subscription->save();
             }
         }
 
-        return 0;
+        $unSubs = OrganizationSubscription::query()
+            ->where('end_date', '>', $today)
+            ->where('status', 1)
+            ->get();
+
+
+        foreach ($unSubs as $subscription) {
+            $endDate = CarbonImmutable::parse($subscription->end_date);
+            $diffDay = $today->diffInDays($endDate, false);
+            if ($diffDay <= -2) {
+                if (is_subscription_paid($subscription->organization_id)) {
+                    $subscription->status = 2;
+                    $subscription->save();
+                }
+            }
+        }
     }
 }

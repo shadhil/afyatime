@@ -79,7 +79,7 @@
                         </table>
                     </div>
 
-                    <div class="mt-4">
+                    <div class="mt-4 float-right">
                         {{ $appointments->links() }}
                     </div>
                 </div>

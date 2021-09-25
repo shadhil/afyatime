@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class AppointmentReminder extends Mailable
+class SubscriptionReminderMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -25,7 +25,7 @@ class AppointmentReminder extends Mailable
      */
     public function build()
     {
-        return $this->subject('Subscription Reminder')
+        return $this->subject('Welcome to AfyaTrack')
             ->from('no-reply@afyatime.co.tz', 'AfyaTime')
             ->to($this->details['email'])
             ->replyTo('support@afyatime.co.tz')

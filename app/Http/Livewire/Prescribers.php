@@ -33,7 +33,8 @@ class Prescribers extends Component
 
     public $prescriberId = null;
     public $userId = null;
-    protected $packageSubscribers = 2;
+    public $packageSubscribers = 2;
+    public $packageStatus = 1;
 
     public $searchTerm = null;
 
@@ -42,14 +43,14 @@ class Prescribers extends Component
 
     public function createPrescriber()
     {
-        // dd($this->state['is_admin']);
+        // dd($this->packageSubscribers);
 
         $allPrescribers = Prescriber::query()
             ->where('organization_id', Auth::user()->org_id)
             ->count();
 
         if ($allPrescribers >= $this->packageSubscribers) {
-            $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'You can not add New Prescriber, the list is full']);
+            $this->dispatchBrowserEvent('show-error-toastr', ['message' => 'You subscription package can not allow you to add a new Prescriber, upgrade your package!']);
         } else {
 
             Validator::make($this->state, [
@@ -200,8 +201,16 @@ class Prescribers extends Component
     {
         $orgSub = OrganizationSubscription::query()
             ->where('organization_id', Auth::user()->org_id)
+            ->where('status', 2)
             ->latest()->first();
-        $this->packageSubscribers = $orgSub->package->max_prescribers;
+        if ($orgSub == null) {
+            $this->packageSubscribers = 0;
+            $this->packageStatus = 4;
+        } else {
+            $this->packageSubscribers = $orgSub->package->max_prescribers;
+            $this->packageStatus = $orgSub->status;
+        }
+        // dd($orgSub->package->max_prescribers);
 
         if ($this->searchTerm != null) {
             $prescribers = Prescriber::query()
@@ -210,11 +219,11 @@ class Prescribers extends Component
                     $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
                         ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%');
                 })
-                ->latest()->limit($this->packageSubscribers)->paginate(5);
+                ->latest()->limit($this->packageSubscribers)->paginate(15);
         } else {
             $prescribers = Prescriber::query()
                 ->where('prescribers.organization_id', Auth::user()->org_id)
-                ->latest()->limit($this->packageSubscribers)->paginate(5);
+                ->latest()->limit($this->packageSubscribers)->paginate(15);
         }
 
         $prescriberTypes = PrescriberType::all();

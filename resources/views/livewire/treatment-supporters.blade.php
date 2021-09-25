@@ -80,16 +80,19 @@
                             </tbody>
                         </table>
                     </div>
-
-                    {{ $supporters->links() }}
+                    <div class="mt-4 float-right">
+                        {{ $supporters->links() }}
+                    </div>
                 </div>
             </div>
 
+            @if ($packageStatus == 2)
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addSupporter">
                     <span class="btn-icon icofont-plus"></span>
                 </button>
             </div>
+            @endif
         </div>
     </div>
 

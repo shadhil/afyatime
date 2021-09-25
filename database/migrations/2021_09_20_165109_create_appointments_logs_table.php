@@ -17,13 +17,13 @@ class CreateAppointmentsLogsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('appointment_id')->nullable();
             // $table->tinyInteger('total_sms');
-            $table->unsignedBigInteger('organization_id')->nullable();
+            $table->unsignedBigInteger('org_subscription_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             //FOREIGN KEY CONSTRAINTS
             $table->foreign('appointment_id')->references('id')->on('appointments')->onUpdate('cascade')->onDelete('set null');
-            $table->foreign('organization_id')->references('id')->on('organizations')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('org_subscription_id')->references('id')->on('organization_subscriptions')->onUpdate('cascade')->onDelete('set null');
         });
     }
 

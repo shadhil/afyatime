@@ -15,12 +15,12 @@ class AppointmentsLog extends Model
 
     protected $fillable = [
         'appointment_id',
-        'organization_id'
+        'org_subscription_id'
     ];
 
-    public function organization(): BelongsTo
+    public function subscription(): BelongsTo
     {
-        return $this->belongsTo(Organization::class, 'organization_id');
+        return $this->belongsTo(OrganizationSubscription::class, 'org_subscription_id');
     }
 
     public function appointment(): BelongsTo

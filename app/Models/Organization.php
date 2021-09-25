@@ -67,11 +67,6 @@ class Organization extends Model
         return $this->morphMany(User::class, 'account');
     }
 
-    public function logs(): HasMany
-    {
-        return $this->hasMany(AppointmentsLog::class, 'organization_id');
-    }
-
     public function latestSubscription()
     {
         return $this->hasOne(OrganizationSubscription::class)->latestOfMany();

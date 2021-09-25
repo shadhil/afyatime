@@ -93,14 +93,13 @@
                         </table>
                     </div>
 
-                    <div class="mt-4">
+                    <div class="mt-4 float-right">
                         {{ $patients->links() }}
                     </div>
                 </div>
             </div>
 
-            @if (Str::contains('prescriber', Auth::user()->account_type) || Auth::user()->account_type ==
-            'organization')
+            @if (Auth::user()->isAdmin() && $packageStatus == 2)
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addPatient">
                     <span class="btn-icon icofont-plus"></span>

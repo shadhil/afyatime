@@ -22,7 +22,6 @@ class CreateOrganizationSubscriptionsTable extends Migration
             $table->unsignedTinyInteger('package_id');
             $table->string('payment_ref', 50)->nullable();
             $table->bigInteger('total_price')->nullable();
-            $table->smallInteger('remaining_appointments')->nullable();
             $table->tinyInteger('status');
             $table->timestamps();
 

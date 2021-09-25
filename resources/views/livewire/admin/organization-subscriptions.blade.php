@@ -154,9 +154,10 @@
                             <select class="form-control rounded @error('status') is-invalid @enderror"
                                 wire:model.defer="state.status" id="status" name="status">
                                 <option class="d-none">Subscription Status</option>
-                                <option value="3">Paid </option>
                                 <option value="2">Subscribed </option>
                                 <option value="1">UnSubscribed </option>
+                                <option value="3">Paid </option>
+                                <option value="4">Payment Confirmed</option>
                                 <option value="4">Blocked </option>
                             </select>
                             @error('status')
@@ -221,7 +222,8 @@
                                 wire:target="createSubscription">
                                 <span class="btn-loader icofont-spinner"></span>
                             </button>
-                            <button type="button" class="btn btn-info btn-load" wire:loading wire:target="updateSubscription">
+                            <button type="button" class="btn btn-info btn-load" wire:loading
+                                wire:target="updateSubscription">
                                 <span class="btn-loader icofont-spinner"></span>
                             </button>
 

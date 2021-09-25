@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\OrganizationSubscription;
 use App\Models\TreatmentSupporter;
 use App\Models\User;
 use Carbon\Carbon;
@@ -37,6 +38,7 @@ class TreatmentSupporters extends Component
 
     public $districts = [];
 
+    public $packageStatus = 4;
 
     public function createSupporter()
     {
@@ -169,15 +171,25 @@ class TreatmentSupporters extends Component
 
     public function render()
     {
+        $orgSub = OrganizationSubscription::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->where('status', 2)
+            ->latest()->first();
+        if ($orgSub == null) {
+            $this->packageStatus = 4;
+        } else {
+            $this->packageStatus = $orgSub->status;
+        }
+
         if ($this->searchTerm != null) {
             $supporters = TreatmentSupporter::query()
                 ->where('organization_id', Auth::user()->org_id)
                 ->where('full_name', 'like', '%' . $this->searchTerm . '%')
-                ->latest()->paginate(5);
+                ->latest()->paginate(15);
         } else {
             $supporters = TreatmentSupporter::query()
                 ->where('organization_id', Auth::user()->org_id)
-                ->latest()->paginate(5);
+                ->latest()->paginate(15);
         }
 
 

@@ -188,14 +188,17 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="mt-4 float-right">
+                                {{ $appointments->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @if (Auth::user()->account_type == 'prescriber')
+            @if (Auth::user()->account_type == 'prescriber' && $packageAppointments >= $currentAppointments)
             <div class="add-action-box">
                 <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addAppointment">
-                    <span class="btn-icon icofont-stethoscope-alt"></span>
+                    <span class="btn-icon icofont-tasks"></span>
                 </button>
             </div>
             @endif
