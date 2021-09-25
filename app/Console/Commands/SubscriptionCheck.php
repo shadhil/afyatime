@@ -70,7 +70,7 @@ class SubscriptionCheck extends Command
             $endDate = CarbonImmutable::parse($subscription->end_date);
             $diffDay = $today->diffInDays($endDate, false);
             if ($diffDay <= -2) {
-                if (is_subscription_paid($subscription->organization_id)) {
+                if (subscription_payment_confirmed($subscription->organization_id)) {
                     $subscription->status = 2;
                     $subscription->save();
                 }

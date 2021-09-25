@@ -72,8 +72,10 @@ class DailyReminder extends Command
             $noon = Carbon::parse('12:00:00');
             $before_12 = CarbonImmutable::parse($appointment->visit_time)->subRealHours(12);
 
-            $subscription = $appointment->organization->latestSubscription->package;
-            $reminderCount = $subscription->reminder_msg;
+            $subscription = $appointment->organization->latestSubscription;;
+            $reminderCount = $subscription->package->reminder_msg;
+            $appId = $appointment->id;
+            $subId = $subscription->id;
 
             $details = [
                 'msg' => "Ndugu " . $appointment->patient->first_name . " " . $appointment->patient->last_name . " Unakumbushwa miadi yako ya kuhudhuria kliniki tarehe " . $visitDay->format('d/m/Y') . " kuanzai saa " . $visitTime->format('h:m A') . " bila kukosa kwenye kituo chako cha " . $appointment->organization->known_as . ". ",
@@ -99,6 +101,7 @@ class DailyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
+                    store_appointments_logs($appId, $subId);
                 }
             }
         }
@@ -140,8 +143,10 @@ class DailyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
+                    store_appointments_logs($appId, $subId);
                 }
             } elseif ($now->isSameHour($before_1) && ($reminderCount == 3 || $reminderCount == 2)) {
+                // dd($details['phone'] . ' - ' . $details['msg']);
                 send_sms($details['phone'], $details['msg']);
                 if ($details['email'] != null) {
                     Mail::to($details['email'])->send(new AppointmentReminder($details));
@@ -149,6 +154,7 @@ class DailyReminder extends Command
                 if ($supporter != null) {
                     send_sms($phone_supporter, $msg_supporter);
                 }
+                store_appointments_logs($appId, $subId);
             } elseif ($now->isSameHour($before_6)) {
                 send_sms($details['phone'], $details['msg']);
                 if ($details['email'] != null) {
@@ -157,6 +163,7 @@ class DailyReminder extends Command
                 if ($supporter != null) {
                     send_sms($phone_supporter, $msg_supporter);
                 }
+                store_appointments_logs($appId, $subId);
             }
         }
     }

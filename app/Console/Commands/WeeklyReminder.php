@@ -54,10 +54,13 @@ class WeeklyReminder extends Command
         foreach ($appointments as $appointment) {
             $visitDay = CarbonImmutable::parse($appointment->date_of_visit);
             $visitTime = CarbonImmutable::parse($appointment->visit_time);
+            $before_1 = CarbonImmutable::parse($appointment->visit_time)->subRealHour();
             // dd($visitTime->format('h:m A'));
 
-            $subscription = $appointment->organization->latestSubscription->package;
-            $reminderCount = $subscription->reminder_msg;
+            $subscription = $appointment->organization->latestSubscription;;
+            $reminderCount = $subscription->package->reminder_msg;
+            $appId = $appointment->id;
+            $subId = $subscription->id;
 
             $details = [
                 'msg' => "Ndugu " . $appointment->patient->first_name . " " . $appointment->patient->last_name . " Unakumbushwa miadi yako ya kuhudhuria kliniki tarehe " . $visitDay->format('d/m/Y') . " kuanzai saa " . $visitTime->format('h:m A') . " bila kukosa kwenye kituo chako cha " . $appointment->organization->known_as . ". ",
@@ -84,9 +87,11 @@ class WeeklyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
+                    store_appointments_logs($appId, $subId);
                 }
-            } elseif ($diffDay == 0 && ($reminderCount == 2 || $reminderCount == 2)) {
-                if ($now->diffInRealHours($visitTime) == 0) {
+            } elseif ($diffDay == 0 && ($reminderCount == 3 || $reminderCount == 2)) {
+                // dd($appointment->visit_time);
+                if ($now->isSameHour($before_1)) {
                     send_sms($details['phone'], $details['msg']);
                     if ($details['email'] != null) {
                         Mail::to($details['email'])->send(new AppointmentReminder($details));
@@ -94,8 +99,8 @@ class WeeklyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
+                    store_appointments_logs($appId, $subId);
                 }
-                dd('Zero Days Before');
             } elseif ($diffDay == 1) {
                 if ($now->isSameHour($visitTime)) {
                     send_sms($details['phone'], $details['msg']);
@@ -105,6 +110,7 @@ class WeeklyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
+                    store_appointments_logs($appId, $subId);
                 }
             }
         }

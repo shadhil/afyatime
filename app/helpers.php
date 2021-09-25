@@ -42,7 +42,7 @@ if (!function_exists('send_sms')) {
             'Authorization' => 'Basic bmppd2F0ZWNoOkZseWluZ2NvbG91cnNAIzAx',
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "' . $msg . ' Shukrani – AFYATIME."}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
+        ])->withBody('{"from": "NEXTSMS", "to": "' . sms_phone_number($phone) . '", "text": "' . $msg . ' Shukrani – AFYATIME."}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
     }
 }
 
@@ -65,6 +65,19 @@ if (!function_exists('is_subscription_paid')) {
                 $query->where('status', '1')
                     ->orWhere('status', '4');
             })->first();
+
+        return $result == null ? false : true;
+    }
+}
+
+
+if (!function_exists('subscription_payment_confirmed')) {
+    function subscription_payment_confirmed($orgId)
+    {
+        $result = \App\Models\OrganizationSubscription::query()
+            ->where('organization_id', $orgId)
+            ->where('status', '4')
+            ->first();
 
         return $result == null ? false : true;
     }

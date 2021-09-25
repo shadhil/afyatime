@@ -24,8 +24,7 @@ class CreatePrescriberTypesTable extends Migration
 
         DB::table('prescriber_types')->insert([
             [
-                'title' => 'Doctor',
-                'initial' => 'Dr.'
+                'title' => 'Doctor'
             ],
             [
                 'title' => 'Nurse'
