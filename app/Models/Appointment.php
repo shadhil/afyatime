@@ -19,7 +19,7 @@ class Appointment extends Model
         'date_of_visit',
         'visit_time',
         'organization_id',
-        'receiver_id',
+        'received_by',
     ];
 
     public function organization(): BelongsTo

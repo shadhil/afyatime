@@ -12,9 +12,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Dashboard extends Component
 {
+    use WithPagination;
+    protected $paginationTheme = "bootstrap";
+
     public $state = [];
     public $subscriberId;
 
@@ -76,7 +80,7 @@ class Dashboard extends Component
         $appointments = Appointment::query()
             ->where('organization_id', Auth::user()->org_id)
             ->orderByDesc('date_of_visit')
-            ->paginate(5);
+            ->limit(15)->get();
 
         $subscription = OrganizationSubscription::query()
             ->where('organization_id', Auth::user()->org_id)

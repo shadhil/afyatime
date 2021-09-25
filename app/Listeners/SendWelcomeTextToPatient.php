@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class SendWelcomeTextToPatient
+class SendWelcomeTextToPatient implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -30,18 +30,14 @@ class SendWelcomeTextToPatient
      */
     public function handle(FirstAppointment $event)
     {
-        $current_timestamp = Carbon::now('Africa/Dar_es_Salaam')->toDateTimeString();
+        $patient = $event->patient;
+        $phone = sms_phone_number($patient['phone']);
 
-        $patientInfo = $event->patient;
-
-        $phone = Str::replace(' ', '', $patientInfo['phone']);
-        $phone = Str::start(Str::substr($phone, -9), '255');
-
-        $response = Http::withHeaders([
-            'Authorization' => 'Basic c2hhenk6bXlkdXR5IzMxMTA=',
+        Http::withHeaders([
+            'Authorization' => 'Basic bmppd2F0ZWNoOkZseWluZ2NvbG91cnNAIzAx',
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "Habari! Umeunganishwa kwenye mfumo wa AfyaTime, ambao utakusaidia kukumbusha siku zako za kuja hospitali zinapokaribia, bure bila malipo yoyote yale. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
+        ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "Ndugu ' . $patient["name"] . ' Karibu AFYATIME. Umeunganishwa kwenye mfumo wa kukumbushwa kuhudhuria miadi yako ya kliniki kwa njia ya SMS. Kituo chako cha kliniki ni ' . $patient["clinic"] . '. Karibu – AFYATIME. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
         // return json_decode($response->body());
     }
 }

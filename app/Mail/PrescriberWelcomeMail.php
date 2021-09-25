@@ -30,9 +30,10 @@ class PrescriberWelcomeMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('AfyaTime - New Prescriber')
-            ->markdown('emails.prescriber-welcome-mail', $this->details)
-            ->from('no-reply@afyatime.co.tz', 'AfyaTime - Patient Reminder App')
-            ->replyTo('support@afyatime.co.tz');
+        return $this->subject('Welcome to AfyaTrack')
+            ->from('no-reply@afyatime.co.tz', 'AfyaTime')
+            ->to($this->details['email'])
+            ->replyTo('support@afyatime.co.tz')
+            ->markdown('emails.prescriber-welcome-mail', $this->details);
     }
 }

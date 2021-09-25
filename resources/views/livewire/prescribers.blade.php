@@ -111,7 +111,7 @@
             @endif
         </div>
 
-        <div class="page-content">
+        {{-- <div class="page-content">
             <div class="row">
                 @if (sizeof($prescribers)>0)
                 @foreach ($prescribers as $prescriber)
@@ -163,7 +163,7 @@
                 </button>
             </div>
             @endif
-        </div>
+        </div> --}}
     </div>
 
     <!-- Add appointment modals -->

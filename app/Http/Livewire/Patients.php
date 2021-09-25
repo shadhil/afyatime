@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Events\FirstAppointment;
 use App\Models\Patient;
 use App\Models\User;
 use Carbon\Carbon;
@@ -186,16 +187,26 @@ class Patients extends Component
 
 
 
-    public function searchPrescriber()
+    public function searchPatient()
     {
-        dd($this->searchTerm);
+        // dd($this->searchTerm);
     }
 
     public function render()
     {
-        $patients = Patient::where('organization_id', Auth::user()->org_id)
-            ->latest()
-            ->paginate(5);
+        if ($this->searchTerm != null) {
+            $patients = Patient::where('organization_id', Auth::user()->org_id)
+                ->where(function ($query) {
+                    $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                        ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                        ->orWhere('patient_code', 'like', '%' . $this->searchTerm . '%');
+                })
+                ->latest()->paginate(5);
+        } else {
+            $patients = Patient::where('organization_id', Auth::user()->org_id)
+                ->latest()->paginate(5);
+        }
+
 
         if (!empty($this->state['region_id'])) {
             $this->districts = DB::table('districts')

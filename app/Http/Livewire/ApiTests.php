@@ -15,6 +15,7 @@ class ApiTests extends Component
 {
     public function render()
     {
+        dd(now());
         // dd(__DIR__);
         // $response = Http::get('https://fakerestapi.azurewebsites.net/api/v1/Activities');
         // $body = json_decode($response->body());

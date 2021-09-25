@@ -7,15 +7,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class PatientWelcomeMail extends Mailable
+class AppointmentReminder extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $patient;
+    public $details;
 
-    public function __construct($patient)
+    public function __construct($details)
     {
-        $this->patient = $patient;
+        $this->details = $details;
     }
 
     /**
@@ -25,10 +25,10 @@ class PatientWelcomeMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Welcome to AfyaTrack')
+        return $this->subject('Appointment Reminder')
             ->from('no-reply@afyatime.co.tz', 'AfyaTime')
-            ->to($this->patient['email'])
+            ->to($this->details['email'])
             ->replyTo('support@afyatime.co.tz')
-            ->markdown('emails.patient-welcome-mail', $this->patient);
+            ->markdown('emails.appointment-reminder-mail', $this->details);
     }
 }

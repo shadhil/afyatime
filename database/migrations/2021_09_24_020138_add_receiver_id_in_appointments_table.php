@@ -14,9 +14,9 @@ class AddReceiverIdInAppointmentsTable extends Migration
     public function up()
     {
         Schema::table('appointments', function (Blueprint $table) {
-            $table->unsignedBigInteger('receiver_id')->nullable();
+            $table->unsignedBigInteger('received_by')->nullable();
 
-            $table->foreign('receiver_id')->references('id')->on('prescribers')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('received_by')->references('id')->on('prescribers')->onUpdate('cascade')->onDelete('set null');
         });
     }
 
@@ -28,7 +28,7 @@ class AddReceiverIdInAppointmentsTable extends Migration
     public function down()
     {
         Schema::table('appointments', function (Blueprint $table) {
-            $table->dropForeign('receiver_id');
+            $table->dropForeign('received_by');
         });
     }
 }

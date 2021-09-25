@@ -137,7 +137,7 @@
                                             </div>
                                         </td>
                                         <td class="text-right text-muted">
-                                            {{ \Carbon\Carbon::parse($patient->created_at)->format('M d, Y') }}
+                                            {{ \Carbon\Carbon::parse($patient->created_at)->format('d/m/Y') }}
                                         </td>
                                     </tr>
                                     @endforeach
@@ -163,7 +163,7 @@
                                     <tr>
                                         <td class="text-muted">{{ $supporter->full_name }}</td>
                                         <td class="text-center"><span
-                                                class="badge badge-success rounded-0">{{ $supporter->patients }}</span>
+                                                class="badge badge-success rounded-0">{{ $supporter->patients()->count() }}</span>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -185,9 +185,9 @@
                                         <tr>
                                             <th scope="col">Photo</th>
                                             <th scope="col" class="text-center">Name</th>
-                                            <th scope="col" class="text-center">Phone</th>
-                                            <th scope="col" class="text-center">Date</th>
-                                            <th scope="col" class="text-center">Visit Time</th>
+                                            {{-- <th scope="col" class="text-center">Phone</th> --}}
+                                            <th scope="col" class="text-center">Visit Date</th>
+                                            <th scope="col" class="text-center"> Time</th>
                                             <th scope="col" class="text-center">Prescriber</th>
                                         </tr>
                                     </thead>
@@ -196,16 +196,14 @@
                                         @foreach ($appointments as $appointment)
                                         <tr>
                                             <td>
-                                                <img src="{{ $appointment->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($appointment->photo) }}"
+                                                <img src="{{ $appointment->patient->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($appointment->patient->photo) }}"
                                                     alt="" width="40" height="40" class="rounded-500">
                                             </td>
                                             <td align="center">
-                                                <strong>{{ $appointment->pf_name }} {{ $appointment->pl_name }}</strong>
+                                                <strong>{{ $appointment->patient->first_name }}
+                                                    {{ $appointment->patient->last_name }}</strong>
                                             </td>
-                                            <td align="center">
-                                                <div class="text-muted text-nowrap">{{ $appointment->phone_number }}
-                                                </div>
-                                            </td>
+
                                             <td align="center">
                                                 <div class="text-muted text-nowrap">
                                                     {{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('d/m/Y')  }}
@@ -213,18 +211,13 @@
                                             </td>
                                             <td align="center">
                                                 <div class="text-muted text-nowrap">
-                                                    @if (empty($appointment->time_to))
-                                                    {{ \Carbon\Carbon::parse($appointment->time_from)->format('h:i A') }}
-                                                    @else
-                                                    {{ \Carbon\Carbon::parse($appointment->time_from)->format('h:i A') }}
-                                                    -
-                                                    {{ \Carbon\Carbon::parse($appointment->time_to)->format('h:i A') }}
-                                                    @endif
+                                                    {{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}
                                                 </div>
                                             </td>
-                                            <td align="center">{{ $appointment->initial }}
-                                                {{ $appointment->first_name }}
-                                                {{ $appointment->last_name }}</td>
+                                            <td align="center">
+                                                {{ $appointment->prescriber->prescriber_type->initial ?? '' }}
+                                                {{ $appointment->prescriber->first_name }}
+                                                {{ $appointment->prescriber->last_name }}</td>
                                         </tr>
                                         @endforeach
                                         @else
@@ -350,17 +343,5 @@
         toastr.success(event.detail.message, 'Success!');
     })
 
-    //  window.addEventListener('show-delete-modal', event => {
-    //     $('#confirmationModal').modal('show');
-    // })
-
-    // window.addEventListener('hide-delete-modal', event => {
-    //     $('#confirmationModal').modal('hide');
-    //     toastr.success(event.detail.message, 'Success!');
-    // })
-
-        // window.addEventListener('hide-appointment-modal', event => {
-        //     $('#add-admin').modal('hide');
-        // })
 </script>
 @endpush

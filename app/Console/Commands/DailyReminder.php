@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\AppointmentReminder;
 use App\Mail\Gmail;
 use App\Mail\SubscriptionPaidMail;
+use App\Models\Appointment;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
@@ -26,7 +28,7 @@ class DailyReminder extends Command
      *
      * @var string
      */
-    protected $description = 'Respectively send an exclusive email and SMS to everyone whose appointment day is approaching.';
+    protected $description = 'Send an email and SMS to everyone who has appointment visit daily';
 
     /**
      * Create a new command instance.
@@ -45,138 +47,117 @@ class DailyReminder extends Command
      */
     public function handle()
     {
-        $dt = CarbonImmutable::now('Africa/Dar_es_Salaam');
-        $current_time = $dt->toTimeString();
-        $current_date = $dt->toDateString();
-        $earlyMorning = Carbon::parse('05:00');
-        $lateMorning = Carbon::parse('18:00');
+        $tomorrow = CarbonImmutable::parse(\Carbon\Carbon::now()->addRealDay(1)->format('Y-m-d'));
+        $today = CarbonImmutable::parse(\Carbon\Carbon::now()->format('Y-m-d'));
+        $now = CarbonImmutable::parse(\Carbon\Carbon::now()->format('H:i:s'));
 
-        $future = $dt->addDays(7)->toDateString();
-        $now = $dt->toDateString();
-
-        if ($lateMorning->isSameHour($dt)) {
-            $activeOrgs = DB::table('organizations')
-                ->join('organization_subscriptions', 'organizations.id', '=', 'organization_subscriptions.organization_id')
-                ->select('organizations.*')
-                ->where('organization_subscriptions.status', 'Subscribed')
-                ->groupBy('organizations.id');
-
-            $patients = DB::table('patients')
-                ->leftJoin('treatment_supporters', 'treatment_supporters.id', '=', 'patients.supporter_id')
-                ->select('patients.*', 'treatment_supporters.phone_number as supporter_phone', 'treatment_supporters.email as supporter_email')
-                ->groupBy('patients.id');
-
-            $appointments = DB::table('appointments')
-                ->joinSub($activeOrgs, 'active_orgs', function ($join) {
-                    $join->on('appointments.organization_id', '=', 'active_orgs.id');
-                })
-                ->joinSub($patients, 'patients', function ($join) {
-                    $join->on('patients.id', '=', 'appointments.patient_id');
-                })
-                ->join('medical_conditions', 'medical_conditions.id', '=', 'appointments.condition_id')
-                ->select('appointments.date_of_visit', 'appointments.time_from', 'active_orgs.name', 'patients.first_name', 'patients.last_name', 'patients.email', 'patients.phone_number', 'patients.supporter_phone', 'patients.supporter_email', 'medical_conditions.condition')
-                ->whereBetween('appointments.date_of_visit', [$now, $future])
-                ->groupBy('appointments.id')
-                ->get();
-
-            foreach ($appointments as $appointment) {
-
-                $dateDiff = Carbon::parse($appointment->date_of_visit)->diffInDays($current_date, false);
-                $appointmentDate = "siku ya leo";
-                if ($dateDiff == 7 || $dateDiff == 3 || $dateDiff == 0) {
-                    if ($dateDiff == 7 || $dateDiff == 3) {
-                        $appointmentDate =
-                            Carbon::createFromFormat('Y-m-d', $appointment->date_of_visit)->format('F j, Y');
-                    }
-                    $phone = Str::replace(' ', '', $appointment->phone_number);
-                    $phone = Str::start(Str::substr($phone, -9), '255');
+        // dd($tomorrow);
 
 
-                    $response = Http::withHeaders([
-                        'Authorization' => 'Basic c2hhenk6bXlkdXR5IzMxMTA=',
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json'
-                    ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "Habari! ' . $appointment->first_name . ' ' . $appointment->last_name . ', Kupitia ' . $appointment->name . ' tunakumbushwa unatakiwa kuhudhuria kwenye kituo chako cha afya ' . $appointmentDate . '.    Taarifa hii inafikishwa kwako kupitia mfumo wa AfyaTime. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
+        $tomorrow_apps = Appointment::query()
+            ->where('date_of_visit', $tomorrow)
+            ->where('app_type', 'daily')
+            ->take(50)->get();
 
-                    if ($appointment->email) {
-                        $details = [
-                            'title' => 'Appointment Reminder',
-                            'body' => 'Habari! ' . $appointment->first_name . ' ' . $appointment->last_name . ', Kupitia ' . $appointment->name . ' tunakumbushwa unatakiwa kuhudhuria kwenye kituo chako cha afya ' . $appointmentDate . '.    Taarifa hii inafikishwa kwako kupitia mfumo wa AfyaTime.'
-                        ];
-                        Mail::to($appointment->email)->send(new SubscriptionPaidMail($details));
-                    }
+        $today_apps = Appointment::query()
+            ->where('date_of_visit', $today)
+            ->where('app_type', 'daily')
+            ->take(50)->get();
 
-                    if ($appointment->supporter_phone) {
+        // dd($appointments);
 
-                        $supporterPhone = Str::replace(' ', '', $appointment->supporter_phone);
-                        $supporterPhone = Str::start(Str::substr($supporterPhone, -9), '255');
+        foreach ($tomorrow_apps as $appointment) {
+            $visitDay = CarbonImmutable::parse($appointment->date_of_visit);
+            $visitTime = CarbonImmutable::parse($appointment->visit_time);
+            $noon = Carbon::parse('12:00:00');
+            $before_12 = CarbonImmutable::parse($appointment->visit_time)->subRealHours(12);
 
-                        $response = Http::withHeaders([
-                            'Authorization' => 'Basic c2hhenk6bXlkdXR5IzMxMTA=',
-                            'Content-Type' => 'application/json',
-                            'Accept' => 'application/json'
-                        ])->withBody('{"from": "NEXTSMS", "to": "' . $supporterPhone . '", "text": "Habari! Tafadhali unataarifiwa kupitia ' . $appointment->name . ' kumkumbusha' . $appointment->first_name . ' ' . $appointment->last_name . ', kuhudhuria kwenye kituo chake cha afya ' . $appointmentDate . '.    Taarifa hii inafikishwa kwako kupitia mfumo wa AfyaTime. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
-                    }
+            $subscription = $appointment->organization->latestSubscription->package;
+            $reminderCount = $subscription->reminder_msg;
 
-                    if ($appointment->supporter_email) {
-                        $details = [
-                            'title' => 'Appointment Reminder',
-                            'body' => 'Habari! Tafadhali unataarifiwa kupitia ' . $appointment->name . ' kumkumbusha' . $appointment->first_name . ' ' . $appointment->last_name . ', kuhudhuria kwenye kituo chake cha afya ' . $appointmentDate . '.    Taarifa hii inafikishwa kwako kupitia mfumo wa AfyaTime.'
-                        ];
-                        Mail::to($appointment->supporter_email)->send(new SubscriptionPaidMail($details));
-                    }
-                }
+            $details = [
+                'msg' => "Ndugu " . $appointment->patient->first_name . " " . $appointment->patient->last_name . " Unakumbushwa miadi yako ya kuhudhuria kliniki tarehe " . $visitDay->format('d/m/Y') . " kuanzai saa " . $visitTime->format('h:m A') . " bila kukosa kwenye kituo chako cha " . $appointment->organization->known_as . ". ",
+                'email' => $appointment->patient->email,
+                'phone' => $appointment->patient->phone_number
+            ];
+
+            $supporter = $appointment->patient->supporter;
+            if ($supporter != null) {
+                $phone_supporter = $supporter->phone_number;
+                $msg_supporter = "Ndugu " . $appointment->patient->first_name . " " . $appointment->patient->last_name . " anakumbushwa miadi yake ya kuhudhuria kliniki tarehe " . $visitDay->format('d/m/Y') . " kuanzai saa " . $visitTime->format('h:m A') . " bila kukosa kwenye kituo chako cha " . $appointment->organization->known_as . ". Kama msaidizi wa mgonjwa unaombwa kumkumbusha atimize miadi.";
+            } else {
+                $phone_supporter = null;
+                $msg_supporter = null;
             }
-        } elseif ($earlyMorning->isSameHour($dt)) {
-            $activeOrgs = DB::table('organizations')
-                ->join('organization_subscriptions', 'organizations.id', '=', 'organization_subscriptions.organization_id')
-                ->select('organizations.*')
-                ->where('organization_subscriptions.status', 'Subscribed')
-                ->groupBy('organizations.id');
 
-            $patients = DB::table('patients')
-                ->leftJoin('treatment_supporters', 'treatment_supporters.id', '=', 'patients.supporter_id')
-                ->select('patients.*', 'treatment_supporters.phone_number as supporter_phone', 'treatment_supporters.email as supporter_email')
-                ->groupBy('patients.id');
-
-            $appointments = DB::table('appointments')
-                ->joinSub($activeOrgs, 'active_orgs', function ($join) {
-                    $join->on('appointments.organization_id', '=', 'active_orgs.id');
-                })
-                ->joinSub($patients, 'patients', function ($join) {
-                    $join->on('patients.id', '=', 'appointments.patient_id');
-                })
-                ->join('medical_conditions', 'medical_conditions.id', '=', 'appointments.condition_id')
-                ->select('appointments.date_of_visit', 'appointments.time_from', 'active_orgs.name', 'patients.first_name', 'patients.last_name', 'patients.email', 'patients.phone_number', 'patients.supporter_phone', 'patients.supporter_email', 'medical_conditions.condition')
-                ->whereBetween('appointments.date_of_visit', [$now, $future])
-                ->groupBy('appointments.id')
-                ->get();
-
-            foreach ($appointments as $appointment) {
-
-                $dateDiff = Carbon::parse($appointment->date_of_visit)->diffInDays($current_date, false);
-                if ($dateDiff == 0) {
-                    $phone = Str::replace(' ', '', $appointment->phone_number);
-                    $phone = Str::start(Str::substr($phone, -9), '255');
-                    $appointmentDate =
-                        Carbon::createFromFormat('Y-m-d', $appointment->date_of_visit)->format('F j, Y');
-
-                    $response = Http::withHeaders([
-                        'Authorization' => 'Basic c2hhenk6bXlkdXR5IzMxMTA=',
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json'
-                    ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "Habari! ' . $appointment->first_name . ' ' . $appointment->last_name . ', Kupitia ' . $appointment->name . ' tunakumbushwa unatakiwa kuhudhuria kwenye kituo chako cha afya siku ya leo, ' . $appointmentDate . '.    Taarifa hii inafikishwa kwako kupitia mfumo wa AfyaTime. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
-                    //STore Msg Status
-                    if ($appointment->email) {
-                        $details = [
-                            'title' => 'Appointment Reminder',
-                            'body' => 'Habari! ' . $appointment->first_name . ' ' . $appointment->last_name . ', Kupitia ' . $appointment->name . ' tunakumbushwa unatakiwa kuhudhuria kwenye kituo chako cha afya ' . $appointmentDate . '.    Taarifa hii inafikishwa kwako kupitia mfumo wa AfyaTime.'
-                        ];
-                        Mail::to($appointment->email)->send(new SubscriptionPaidMail($details));
+            if (!$visitTime->greaterThan($noon) && $reminderCount == 3) {
+                if ($now->isSameHour($before_12)) {
+                    send_sms($details['phone'], $details['msg']);
+                    if ($details['email'] != null) {
+                        Mail::to($details['email'])->send(new AppointmentReminder($details));
+                    }
+                    if ($supporter != null) {
+                        send_sms($phone_supporter, $msg_supporter);
                     }
                 }
             }
         }
-        return 0;
+
+        foreach ($today_apps as $appointment) {
+            $visitDay = CarbonImmutable::parse($appointment->date_of_visit);
+            $visitTime = CarbonImmutable::parse($appointment->visit_time);
+            $noon = Carbon::parse('12:00:00');
+            $before_12 = CarbonImmutable::parse($appointment->visit_time)->subRealHours(12);
+            $before_6 = CarbonImmutable::parse($appointment->visit_time)->subRealHours(6);
+            $before_1 = CarbonImmutable::parse($appointment->visit_time)->subRealHours(1);
+
+            // // dd($noon);
+            // dd($visitTime->greaterThan($noon));
+            $subscription = $appointment->organization->latestSubscription->package;
+            $reminderCount = $subscription->reminder_msg;
+
+            $details = [
+                'msg' => "Ndugu " . $appointment->patient->first_name . " " . $appointment->patient->last_name . " Unakumbushwa miadi yako ya kuhudhuria kliniki tarehe " . $visitDay->format('d/m/Y') . " kuanzai saa " . $visitTime->format('h:m A') . " bila kukosa kwenye kituo chako cha " . $appointment->organization->known_as . ". ",
+                'email' => $appointment->patient->email,
+                'phone' => $appointment->patient->phone_number
+            ];
+
+            $supporter = $appointment->patient->supporter;
+            if ($supporter != null) {
+                $phone_supporter = $supporter->phone_number;
+                $msg_supporter = "Ndugu " . $appointment->patient->first_name . " " . $appointment->patient->last_name . " anakumbushwa miadi yake ya kuhudhuria kliniki tarehe " . $visitDay->format('d/m/Y') . " kuanzai saa " . $visitTime->format('h:m A') . " bila kukosa kwenye kituo chako cha " . $appointment->organization->known_as . ". Kama msaidizi wa mgonjwa unaombwa kumkumbusha atimize miadi.";
+            } else {
+                $phone_supporter = null;
+                $msg_supporter = null;
+            }
+
+            if ($visitTime->greaterThan($noon) && $reminderCount == 3) {
+                if ($now->isSameHour($before_12)) {
+                    send_sms($details['phone'], $details['msg']);
+                    if ($details['email'] != null) {
+                        Mail::to($details['email'])->send(new AppointmentReminder($details));
+                    }
+                    if ($supporter != null) {
+                        send_sms($phone_supporter, $msg_supporter);
+                    }
+                }
+            } elseif ($now->isSameHour($before_1) && ($reminderCount == 3 || $reminderCount == 2)) {
+                send_sms($details['phone'], $details['msg']);
+                if ($details['email'] != null) {
+                    Mail::to($details['email'])->send(new AppointmentReminder($details));
+                }
+                if ($supporter != null) {
+                    send_sms($phone_supporter, $msg_supporter);
+                }
+            } elseif ($now->isSameHour($before_6)) {
+                send_sms($details['phone'], $details['msg']);
+                if ($details['email'] != null) {
+                    Mail::to($details['email'])->send(new AppointmentReminder($details));
+                }
+                if ($supporter != null) {
+                    send_sms($phone_supporter, $msg_supporter);
+                }
+            }
+        }
     }
 }

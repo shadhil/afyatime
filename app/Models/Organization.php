@@ -71,4 +71,9 @@ class Organization extends Model
     {
         return $this->hasMany(AppointmentsLog::class, 'organization_id');
     }
+
+    public function latestSubscription()
+    {
+        return $this->hasOne(OrganizationSubscription::class)->latestOfMany();
+    }
 }

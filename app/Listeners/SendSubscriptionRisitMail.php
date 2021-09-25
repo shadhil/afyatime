@@ -29,7 +29,7 @@ class SendSubscriptionRisitMail
     public function handle(SubscriptionConfirmed $event)
     {
         $orgSub = $event->orgSub;
-        if ($orgSub->status = 2) {
+        if ($orgSub->status = '2') {
             // $org = DB::table('organizations')->select('name')->find($details['org_id']);
             $email = $orgSub->organization->email;
             $details = [

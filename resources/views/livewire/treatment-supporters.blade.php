@@ -8,7 +8,7 @@
                         <div class="typeahead__query">
                             <input class="form-control rounded autocomplete-control topbar-search" type="search"
                                 placeholder="Type supporter's name" wire:model="searchTerm"
-                                wire:keydown.enter="searchPatient">
+                                wire:keydown.enter="searchSupporter">
                             <div class="suffix-icon icofont-search"></div>
                         </div>
                     </div>

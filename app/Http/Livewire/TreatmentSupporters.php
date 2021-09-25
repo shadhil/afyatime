@@ -162,17 +162,24 @@ class TreatmentSupporters extends Component
     }
 
 
-    public function searchPrescriber()
+    public function searchSupporter()
     {
-        dd($this->searchTerm);
+        // dd($this->searchTerm);
     }
 
     public function render()
     {
-        $supporters = TreatmentSupporter::query()
-            ->where('organization_id', Auth::user()->org_id)
-            ->latest()
-            ->paginate(5);
+        if ($this->searchTerm != null) {
+            $supporters = TreatmentSupporter::query()
+                ->where('organization_id', Auth::user()->org_id)
+                ->where('full_name', 'like', '%' . $this->searchTerm . '%')
+                ->latest()->paginate(5);
+        } else {
+            $supporters = TreatmentSupporter::query()
+                ->where('organization_id', Auth::user()->org_id)
+                ->latest()->paginate(5);
+        }
+
 
         if (!empty($this->state['region_id'])) {
             $this->districts = DB::table('districts')

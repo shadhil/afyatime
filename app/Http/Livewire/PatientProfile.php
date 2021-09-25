@@ -3,6 +3,8 @@
 namespace App\Http\Livewire;
 
 use App\Events\FirstAppointment;
+use App\Jobs\PatientWelcomeJob;
+use App\Jobs\WelcomePatientJob;
 use App\Models\Appointment;
 use App\Models\MedicalCondition;
 use App\Models\Patient;
@@ -69,13 +71,15 @@ class PatientProfile extends Component
         $newAppointment = Appointment::create($this->state);
 
         if ($newAppointment) {
-            if ($this->firstTime) {
+            if (!$this->firstTime) {
                 $details = [
-                    'name' => $this->patientName,
-                    'phone' => $this->patientPhone,
-                    'email' => $this->patientEmail
+                    'name' => $newAppointment->patient->first_name . ' ' . $newAppointment->patient->last_name,
+                    'email' => $newAppointment->patient->email,
+                    'phone' => $newAppointment->patient->phone_number,
+                    'code' => $newAppointment->patient->patient_code,
+                    'clinic' => $newAppointment->organization->known_as,
                 ];
-                event(new FirstAppointment($details));
+                WelcomePatientJob::dispatch($details);
             }
             $this->dispatchBrowserEvent('hide-appointment-modal', ['message' => 'Appointment added successfully!']);
         }
@@ -129,10 +133,10 @@ class PatientProfile extends Component
         if (!empty($appointment->visit_time)) {
             $this->state['visit_time'] = Carbon::createFromFormat('H:i:s', $appointment->visit_time)->format('h:i A');
         }
-        if (empty($appointment->receiver_id)) {
-            $this->state['receiver_id'] = false;
+        if (empty($appointment->received_by)) {
+            $this->state['received_by'] = false;
         } else {
-            $this->state['receiver_id'] = true;
+            $this->state['received_by'] = true;
         }
 
         $this->dispatchBrowserEvent('show-appointment-modal');
@@ -157,7 +161,7 @@ class PatientProfile extends Component
                 $this->state['visit_time'] = Carbon::createFromFormat('h:i A', $this->state['visit_time'])->format('H:i:s');
             }
 
-            $this->state['receiver_id'] = $this->state['receiver_id'] == true ? Auth::user()->account_id : NULL;
+            $this->state['received_by'] = $this->state['received_by'] == true ? Auth::user()->account_id : NULL;
 
             $updatedAppointment = Appointment::find($this->appointmentId)->update($this->state);
 
@@ -217,6 +221,8 @@ class PatientProfile extends Component
 
         if (sizeof($appointments) == 0) {
             $this->firstTime = true;
+        } else {
+            $this->firstTime = false;
         }
 
         // dd($appointments->);

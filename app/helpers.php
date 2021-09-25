@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 
@@ -31,5 +32,26 @@ if (!function_exists('form_date')) {
     function form_date($date)
     {
         return Carbon::createFromFormat('Y-m-d', $date)->format('m/d/Y');
+    }
+}
+
+if (!function_exists('send_sms')) {
+    function send_sms($phone, $msg)
+    {
+        Http::withHeaders([
+            'Authorization' => 'Basic bmppd2F0ZWNoOkZseWluZ2NvbG91cnNAIzAx',
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "' . $msg . ' Shukrani – AFYATIME."}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
+    }
+}
+
+if (!function_exists('store_appointments_logs')) {
+    function store_appointments_logs($appId, $orgId)
+    {
+        \App\Models\AppointmentsLog::create([
+            'appointment_id' => $appId,
+            'organization_id' => $orgId,
+        ]);
     }
 }

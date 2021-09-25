@@ -163,7 +163,7 @@
                                             </td>
                                             <td align="center">
                                                 <div class="actions">
-                                                    @if ($appointment->receiver_id == NULL)
+                                                    @if ($appointment->received_by == NULL)
                                                     <button class="btn btn-info text-white"
                                                         wire:click="editAppointment({{ $appointment->id }})">Update<span
                                                             class="btn-icon icofont-edit ml-2"></span>
@@ -267,9 +267,9 @@
                         </div>
                         @if($showEditModal)
                         <div class="custom-control custom-checkbox mb-3">
-                            <input type="checkbox" class="custom-control-input" id="receiver_id" name="receiver_id"
-                                wire:model.defer="state.receiver_id">
-                            <label class="custom-control-label" for="receiver_id">Patient Come & Received</label>
+                            <input type="checkbox" class="custom-control-input" id="received_by" name="received_by"
+                                wire:model.defer="state.received_by">
+                            <label class="custom-control-label" for="received_by">Patient Come & Received</label>
                         </div>
                         @endif
                     </div>
