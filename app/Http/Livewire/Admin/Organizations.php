@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Events\OrganizationRegistered;
+use App\Jobs\WelcomeOrganizationJob;
 use App\Models\Admin;
 use App\Models\Organization;
 use App\Models\OrganizationSubscription;
@@ -77,7 +78,7 @@ class Organizations extends Component
                     'email' => $this->state['email'],
                     'password' => $this->state['password'],
                 ];
-                OrganizationRegistered::dispatch($details);
+                WelcomeOrganizationJob::dispatch($details);
                 // event(new OrganizationRegistered($details));
             }
         });

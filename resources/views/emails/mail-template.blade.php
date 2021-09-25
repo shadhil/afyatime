@@ -1,4 +1,4 @@
-@component('mail::message')
+@component('vendor.mail.html.message')
 
 {{ $details['msg'] }}
 

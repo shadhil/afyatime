@@ -1,4 +1,4 @@
-@component('mail::message')
+@component('vendor.mail.html.message')
 
 {{-- # {{ $details['title'] }} --}}
 
@@ -12,7 +12,7 @@ Username: {{ $details['email'] }}<br>
 Password: {{ $details['password'] }}
 
 Click the button below to go to login page and proceed.
-@component('mail::button', ['url' => 'https://afyatime.co.tz/login'])
+@component('vendor.mail.html.button', ['url' => 'https://afyatime.co.tz/login'])
 Login Now
 @endcomponent
 

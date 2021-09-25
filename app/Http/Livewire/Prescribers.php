@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Events\PrescriberRegistered;
+use App\Jobs\WelcomePrescriberJob;
 use App\Mail\Gmail;
 use App\Models\Organization;
 use App\Models\OrganizationSubscription;
@@ -97,7 +98,7 @@ class Prescribers extends Component
                         'password' => $this->state['password'],
                         'organization' => $newPrescriber->organization->name,
                     ];
-                    PrescriberRegistered::dispatch($details);
+                    WelcomePrescriberJob::dispatch($details);
                 }
             });
         }
