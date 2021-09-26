@@ -17,7 +17,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\DailyReminder::class,
+        Commands\WeeklyReminder::class,
         Commands\SubscriptionCheck::class,
+        Commands\SubscriptionReminder::class,
     ];
 
     /**
