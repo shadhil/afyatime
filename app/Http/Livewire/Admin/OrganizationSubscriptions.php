@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Admin;
 
 use App\Events\OrganizationBlocked;
 use App\Events\OrganizationUnsubscribed;
+use App\Jobs\EmailNotificationJob;
 use App\Models\Admin;
 use App\Models\OrganizationSubscription;
 use App\Models\SubscriptionPackage;
@@ -27,6 +28,8 @@ class OrganizationSubscriptions extends Component
     public $subscriptionId = null;
     public $userId = null;
 
+    public $isfirstSub = false;
+
 
     public function mount($id)
     {
@@ -45,11 +48,11 @@ class OrganizationSubscriptions extends Component
         ])->validate();
 
         if (!empty($this->state['start_date'])) {
-            $this->state['start_date'] = Carbon::createFromFormat('m/d/Y', $this->state['start_date'])->format('Y-m-d');
+            $this->state['start_date'] = CarbonImmutable::createFromFormat('m/d/Y', $this->state['start_date'])->format('Y-m-d');
         }
 
         if (!empty($this->state['end_date'])) {
-            $this->state['end_date'] = Carbon::createFromFormat('m/d/Y', $this->state['end_date'])->format('Y-m-d');
+            $this->state['end_date'] = CarbonImmutable::createFromFormat('m/d/Y', $this->state['end_date'])->format('Y-m-d');
         }
 
         $diffDays = CarbonImmutable::parse($this->state['start_date'])->diffInDays(CarbonImmutable::parse($this->state['end_date']));
@@ -64,7 +67,11 @@ class OrganizationSubscriptions extends Component
         $this->state['status'] = '2';
 
         $prevSub = OrganizationSubscription::query()->latest()->first();
-        $res = CarbonImmutable::parse($prevSub->end_date)->greaterThan(CarbonImmutable::parse($this->state['end_date']));
+        if ($prevSub != null) {
+            $res = CarbonImmutable::parse($prevSub->end_date)->greaterThan(CarbonImmutable::parse($this->state['end_date']));
+        } else {
+            $res = false;
+        }
 
         if (!$res) {
             $this->state['organization_id'] = $this->orgId;
@@ -73,6 +80,16 @@ class OrganizationSubscriptions extends Component
 
             if ($newSubscription) {
                 $this->dispatchBrowserEvent('hide-subscription-modal', ['message' => 'Subscription added successfully!']);
+
+                if (!$this->isfirstSub && $this->state['status'] == '2') {
+                    $details = [
+                        'name' => $newSubscription->organization->name,
+                        'email' => $newSubscription->organization->email,
+                        'subject' => 'Subscription Renewal',
+                        'msg' => 'Hello! ' . $newSubscription->organization->name . '\'s subscriptions has been renewed successfully under the package ' . $newSubscription->package->name . '. Ths subscription will end on ' . $newSubscription->end_date . '.'
+                    ];
+                    EmailNotificationJob::dispatch($details);
+                }
             }
         } else {
             $this->dispatchBrowserEvent('show-error-toastr', ['message' => 'please check the validity of the end date']);
@@ -157,18 +174,20 @@ class OrganizationSubscriptions extends Component
                 $details = [
                     'name' => $OrgSubscription->organization->name,
                     'email' => $OrgSubscription->organization->email,
-                    'date' => now()->format('m-d-Y'),
+                    'subject' => 'Subscription Ended',
+                    'msg' => 'Hello! ' . $OrgSubscription->organization->name . ' your account subscription is ended on ' . now()->format('m-d-Y') . '. You can\'t use appointment features in our app.'
                 ];
-                OrganizationUnsubscribed::dispatch($details);
+                EmailNotificationJob::dispatch($details);
             }
 
-            if ($this->state['status'] == '4') {
+            if ($this->state['status'] == '5') {
                 $details = [
                     'name' => $OrgSubscription->organization->name,
                     'email' => $OrgSubscription->organization->email,
-                    'date' => now()->format('m-d-Y'),
+                    'subject' => 'Subscription Blocked',
+                    'msg' => 'Hello! ' . $OrgSubscription->organization->name . ' your account have been blocked to use in AfyaTime from ' . now()->format('m-d-Y') . '. You can\'t use any of the features in our app.'
                 ];
-                OrganizationBlocked::dispatch($details);
+                EmailNotificationJob::dispatch($details);
             }
         }
     }
@@ -190,21 +209,6 @@ class OrganizationSubscriptions extends Component
 
     public function render()
     {
-        // $users = DB::table('users')
-        //     ->leftJoin('organizations', function ($join) {
-        //         $join->on('organizations.id', '=', 'users.account_id')
-        //             ->where('users.account_type', 'organization');
-        //     })
-        //     ->leftJoin('prescribers', function ($join) {
-        //         $join->on('prescribers.id', '=', 'users.account_id')
-        //             ->where('users.account_type', 'prescriber-admin');
-        //     })
-        //     ->select('users.*')
-        //     ->where(function ($query) {
-        //         $query->where('prescribers.organization_id', $this->orgId)
-        //             ->orWhere('organizations.id', $this->orgId);
-        //     })->get();
-
         $users = User::query()
             ->where('org_id', $this->orgId)
             ->where(function ($query) {
@@ -212,18 +216,9 @@ class OrganizationSubscriptions extends Component
                     ->orWhere('account_type', 'prescriber');
             })->get();
 
-        // dd($users[0]->account);
-
-        // $subscriptions = DB::table('organization_subscriptions')
-        //     ->join('subscription_packages', 'organization_subscriptions.package_id', '=', 'subscription_packages.id')
-        //     ->join('users', 'organization_subscriptions.paid_by', '=', 'users.id')
-        //     ->select('organization_subscriptions.*', 'subscription_packages.name AS package', 'subscription_packages.max_patients', 'subscription_packages.monthly_cost', 'users.name')
-        //     ->where('organization_subscriptions.organization_id', $this->orgId)
-        //     ->groupBy('organization_subscriptions.id')
-        //     ->latest()
-        //     ->paginate(5);
-
-        $subscriptions = OrganizationSubscription::query()->where('organization_id', $this->orgId)->latest()->paginate(6);
+        $subscriptions = OrganizationSubscription::query()->where('organization_id', $this->orgId)->latest()->paginate(15);
+        $this->isfirstSub = $subscriptions->total() > 0 ? false : true;
+        // dd($this->isfirstSub);
 
         $packages = SubscriptionPackage::all();
         // dd($packages);

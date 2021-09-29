@@ -27,7 +27,7 @@ class OrganizationSubscription extends Model
     protected $guarded = [];
 
     protected $dispatchesEvents = [
-        'created' => SubscriptionConfirmed::class,
+        // 'created' => SubscriptionConfirmed::class,
     ];
 
     public function organization(): BelongsTo

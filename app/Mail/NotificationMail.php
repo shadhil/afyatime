@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class OrganizationUnsubscribedMail extends Mailable
+class NotificationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -18,12 +18,17 @@ class OrganizationUnsubscribedMail extends Mailable
         $this->details = $details;
     }
 
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
     public function build()
     {
-        return $this->subject('Subscription has Ended')
-            ->from('no-reply@afyatime.co.tz', 'AfyaTime')
+        return $this->subject($this->details['subject'])
+            ->from('notification@afyatime.co.tz', 'AfyaTime')
             ->to($this->details['email'])
             ->replyTo('support@afyatime.co.tz')
-            ->markdown('emails.organization-unsubscribed-mail', $this->details);
+            ->markdown('emails.mail-template', $this->details);
     }
 }

@@ -20,7 +20,7 @@ class OrganizationBlockedMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Organization Blocked')
+        return $this->subject('Block Notice')
         ->markdown('emails.organization-blocked-mail', $this->details)
             ->from('no-reply@afyatime.co.tz', 'AfyaTime - Patient Reminder App')
             ->replyTo('support@afyatime.co.tz');

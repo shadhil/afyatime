@@ -158,7 +158,7 @@
                                 <option value="1">UnSubscribed </option>
                                 <option value="3">Paid </option>
                                 <option value="4">Payment Confirmed</option>
-                                <option value="4">Blocked </option>
+                                <option value="5">Blocked </option>
                             </select>
                             @error('status')
                             <div class="invalid-feedback">
