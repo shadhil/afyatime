@@ -31,5 +31,6 @@ class WelcomePrescriberJob implements ShouldQueue
     {
         $email = $this->prescriber['email'];
         Mail::to($email)->send(new PrescriberWelcomeMail($this->prescriber));
+        // Send SMS
     }
 }

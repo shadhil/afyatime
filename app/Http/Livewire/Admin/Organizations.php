@@ -138,7 +138,7 @@ class Organizations extends Component
                 $this->editState['known_as'] = $this->state['name'];
             }
             $phone = Str::replace(' ', '', $this->state['phone_number']);
-            $this->editState['phone_number'] = Str::start(Str::substr($phone, -9), '0');
+            $this->state['phone_number'] = Str::start(Str::substr($phone, -9), '0');
 
             $updatedOrg = Organization::find($this->orgIdSelected);
             $updatedOrg->update($this->state);

@@ -86,7 +86,7 @@ class OrganizationTypes extends Component
 
     public function render()
     {
-        $orgTypes = OrganizationType::latest()->paginate(15);
+        $orgTypes = OrganizationType::paginate(15);
         //dd($admins);
         return view('livewire.admin.organization-types', ['orgTypes' => $orgTypes]);
     }

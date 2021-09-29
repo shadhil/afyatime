@@ -218,13 +218,7 @@
                                         </td>
                                         <td align="center">
                                             <div class="text-muted text-nowrap">
-                                                @if (empty($appointment->time_to))
-                                                {{ \Carbon\Carbon::parse($appointment->time_from)->format('h:i A') }}
-                                                @else
-                                                {{ \Carbon\Carbon::parse($appointment->time_from)->format('h:i A') }}
-                                                -
-                                                {{ \Carbon\Carbon::parse($appointment->time_to)->format('h:i A') }}
-                                                @endif
+                                                {{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}
                                             </div>
                                         </td>
                                         <td align="center">{{ $appointment->initial }} {{ $appointment->first_name }}

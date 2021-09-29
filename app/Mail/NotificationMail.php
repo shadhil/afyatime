@@ -26,7 +26,7 @@ class NotificationMail extends Mailable
     public function build()
     {
         return $this->subject($this->details['subject'])
-            ->from('notification@afyatime.co.tz', 'AfyaTime')
+            ->from('notifications@afyatime.co.tz', 'AfyaTime')
             ->to($this->details['email'])
             ->replyTo('support@afyatime.co.tz')
             ->markdown('emails.mail-template', $this->details);

@@ -262,7 +262,7 @@
                         </div>
 
                         <div class="form-group">
-                            <select class="form-control rounded" wire:model="state.app_type" id="app_type"
+                            <select class="form-control rounded" wire:model.defer="state.app_type" id="app_type"
                                 name="app_type">
                                 <option value="weekly">Weekly Visits</option>
                                 <option value="daily">Daily Visits</option>

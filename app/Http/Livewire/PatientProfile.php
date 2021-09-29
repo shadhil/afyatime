@@ -76,10 +76,10 @@ class PatientProfile extends Component
         $newAppointment = Appointment::create($this->state);
 
         if ($newAppointment) {
-            if (!$this->firstTime) {
+            if ($this->firstTime) {
                 $details = [
                     'name' => $newAppointment->patient->first_name . ' ' . $newAppointment->patient->last_name,
-                    'email' => $newAppointment->patient->email,
+                    'email' => $newAppointment->patient->email ?? NULL,
                     'phone' => $newAppointment->patient->phone_number,
                     'code' => $newAppointment->patient->patient_code,
                     'clinic' => $newAppointment->organization->known_as,
