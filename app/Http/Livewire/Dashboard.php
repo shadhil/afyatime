@@ -92,6 +92,6 @@ class Dashboard extends Component
             ->get();
 
         // dd(Auth::user()->org_id);
-        return view('livewire.dashboard', ['patients' => $patients, 'supporters' => $supporters, 'org' => $organization, 'appointments' => $appointments, 'subscription' => $subscription, 'packages' => $packages]);
+        return view('livewire.dashboard', ['patients' => $patients, 'supporters' => $supporters, 'org' => $organization, 'appointments' => $appointments, 'subscription' => $subscription, 'packages' => $packages])->layout('layouts.base');
     }
 }

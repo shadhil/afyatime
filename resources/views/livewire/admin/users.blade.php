@@ -12,11 +12,11 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col"></th>
+                                    <th scope="col" class="d-none d-sm-table-cell"></th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Email</th>
                                     <th scope="col">Account Type</th>
-                                    <th scope="col">Actions</th>
+                                    {{-- <th scope="col">Actions</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -24,20 +24,20 @@
                                 @foreach ($users as $user)
                                 <tr>
                                     {{-- <td><strong>{{ $i }}.</strong></td> --}}
-                                    <td>
+                                    <td class="d-none d-sm-table-cell">
                                         <img src="{{ $user->profile_photo == null ? asset('assets/img/default-profile.png') :Storage::disk('profiles')->url($user->profile_photo) }}"
                                             width="50" height="50" alt="" class="rounded-500 mr-4">
                                     </td>
                                     <td>
                                         <div class="text-muted text-nowrap">{{ $user->name }}</div>
                                     </td>
-                                    <td><strong>{{ $user->email }}</strong></td>
+                                    <td class="d-none d-sm-table-cell"><strong>{{ $user->email }}</strong></td>
                                     <td>
                                         <div class="text-nowrap text-success">
                                             <i class="icofont-check-circled"></i> {{ $user->account_type }}
                                         </div>
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         <div class="actions">
                                             <span class="btn btn-dark btn-sm btn-square rounded-pill">
                                                 <span class="btn-icon icofont-external-link"></span>
@@ -49,7 +49,7 @@
                                                 <span class="btn-icon icofont-ui-delete"></span>
                                             </button>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                                 @php $i++; @endphp
                                 @endforeach
@@ -88,115 +88,116 @@
                         {{-- <div class="form-group avatar-box d-flex">
                             @if ($photo)
                             <img src="{{ $photo->temporaryUrl() }}" width="40" height="40" alt=""
-                        class="rounded-500 mr-4">
-                        @else
-                        <img src="{{ $state['profile_photo'] ?? '' }}" width="40" height="40" alt=""
-                            class="rounded-500 mr-4">
-                        @endif
-                        <button class="btn btn-outline-primary" id="browseImg" type="button"
-                            onclick="document.getElementById('photo').click();">
-                            @if ($photo)
-                            {{ $photo->getClientOriginalName() }}
+                                class="rounded-500 mr-4">
                             @else
-                            Browse image
+                            <img src="{{ $state['profile_photo'] ?? '' }}" width="40" height="40" alt=""
+                                class="rounded-500 mr-4">
                             @endif
-                        </button>
-                        <input wire:model="photo" type="file" style="display:none;" id="photo" name="photo">
-                    </div> --}}
+                            <button class="btn btn-outline-primary" id="browseImg" type="button"
+                                onclick="document.getElementById('photo').click();">
+                                @if ($photo)
+                                {{ $photo->getClientOriginalName() }}
+                                @else
+                                Browse image
+                                @endif
+                            </button>
+                            <input wire:model="photo" type="file" style="display:none;" id="photo" name="photo">
+                        </div> --}}
 
-                    <div class="form-group">
-                        <input class="form-control flatpickr-input @error('name') is-invalid @enderror" type="text"
-                            placeholder="Name" wire:model.defer="state.name" id="name" required>
-                        @error('name')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                        <div class="form-group">
+                            <input class="form-control flatpickr-input @error('name') is-invalid @enderror" type="text"
+                                placeholder="Name" wire:model.defer="state.name" id="name" required>
+                            @error('name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
-                        @enderror
-                    </div>
 
-                    <div class="form-group">
-                        <input class="form-control @error('email') is-invalid @enderror" type="email"
-                            placeholder="email" wire:model.defer="state.email" id="email">
-                        @error('email')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                        <div class="form-group">
+                            <input class="form-control @error('email') is-invalid @enderror" type="email"
+                                placeholder="email" wire:model.defer="state.email" id="email">
+                            @error('email')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
-                        @enderror
-                    </div>
 
-                    <div class="form-group">
-                        <input class="form-control @error('phone_number') is-invalid @enderror" type="text"
-                            placeholder="phone number" wire:model.defer="state.phone_number" id="phoneNumber">
-                        @error('phone_number')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                        <div class="form-group">
+                            <input class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                                placeholder="phone number" wire:model.defer="state.phone_number" id="phoneNumber">
+                            @error('phone_number')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
-                        @enderror
-                    </div>
 
-                    <div class="form-group">
-                        <input class="form-control @error('password') is-invalid @enderror" type="password"
-                            placeholder="password" wire:model.defer="state.password" id="password">
-                        @error('password')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                        <div class="form-group">
+                            <input class="form-control @error('password') is-invalid @enderror" type="password"
+                                placeholder="password" wire:model.defer="state.password" id="password">
+                            @error('password')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
-                        @enderror
-                    </div>
 
-                    <div class="form-group">
-                        <input class="form-control" type="password" placeholder="confirm password"
-                            wire:model.defer="state.password_confirmation" id="passwordConfirmation">
+                        <div class="form-group">
+                            <input class="form-control" type="password" placeholder="confirm password"
+                                wire:model.defer="state.password_confirmation" id="passwordConfirmation">
+                        </div>
                     </div>
+                    <div class="modal-footer d-block">
+                        <div class="actions justify-content-between">
+                            <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-info">
+                                @if($showEditModal)
+                                <span>Save Changes</span>
+                                @else
+                                <span>Save</span>
+                                @endif
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="modal-footer d-block">
-                <div class="actions justify-content-between">
-                    <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-info">
-                        @if($showEditModal)
-                        <span>Save Changes</span>
-                        @else
-                        <span>Save</span>
-                        @endif
-                    </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Delete Admin</h5>
+                </div>
+
+                <div class="modal-body">
+                    <h4>Are you sure you want to delete this admin?</h4>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                            class="fa fa-times mr-1"></i>
+                        Cancel</button>
+                    <button type="button" wire:click.prevent="deleteAdmin" class="btn btn-danger"><i
+                            class="fa fa-trash mr-1"></i>Delete Admin</button>
                 </div>
             </div>
-            </form>
         </div>
     </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" wire:ignore.self>
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5>Delete Admin</h5>
-            </div>
-
-            <div class="modal-body">
-                <h4>Are you sure you want to delete this admin?</h4>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times mr-1"></i>
-                    Cancel</button>
-                <button type="button" wire:click.prevent="deleteAdmin" class="btn btn-danger"><i
-                        class="fa fa-trash mr-1"></i>Delete Admin</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/icofont.min.css') }}">
-@endpush
+    @push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/icofont.min.css') }}">
+    @endpush
 
-@push('scripts')
-<script>
-    $(document).ready(function() {
+    @push('scripts')
+    <script>
+        $(document).ready(function() {
         toastr.options = {
             "positionClass": "toast-bottom-right",
             "progressBar": true,
@@ -211,9 +212,9 @@
             format: 'LT',
         });
     });
-</script>
-<script>
-    window.addEventListener('show-admin-modal', event => {
+    </script>
+    <script>
+        window.addEventListener('show-admin-modal', event => {
             $('#add-admin').modal('show');
         })
 
@@ -229,5 +230,5 @@
         // window.addEventListener('hide-admin-modal', event => {
         //     $('#add-admin').modal('hide');
         // })
-</script>
-@endpush
+    </script>
+    @endpush

@@ -15,7 +15,7 @@
                                     {{-- <th scope="col"></th> --}}
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
-                                    <th scope="col">Phone Number</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Phone Number</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -32,7 +32,7 @@
                                         <div class="text-muted text-nowrap">{{ $admin->name }}</div>
                                     </td>
                                     <td><strong>{{ $admin->email }}</strong></td>
-                                    <td>
+                                    <td class="d-none d-sm-table-cell">
                                         <div class="text-nowrap text-success">
                                             <i class="icofont-check-circled"></i> {{ $admin->phone_number }}
                                         </div>

@@ -79,7 +79,7 @@ class PatientProfile extends Component
             if ($this->firstTime) {
                 $details = [
                     'name' => $newAppointment->patient->first_name . ' ' . $newAppointment->patient->last_name,
-                    'email' => $newAppointment->patient->email ?? NULL,
+                    'email' => $newAppointment->patient->email,
                     'phone' => $newAppointment->patient->phone_number,
                     'code' => $newAppointment->patient->patient_code,
                     'clinic' => $newAppointment->organization->known_as,

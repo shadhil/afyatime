@@ -1,105 +1,152 @@
-@props(['mobile'])
+<nav id="sidebar">
+    <!-- Sidebar Content -->
+    <div class="sidebar-content">
+        <!-- Side Header -->
+        <div class="content-header content-header-fullrow bg-black-op-10">
+            <div class="content-header-section text-center align-parent">
+                <!-- Close Sidebar, Visible only on mobile screens -->
+                <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+                <button type="button" class="btn btn-circle btn-dual-secondary d-lg-none align-v-r" data-toggle="layout"
+                    data-action="sidebar_close">
+                    <i class="fa fa-times text-danger"></i>
+                </button>
+                <!-- END Close Sidebar -->
 
-<div id="navbar2" class="app-navbar horizontal horizontal-vertical {{ $mobile ?? '' }}">
-    <div class="navbar-wrap">
-
-        <button class="no-style navbar-toggle navbar-close icofont-close-line d-lg-none"></button>
-
-
-        <div class="app-logo">
-            <div class="logo-wrap">
-                <img src="assets/img/logo.svg" alt="" width="147" height="33" class="logo-img">
+                <!-- Logo -->
+                <div class="content-header-item">
+                    <a class="link-effect font-w700" href="{{ route('dashboard') }}">
+                        <i class="si si-fire text-primary"></i>
+                        <span class="font-size-xl text-dual-primary-dark">code</span><span
+                            class="font-size-xl text-primary">base</span>
+                    </a>
+                </div>
+                <!-- END Logo -->
             </div>
         </div>
+        <!-- END Side Header -->
 
-        <div class="main-menu">
-            <nav class="main-menu-wrap">
-                <ul class="menu-ul">
-                    <li class="menu-item {{ request()->routeIs('dashboard*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('dashboard') }}">
-                            <span class="link-text">Dashboard</span>
-                        </a>
+        <!-- Sidebar Scrolling -->
+        <div class="js-sidebar-scroll">
+            <!-- Side Main Navigation -->
+            <div class="content-side content-side-full">
+                <!--
+              Mobile navigation, desktop navigation can be found in #page-header
+
+              If you would like to use the same navigation in both mobiles and desktops, you can use exactly the same markup inside sidebar and header navigation ul lists
+              -->
+                <ul class="nav-main">
+                    <li>
+                        <a class="{{ request()->routeIs('dashboard*') ? 'active' : '' }}"
+                            href="{{ route('dashboard') }}"><i class="si si-home"></i>Home</a>
                     </li>
-                    <li class="menu-item {{ request()->routeIs('appointments*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('appointments') }}">
-                            <span class="link-text">Appointments</span>
-                        </a>
+                    <li>
+                        <a class="{{ request()->routeIs('appointments*') ? 'active' : '' }}"
+                            href="{{ route('appointments') }}"><i class="si si-calendar"></i>Appointments</a>
                     </li>
-                    <li class="menu-item {{ request()->routeIs('patients*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('patients') }}">
-                            <span class="link-text">Patients</span>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ request()->routeIs('prescribers*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('prescribers') }}">
-                            <span class="link-text">Prescribers</span>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ request()->routeIs('supporters*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('supporters') }}">
-                            <span class="link-text">Treatment Supporters</span>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ request()->routeIs('settings*') ? 'active' : '' }}">
-                        <a class="item-link" href="#">
-                            <span class="link-text">Settings</span>
-                        </a>
+                    <li>
+                        <a class="{{ request()->routeIs('patients*') ? 'active' : '' }}"
+                            href="{{ route('patients') }}"><i class="si si-users"></i>Patients</a>
                     </li>
                 </ul>
-            </nav>
+            </div>
+            <!-- END Side Main Navigation -->
         </div>
-
-
-
-
-
-
-        <div class="navbar-skeleton vertical">
-            <div class="top-part">
-                <div class="sk-logo bg animated-bg"></div>
-                <div class="sk-menu">
-                    <span class="sk-menu-item menu-header bg-1 animated-bg"></span>
-                    <span class="sk-menu-item bg animated-bg w-75"></span>
-                    <span class="sk-menu-item bg animated-bg w-80"></span>
-                    <span class="sk-menu-item bg animated-bg w-50"></span>
-                    <span class="sk-menu-item bg animated-bg w-75"></span>
-                    <span class="sk-menu-item bg animated-bg w-50"></span>
-                    <span class="sk-menu-item bg animated-bg w-60"></span>
-                </div>
-                <div class="sk-menu">
-                    <span class="sk-menu-item menu-header bg-1 animated-bg"></span>
-                    <span class="sk-menu-item bg animated-bg w-60"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                    <span class="sk-menu-item bg animated-bg w-60"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                </div>
-                <div class="sk-menu">
-                    <span class="sk-menu-item menu-header bg-1 animated-bg"></span>
-                    <span class="sk-menu-item bg animated-bg w-60"></span>
-                    <span class="sk-menu-item bg animated-bg w-50"></span>
-                </div>
-                <div class="sk-button animated-bg w-90"></div>
-            </div>
-
-            <div class="bottom-part">
-                <div class="sk-menu">
-                    <span class="sk-menu-item bg-1 animated-bg w-60"></span>
-                    <span class="sk-menu-item bg-1 animated-bg w-80"></span>
-                </div>
-            </div>
-
-            <div class="horizontal-menu">
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-            </div>
-        </div>
-
+        <!-- END Sidebar Scrolling -->
     </div>
-</div>
+    <!-- Sidebar Content -->
+</nav>
+<!-- END Sidebar -->
+
+<!-- Header -->
+<header id="page-header">
+    <!-- Header Content -->
+    <div class="content-header">
+        <div class="content-header-section w-100">
+            <div class="row no-gutters">
+                <div class="col">
+                    <!-- Toggle Sidebar -->
+                    <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+                    <button type="button" class="btn btn-dual-secondary d-lg-none" data-toggle="layout"
+                        data-action="sidebar_toggle">
+                        <i class="fa fa-navicon"></i>
+                    </button>
+                    <!-- END Toggle Sidebar -->
+
+                    <!-- Header Navigation -->
+                    <!--
+                Desktop Navigation, mobile navigation can be found in #sidebar
+
+                If you would like to use the same navigation in both mobiles and desktops, you can use exactly the same markup inside sidebar and header navigation ul lists
+                If your sidebar menu includes headings, they won't be visible in your header navigation by default
+                If your sidebar menu includes icons and you would like to hide them, you can add the class 'nav-main-header-no-icons'
+                -->
+                    <ul class="nav-main-header">
+                        <li>
+                            <a class="{{ request()->routeIs('dashboard*') ? 'active' : '' }}"
+                                href="{{ route('dashboard') }}">
+                                <i class="si si-home d-none d-xl-inline-block"></i> Home
+                            </a>
+                        </li>
+                        <li>
+                            <a class="{{ request()->routeIs('appointments*') ? 'active' : '' }}"
+                                href="{{ route('appointments') }}">
+                                <i class="si si-calendar d-none d-xl-inline-block"></i> Appointments
+                            </a>
+                        </li>
+                        <li>
+                            <a class="{{ request()->routeIs('patients*') ? 'active' : '' }}"
+                                href="{{ route('patients') }}">
+                                <i class="si si-users d-none d-xl-inline-block"></i> Patients
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- END Header Navigation -->
+                </div>
+                <div class="col-3 text-center">
+                    <!-- Logo -->
+                    <div class="content-header-item">
+                        <a class="link-effect font-w700" href="index.html">
+                            <i class="si si-fire text-primary"></i>
+                            <span class="d-none d-md-inline-block">
+                                <span class="font-size-xl text-dual-primary-dark">code</span><span
+                                    class="font-size-xl text-primary">base</span>
+                            </span>
+                        </a>
+                    </div>
+                    <!-- END Logo -->
+                </div>
+                <div class="col text-right">
+
+                    <!-- User-Profile -->
+                    <a href="{{ route('patients') }}" type="button" class="btn btn-alt-info ml-5">
+                        <i class="si si-info"></i>
+                        <span class="d-none d-sm-inline">My Profile</span>
+                    </a>
+                    <!-- END Logout -->
+
+                    <!-- User-Profile -->
+                    <a href="{{ route('logout') }}" type="button" class="btn btn-alt-danger ml-5"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                        data-toggle="tooltip" data-placement="right" title="Logout">
+                        <i class="si si-logout"></i>
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                    <!-- END Logout -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Header Content -->
+
+    <!-- Header Loader -->
+    <div id="page-header-loader" class="overlay-header bg-primary">
+        <div class="content-header content-header-fullrow text-center">
+            <div class="content-header-item">
+                <i class="fa fa-sun-o fa-spin text-white"></i>
+            </div>
+        </div>
+    </div>
+    <!-- END Header Loader -->
+</header>

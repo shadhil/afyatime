@@ -1,510 +1,475 @@
 <div>
-    <main class="main-content">
-        <div class="app-loader"><i class="icofont-spinner-alt-4 rotate"></i></div>
-
-        <div class="main-content-wrap mb-5">
-
-            <div class="page-content">
-                <div class="card bg-light bg-gradient">
-                    <div class="card-body">
+    <main>
+        <!-- slider-area -->
+        <section id="hero" class="slider slider-bg"
+            data-background="{{ asset('assets/landing/img/slider/slider_01.jpg') }}">
+            <div class="slider-active">
+                <div class="single-slider">
+                    <div class="container">
                         <div class="row">
-                            <div class="col-12 col-md-8 mb-4 mb-md-0">
-                                <a href="{{ route('home') }}">
-                                    <img src="{{ asset('assets/img/logo.png') }}" alt="" width="169" height="40">
-                                </a>
-                                <h3 class="">AfyaTime App</h3>
-                                <p class="text-muted">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus id perferendis
-                                    unde voluptas
-                                    voluptatem? Ad alias deleniti eum nulla tempore.
-                                </p>
-                            </div>
-
-                            <div class="col-12 col-md-4 text-right">
-                                {{-- <h4 class="text-primary mt-0 mb-1"></h4>
-                                <p class="mb-0 text-muted">Income in current month</p> --}}
-                                <div class="chat-container container-h-50 mt-5">
-                                    <a href="{{ route('login') }}" type="button" class="btn btn-success btn-block">
-                                        <h6> Login </h6>
-                                    </a>
-                                </div>
-                                <div class="chat-container container-h-50 mt-2">
-                                    <a href="{{ route('home', ['action' => 'contact-us']) }}" type="button"
-                                        class="btn btn-primary btn-block">
-                                        <h6> Contact Us </h6>
-                                    </a>
-                                </div>
-
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                @if ($action == null)
-                <div>
-                    <div class="row">
-                        <div class="col-12 col-md-12 mb-5">
-                            <h2 class="text-center">Packages</h2>
-                            <p class="text-muted mb-4 text-center">Lorem ipsum dolor sit amet, consectetur adipisicing
-                                elit.
-                                Ab, dolorem
-                                excepturi
-                                facilis magni necessitatibus
-                                perspiciatis repellendus sunt veniam? A ad architecto aspernatur cupiditate dignissimos
-                                distinctio earum,
-                                eligendi eum
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-4">
-                            <div class="card text-center mb-md-0 bg-light">
-                                <div class="card-header">
-                                    Starter
-                                </div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <div class="fs-48 mr-2">39</div>
-                                        <div class="text-muted">
-                                            <div class="fs-20">USD</div>
-                                            <div>month</div>
-                                        </div>
+                            <div class="col-xl-7">
+                                <div class="slider__content third-c">
+                                    <h2 data-animation="fadeInUp" data-delay=".2s">Clinic Appointment Reminders.</h2>
+                                    <p data-animation="fadeInUp" data-delay=".4s">AfyaTime offers accurate and timely
+                                        appointment reminders to patients who have regular clinic visits direct via SMS.
+                                    </p>
+                                    <div class="slider__content-btn" data-animation="fadeInUp" data-delay=".6s">
+                                        <a href="#work" class="btn smoth-scroll">How It Work</a>
                                     </div>
-
-                                    <hr class="mt-4 mb-4">
-
-                                    <ul class="list-unstyled text-left">
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">150 Appointments/Month</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">Free Email Reminders</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">1 Reminder per Appointment</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">2 Staff Logins</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-close-circled text-muted"></div>
-                                            <span class="ml-1">More Features</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">Free Support</span>
-                                        </li>
-                                    </ul>
-
-                                    <a href="{{ route('home', ['action' => 'sign-up', 'package' => 'starter']) }}"
-                                        class="btn btn-success btn-block mb-3">Select Plan</a>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col-12 col-md-4">
-                            <div class="card text-center mb-md-0 bg-light">
-                                <div class="card-header">
-                                    Business
-                                </div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <div class="fs-48 mr-2 text-primary">59</div>
-                                        <div class="text-muted">
-                                            <div class="fs-20">USD</div>
-                                            <div>month</div>
-                                        </div>
+                            <div class="col-xl-5 d-none d-xl-block">
+                                <div class="slider__img third-i" data-animation="fadeInRight" data-delay=".6s">
+                                    <img src="{{ asset('assets/landing/img/slider/slider_img3.png') }}" alt="">
+                                    <div class="slider-v">
+                                        <a href="https://www.youtube.com/watch?v=vKSA_idPZkc"
+                                            class="video-play popup-video"><i class="fas fa-play"></i></a>
                                     </div>
-
-                                    <hr class="mt-4 mb-4">
-
-                                    <ul class="list-unstyled text-left">
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">250 appointments/Month</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">Free Email Reminders</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">2 Reminder per Appointment</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">10 Staff Logins</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">More Features</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">Free Support</span>
-                                        </li>
-                                    </ul>
-
-                                    <a href="{{ route('home', ['action' => 'sign-up', 'package' => 'business']) }}"
-                                        class="btn btn-primary btn-block mb-3">Select Plan</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-4">
-                            <div class="card text-center bg-light mb-0">
-                                <div class="card-header">
-                                    Premium
-                                </div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <div class="fs-48 mr-2">99</div>
-                                        <div class="text-muted">
-                                            <div class="fs-20">USD</div>
-                                            <div>month</div>
-                                        </div>
-                                    </div>
-
-                                    <hr class="mt-4 mb-4">
-
-                                    <ul class="list-unstyled text-left">
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">500 Appointments/Month</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">Free Email Reminders</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">3 Reminder per Appointment</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">Unlimited Staff Logins</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">Early Access to New Features</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">Message Blasts</span>
-                                        </li>
-                                        <li class="d-flex align-items-center pt-2 pb-2">
-                                            <div class="icon icofont-check-circled text-muted"></div>
-                                            <span class="ml-1">Free Support</span>
-                                        </li>
-                                    </ul>
-
-                                    <a href="{{ route('home', ['action' => 'sign-up', 'package' => 'premium']) }}"
-                                        class="btn btn-success btn-block mb-3">Select Plan</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                @endif
-
-                @if ($action == 'contact-us')
-                <div>
-                    <div class="row">
-                        <div class="col-12 col-md-12 mb-5">
-                            <h2 class="text-center">Contact Us</h2>
-                            <p class="text-muted mb-4 text-center">Lorem ipsum dolor sit amet, consectetur adipisicing
-                                elit.
-                                Ab, dolorem
-                                excepturi
-                                facilis magni necessitatibus
-                                perspiciatis repellendus sunt veniam? A ad architecto aspernatur cupiditate dignissimos
-                                distinctio earum,
-                                eligendi eum
-                            </p>
+            </div>
+        </section>
+        <!-- slider-area-end -->
+        <!-- features-area -->
+        <section id="features" class="features-area pt-110 pb-115">
+            <div class="features-shape d-none d-sm-block"
+                data-background="{{ asset('assets/landing/img/bg/f_shape.png') }}"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+                        <div class="section__title text-center mb-75">
+                            <span class="wow fadeInUp" data-wow-delay="0.2s">Features</span>
+                            <h2 class="wow fadeInUp" data-wow-delay="0.4s">What is AfyaTime?</h2>
+                            <p class="wow fadeInUp" data-wow-delay="0.6s">Poor clinic attendance for medication top-up
+                                or
+                                investigations is a problem which leads to poor prognosis of most diseases. This is how
+                                we
+                                solve that.</p>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col col-12 col-md-6 mb-md-0">
-                            <div class="card">
-                                <div class="card-header">
-                                    Websites & social channel
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="feature__nav">
+                            <ul class="nav nav-tabs feature__nav-tab" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                        aria-controls="home" aria-selected="true"><i class="far fa-comments"></i>Manage
+                                        Patients & Prescribers</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile"
+                                        role="tab" aria-controls="profile" aria-selected="false"><i
+                                            class="far fa-envelope"></i>SMS &
+                                        Email Reminder</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                                        aria-controls="contact" aria-selected="false"><i
+                                            class="far fa-chart-bar"></i>Organization Analytics</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content feature__tab-content" id="myTabContent">
+                                <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    <div class="single__features">
+                                        <div class="row align-items-center">
+                                            <div class="col-xl-6">
+                                                <div class="single__features-img">
+                                                    <img src="{{ asset('assets/landing/img/features/f_01.jpg') }}"
+                                                        alt="">
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6">
+                                                <div class="single__features-content">
+                                                    <div class="f-title">
+                                                        <h2>Manage Patients & Prescribers</h2>
+                                                        <p>Manage patients and prescribers in one platform. Ensuring
+                                                            close
+                                                            relationship and communication between prescribers and
+                                                            patients
+                                                            which establishes trust and responsibility towards clinic
+                                                            attendance. Prescribers will ensure patients are aware of
+                                                            their
+                                                            appointment dates and set reminders which will be timely
+                                                            sent to
+                                                            the patients as SMS.</p>
+                                                    </div>
+                                                    <div class="inner__features">
+                                                        <div class="icon">
+                                                            <img src="{{ asset('assets/landing/img/icon/features_01.png') }}"
+                                                                alt="">
+                                                        </div>
+                                                        <div class="inner__features-content">
+                                                            <h5>View Histoycal Data</h5>
+                                                            <p>Track previous attendances and prescriber - patient
+                                                                encounters</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner__features">
+                                                        <div class="icon">
+                                                            <img src="{{ asset('assets/landing/img/icon/features_02.png') }}"
+                                                                alt="">
+                                                        </div>
+                                                        <div class="inner__features-content">
+                                                            <h5>Review clinic performance</h5>
+                                                            <p>Heve a clear picture of future clinic attendance
+                                                                expectations
+                                                                and establish resources capacity accordingly</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <div class="row align-items-center mb-3">
-                                        <div class="col col-auto">
-                                            <div class="icon icofont-github fs-30 github-color"></div>
-                                        </div>
-                                        <div class="col">
-                                            <div>Github</div>
-                                            <a href="#">github.com/liam-jouns</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="row align-items-center mb-3">
-                                        <div class="col col-auto">
-                                            <div class="icon icofont-twitter fs-30 twitter-color"></div>
-                                        </div>
-                                        <div class="col">
-                                            <div>Twitter</div>
-                                            <a href="#">twitter.com/liam-jouns</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="row align-items-center mb-3">
-                                        <div class="col col-auto">
-                                            <div class="icon icofont-linkedin fs-30 linkedin-color"></div>
-                                        </div>
-                                        <div class="col">
-                                            <div>Linkedin</div>
-                                            <a href="#">linkedin.com/liam-jouns</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="row align-items-center">
-                                        <div class="col col-auto">
-                                            <div class="icon icofont-youtube fs-30 youtube-color"></div>
-                                        </div>
-                                        <div class="col">
-                                            <div>YouTube</div>
-                                            <a href="#">youtube.com/liam-jouns</a>
+                                <div class="tab-pane fade show active" id="profile" role="tabpanel"
+                                    aria-labelledby="profile-tab">
+                                    <div class="single__features">
+                                        <div class="row align-items-center">
+                                            <div class="col-xl-6">
+                                                <div class="single__features-img wow fadeInLeft" data-wow-delay="0.2s">
+                                                    <img src="{{ asset('assets/landing/img/features/f_02.jpg') }}"
+                                                        alt="">
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6">
+                                                <div class="single__features-content">
+                                                    <div class="f-title">
+                                                        <h2>SMS & Email Reminder</h2>
+                                                        <p>We have put together a complex reminder system that uses both
+                                                            SMS
+                                                            and E-mails to patients and prescribers respectifully
+                                                            This enables clear and timely alerts which improves clinic
+                                                            attendance and proper preparedness on the clinic side.
+                                                        </p>
+                                                    </div>
+                                                    <div class="inner__features">
+                                                        <div class="icon">
+                                                            <img src="{{ asset('assets/landing/img/icon/features_01.png') }}"
+                                                                alt="">
+                                                        </div>
+                                                        <div class="inner__features-content">
+                                                            <h5>SMS reminders</h5>
+                                                            <p>Patients who have been subscribed to AfyaTime will
+                                                                receice
+                                                                multiple SMS in form of text messages to their phones
+                                                                reminding them of their future appointment with further
+                                                                information as required. The SMS will include the date,
+                                                                time, clinic to attend and what to bring with them.</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner__features">
+                                                        <div class="icon">
+                                                            <img src="{{ asset('assets/landing/img/icon/features_02.png') }}"
+                                                                alt="">
+                                                        </div>
+                                                        <div class="inner__features-content">
+                                                            <h5>E-Mail reminders</h5>
+                                                            <p>Clinics on the other hand will receive E-mails with
+                                                                information about appointment dates. This includes
+                                                                expected
+                                                                attendees for the day, missed appointments, no show,
+                                                                critical appointments and give prescribers alerts to
+                                                                contact
+                                                                patients in danger if missed frequent appointments. .
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="card mb-md-0">
-                                <div class="card-header">
-                                    Contact information
-                                </div>
-                                <div class="card-body">
-                                    <div class="row align-items-center mb-3">
-                                        <div class="col col-auto">
-                                            <div class="icon icofont-ui-touch-phone fs-30 text-muted"></div>
-                                        </div>
-                                        <div class="col">
-                                            <div>Mobile</div>
-                                            0126596578
-                                        </div>
-                                    </div>
-
-                                    <div class="row align-items-center mb-3">
-                                        <div class="col col-auto">
-                                            <div class="icon icofont-slack fs-30 text-muted"></div>
-                                        </div>
-                                        <div class="col">
-                                            <div>Slack</div>
-                                            @liam.jouns
-                                        </div>
-                                    </div>
-
-                                    <div class="row align-items-center mb-3">
-                                        <div class="col col-auto">
-                                            <div class="icon icofont-skype fs-30 text-muted"></div>
-                                        </div>
-                                        <div class="col">
-                                            <div>Skype</div>
-                                            liam0jouns
-                                        </div>
-                                    </div>
-
-                                    <div class="row align-items-center">
-                                        <div class="col col-auto">
-                                            <div class="icon icofont-location-pin fs-30 text-muted"></div>
-                                        </div>
-                                        <div class="col">
-                                            <div>Current Address</div>
-                                            71 Pilgrim Avenue Chevy Chase, MD 20815
+                                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                    <div class="single__features">
+                                        <div class="row align-items-center">
+                                            <div class="col-xl-6">
+                                                <div class="single__features-img">
+                                                    <img src="{{ asset('assets/landing/img/features/f_03.jpg') }}"
+                                                        alt="">
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6">
+                                                <div class="single__features-content">
+                                                    <div class="f-title">
+                                                        <h2>Organization Analytics</h2>
+                                                        <p>Organizations and clinic service providers have a chance to
+                                                            track
+                                                            patients, prescribers, health service providers and also
+                                                            plan in
+                                                            advance how human and equipment resources are expected to be
+                                                            for
+                                                            future appointments. AfyaTime also allows tracking patient
+                                                            attendance, enabling tracking less adherent patients and
+                                                            contact
+                                                            them.</p>
+                                                    </div>
+                                                    <div class="inner__features">
+                                                        <div class="icon">
+                                                            <img src="{{ asset('assets/landing/img/icon/features_01.png') }}"
+                                                                alt="">
+                                                        </div>
+                                                        <div class="inner__features-content">
+                                                            <h5>Internal Analytics</h5>
+                                                            <p>Ability to plan and deploy resources as needed since
+                                                                future
+                                                                attendance is known. Ability to space and maintain a
+                                                                normal
+                                                                defined number of attendances per day.</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner__features">
+                                                        <div class="icon">
+                                                            <img src="{{ asset('assets/landing/img/icon/features_02.png') }}"
+                                                                alt="">
+                                                        </div>
+                                                        <div class="inner__features-content">
+                                                            <h5>External Analytics</h5>
+                                                            <p>Ability to track patients with poor attendance and
+                                                                contact
+                                                                them or send them regular high frequency SMS reminders.
+                                                                Ability to give time specific appointment to avoid
+                                                                unnecessary queues</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <form autocomplete="off" wire:submit.prevent="sendMessage">
-                                        <div class="form-group">
-                                            <label>Full Name</label>
-                                            <input class="form-control rounded @error('fullname') is-invalid @enderror"
-                                                type="text" placeholder="Type full name..."
-                                                wire:model.defer="state.fullname" name="fullname">
-                                            @error('fullname')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- features-area-end -->
+        <!-- work-process-area -->
+        <section id="work" class="work-process grey-bg pt-110 pb-85">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+                        <div class="section__title text-center mb-75">
+                            <span class="wow fadeInUp" data-wow-delay="0.2s">Get AfyaTime</span>
+                            <h2 class="wow fadeInUp" data-wow-delay="0.4s">How It Work?</h2>
+                            <p class="wow fadeInUp" data-wow-delay="0.6s">For secure and timely patient appointment
+                                reminders sent via SMS AfyaTime is the solution that will ensure increase in clinic
+                                attendance.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single__process text-center mb-30 wow fadeInUp" data-wow-delay="0.2s">
+                            <div class="single__process-icon mb-40">
+                                <img src="{{ asset('assets/landing/img/icon/work_01.png') }}" alt="">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="single__process-content">
+                                <div class="number">01</div>
+                                <h4>Pay for Organization Subscription</h4>
+                                <p>Contact us and arrange to open your organization subscription account with AfyaTime.
+                                    We
+                                    have multiple subscription packages that suites all organization types.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single__process text-center mb-30 wow fadeInUp" data-wow-delay="0.4s">
+                            <div class="single__process-icon mb-40">
+                                <img src="{{ asset('assets/landing/img/icon/work_02.png') }}" alt="">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="single__process-content">
+                                <div class="number">02</div>
+                                <h4>Register Patients and Health Provides</h4>
+                                <p>Register your health providers who will be setting up patient and be able to set
+                                    appointments and SMS reminders will be set in the system. </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single__process text-center mb-30 wow fadeInUp" data-wow-delay="0.6s">
+                            <div class="single__process-icon mb-40">
+                                <img src="{{ asset('assets/landing/img/icon/work_03.png') }}" alt="">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="single__process-content">
+                                <div class="number">03</div>
+                                <h4>Appointment Reminders Ready</h4>
+                                <p>Once appointment reminders have been registered in the system, patients will start to
+                                    receive SMS reminders according to the dates and times set. Reminders can be sent a
+                                    month, a week or a day before the appointment.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- work-process-area-end -->
+        <!-- access-info-area -->
+        <section id="whyafyatime" class="access-info access-sm pt-120 pb-60">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="section__title access-title">
+                            <h2>Get Access To All The Information You Need</h2>
+                            <p>With AfyaTime platform all the information regarding patients attendance and clinic
+                                situation
+                                are at your finguretips. You will have clear analytics of patients and health providers
+                                that
+                                will enable you to prepare, plan and give help to clinic attendees as needed.</p>
+                            <div class="access-btn">
+                                <a href="#" class="btn">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="access__info-wrap mb-55">
+                                    <div class="info-icon mb-35">
+                                        <img src="{{ asset('assets/landing/img/icon/info_01.png') }}" alt="">
+                                    </div>
+                                    <div class="content">
+                                        <h5>See who's slipping away</h5>
+                                        <p>Track patients who frequent misses their appointments.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="access__info-wrap mb-55">
+                                    <div class="info-icon mb-35">
+                                        <img src="{{ asset('assets/landing/img/icon/info_01.png') }}" alt="">
+                                    </div>
+                                    <div class="content">
+                                        <h5>Find out who needs help</h5>
+                                        <p>Establish a clear picture of who need further follow up and further
+                                            intervention
+                                            as needed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="access__info-wrap mb-55">
+                                    <div class="info-icon mb-35">
+                                        <img src="{{ asset('assets/landing/img/icon/info_01.png') }}" alt="">
+                                    </div>
+                                    <div class="content">
+                                        <h5>Track clinic performance</h5>
+                                        <p>Understand daily clinic needs, such as staffing requirements, equipment and
+                                            supplies, medications, etc</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="access__info-wrap mb-55">
+                                    <div class="info-icon mb-35">
+                                        <img src="{{ asset('assets/landing/img/icon/info_01.png') }}" alt="">
+                                    </div>
+                                    <div class="content">
+                                        <h5>Control clinic attendance</h5>
+                                        <p>Have a control of number of attendees per day to avoid unecessary queues and
+                                            improper use of resources.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- access-info-area-end -->
+        <!-- cta-area -->
+        <section id="download" class="cta-area cta-sm cta-bg pt-105"
+            data-background="{{ asset('assets/landing/img/bg/cta_bg.jpg') }}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-10 offset-xl-1 col-lg-10 offset-lg-1">
+                        <div class="section__title cta-title text-center mb-20">
+                            <h2 class="wow fadeInUp" data-wow-delay="0.2s">SMS Clinic Appointment Reminder Platform</h2>
+                            <p class="wow fadeInUp" data-wow-delay="0.4s">The first innovative digital solution to boost
+                                clinic appointment attendance in Tanzania</p>
+                            <div class="cta-btn">
+                                <a href="#" class="btn wow fadeInUp" data-wow-delay="0.6s">Our Pricing</a>
+                                <a href="#" class="btn wow fadeInUp" data-wow-delay="0.8s">Contact Us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="cta__img text-center">
+                            <img src="{{ asset('assets/landing/img/long-banner.png') }}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- cta-area-end -->
+
+        <!-- contact-area -->
+        <section id="contact-us" class="inner-blog grey-bg pt-100 pb-70">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="blog-details-wrap">
+                            <div class="post-comments-form mb-50">
+                                <div class="comment__wrap-title">
+                                    <h5>Contact Us</h5>
+                                </div>
+                                <div class="comment-box">
+
+                                    <form autocomplete="off" wire:submit.prevent="contactUs" class="comment__form">
+                                        @if ($errors->any())
+                                        <ol>
+                                            @foreach ($errors->all() as $error)
+                                            <li><span> <i class="theme-color">{{ $error }}</i></span></li>
+                                            @endforeach
+                                        </ol>
+                                        @endif
+                                        @if ($sMessage)
+                                        <span> <i class="theme-green">{{ $sMessage }}</i></span>
+                                        @endif
+                                        @if ($fMessage)
+                                        <span> <i class="theme-color">{{ $fMessage }}</i></span>
+                                        @endif
+                                        <div class="comment-field mb-20">
+                                            <i class="far fa-user"></i>
+                                            <input wire:model.defer="state.name" id="name" name="name" type="text"
+                                                placeholder="Type your name....">
                                         </div>
 
-                                        <div class="form-group">
-                                            <label>Email</label>
-                                            <input class="form-control rounded @error('email') is-invalid @enderror"
-                                                type="email" placeholder="Type your email..."
-                                                wire:model.defer="state.email" name="email">
-                                            @error('email')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
+                                        <div class="comment-field mb-20">
+                                            <i class="fas fa-envelope"></i>
+                                            <input wire:model.defer="state.email" id="email" name="email" type="email"
+                                                placeholder="Type your email....">
                                         </div>
-
-                                        <div class="form-group">
-                                            <label>Company/Organization</label>
-                                            <input
-                                                class="form-control rounded @error('organization') is-invalid @enderror"
-                                                type="text" placeholder="Type organization name..."
-                                                wire:model.defer="state.organization" name="organization">
-                                            @error('organization')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
+                                        <div class="comment-field mb-20">
+                                            <i class="fas fa-globe"></i>
+                                            <input wire:model.defer="state.organization" id="organization"
+                                                name="organization" type="text"
+                                                placeholder="Type your organization....">
                                         </div>
-
-                                        <div class="form-group">
-                                            <label>Message</label>
-                                            <textarea
-                                                class="form-control rounded rounded @error('message') is-invalid @enderror"
-                                                rows="4" placeholder="Write Here ..." wire:model.defer="state.message"
-                                                name="message"></textarea>
-                                            @error('message')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
+                                        <div class="comment-field text-area mb-20">
+                                            <i class="fas fa-pencil-alt"></i>
+                                            <textarea wire:model.defer="state.message" id="message" name="message"
+                                                cols="30" rows="10" placeholder="Type your message...."></textarea>
                                         </div>
-
-                                        <button type="submit" class="btn btn-primary">Send Message</button>
+                                        <button type="submit" class="btn">Send Message</button>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                @endif
-
-                @if ($action == 'sign-up')
-                <div>
-                    <div>
-                        <div class="row">
-                            <div class="col-12 col-md-12 mb-5">
-                                <h2 class="text-center">Sign Up</h2>
-                                <p class="text-muted mb-4 text-center">Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing
-                                    elit.
-                                    Ab, dolorem
-                                    excepturi
-                                    facilis magni necessitatibus
-                                    perspiciatis repellendus sunt veniam? A ad architecto aspernatur cupiditate
-                                    dignissimos
-                                    distinctio earum,
-                                    eligendi eum
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-12 mb-md-0">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <form autocomplete="off" wire:submit.prevent="registerOrg">
-                                            <div class="form-group">
-                                                <label>Organization/Company Name</label>
-                                                <input class="form-control rounded @error('name') is-invalid @enderror"
-                                                    type="text" placeholder="Type full name..."
-                                                    wire:model.defer="state.name" name="name">
-                                                @error('name')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                                @enderror
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-12 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>Organization Type</label>
-                                                        <select
-                                                            class="form-control rounded @error('organization_type') is-invalid @enderror"
-                                                            name="organization_type"
-                                                            wire:model.defer="state.organization_type">
-                                                            <option class="d-none">Select a type</option>
-                                                            @foreach ($orgTypes as $orgType)
-                                                            <option value="{{ $orgType->id }}">{{ $orgType->type }}
-                                                            </option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('organization_type')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>Location</label>
-                                                        <input
-                                                            class="form-control rounded @error('location') is-invalid @enderror"
-                                                            type="email" placeholder="Type location..."
-                                                            wire:model.defer="state.location" name="location">
-                                                        @error('location')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-12 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>Company Email</label>
-                                                        <input
-                                                            class="form-control rounded @error('email') is-invalid @enderror"
-                                                            type="email" placeholder="Type email..."
-                                                            wire:model.defer="state.email" name="email">
-                                                        @error('email')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>Company Phone</label>
-                                                        <input
-                                                            class="form-control rounded @error('phone_number') is-invalid @enderror"
-                                                            type="text" placeholder="Type phone number..."
-                                                            wire:model.defer="state.phone_number" name="phone_number">
-                                                        @error('phone_number')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <button type="submit" class="btn btn-primary">Send Message</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
             </div>
-        </div>
-
+        </section>
+        <!-- contact-area-end -->
     </main>
-
-    <div class="content-overlay"></div>
 </div>

@@ -23,6 +23,7 @@ use App\Http\Livewire\Home;
 use App\Http\Livewire\PatientProfile;
 use App\Http\Livewire\Patients;
 use App\Http\Livewire\Prescribers;
+use App\Http\Livewire\Subscriptions;
 use App\Http\Livewire\TreatmentSupporters;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +62,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/treatment-supporters', TreatmentSupporters::class)->name('supporters');
     Route::get('/admins', AdminAdmins::class)->name('admins');
     Route::get('/patient/{id}', PatientProfile::class)->name('patient-profile');
+    Route::get('/subscriptions', Subscriptions::class)->name('subscriptions');
     Route::get('/api-tests', ApiTests::class);
 });
 

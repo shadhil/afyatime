@@ -23,30 +23,31 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr class="bg-primary text-white">
-                                    <th scope="col">Photo</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Photo</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Code</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Code</th>
                                     <th scope="col">Age</th>
                                     <th scope="col">Address</th>
-                                    <th scope="col">Number</th>
-                                    <th scope="col" align="center">Last visit</th>
-                                    <th scope="col" calss="text-center">Status</th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Number</th>
+                                    <th scope="col" align="center" class="d-none d-sm-table-cell">Last visit</th>
+                                    <th scope="col" class="d-none d-sm-table-cell text-center">Status</th>
+                                    <th scope="col" width="10%">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @if (sizeof($patients)>0)
                                 @foreach ($patients as $patient)
                                 <tr>
-                                    <td>
+                                    <td class="d-none d-sm-table-cell">
                                         <img src="{{ $patient->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($patient->photo) }}"
                                             alt="" width="40" height="40" class="rounded-500">
                                     </td>
                                     <td>
                                         <strong>{{ $patient->first_name }} {{ $patient->last_name }}</strong>
                                     </td>
-                                    <td>
-                                        <div class="text-muted">{{ $patient->patient_code }}</div>
+                                    <td class="d-none d-sm-table-cell">
+                                        <div class="text-muted d-none d-sm-table-cell">{{ $patient->patient_code }}
+                                        </div>
                                     </td>
                                     <td>
                                         <div class="text-muted text-nowrap">
@@ -56,27 +57,28 @@
                                         <div class="address-col">{{ $patient->location }},
                                             {{ $patient->district->name }}</div>
                                     </td>
-                                    <td>
+                                    <td class="d-none d-sm-table-cell">
                                         <div class="d-flex align-items-center nowrap text-primary">
                                             <span class="icofont-ui-cell-phone p-0 mr-2"></span>
                                             {{ $patient->phone_number }}
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="d-none d-sm-table-cell">
                                         <div class="text-muted text-nowrap text-center">-</div>
                                     </td>
-                                    <td align="center"><span class="badge badge-success">Cleared</span></td>
+                                    <td align="center" class="d-none d-sm-table-cell"><span
+                                            class="badge badge-success">Cleared</span></td>
                                     <td>
                                         <div class="actions">
                                             <a href="{{ route('patient-profile', $patient->id) }}"
-                                                class="btn btn-dark btn-sm btn-square rounded-pill">
+                                                class="btn btn-dark btn-sm btn-square">
                                                 <span class="btn-icon icofont-external-link"></span>
                                             </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
+                                            <button class="btn btn-info btn-sm btn-square"
                                                 wire:click="editPatient({{ $patient->id }})">
                                                 <span class="btn-icon icofont-ui-edit"></span>
                                             </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
+                                            <button class="btn btn-error btn-sm btn-square">
                                                 <span class="btn-icon icofont-ui-delete"></span>
                                             </button>
                                         </div>

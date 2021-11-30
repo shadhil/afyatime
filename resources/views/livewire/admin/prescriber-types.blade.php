@@ -1,7 +1,7 @@
 <div>
     <div class="main-content-wrap">
         <header class="page-header">
-            <h1 class="page-title">Prescriber Type</h1>
+            <h1 class="page-title">Prescriber Types</h1>
         </header>
 
         <div class="page-content">
@@ -14,8 +14,7 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col" width="15%">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -24,18 +23,18 @@
                                 <tr>
                                     <td><strong>{{ $i }}.</strong></td>
                                     <td>
-                                        <div class="text-nowrap">{{ $prescriberType->title }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">{{ $prescriberType->initial ?? '-' }}</div>
+                                        <div class="text-nowrap">{{ $prescriberType->title }} {{
+                                            $prescriberType->initial ?? '-' != '-' ? ' ('.$prescriberType->initial.')' :
+                                            ''
+                                            }}</div>
                                     </td>
                                     <td>
                                         <div class="actions text-nowrap">
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
+                                            <button class="btn btn-info btn-sm btn-square"
                                                 wire:click.prevent="editPrsecriberType({{ $prescriberType }})">
                                                 <span class="btn-icon icofont-ui-edit"></span>
                                             </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill"
+                                            <button class="btn btn-error btn-sm btn-square"
                                                 wire:click.prevent="confirmPrescriberTypeRemoval({{ $prescriberType->id }})">
                                                 <span class="btn-icon icofont-ui-delete"></span>
                                             </button>

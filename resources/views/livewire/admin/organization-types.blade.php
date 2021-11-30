@@ -1,7 +1,7 @@
 <div>
     <div class="main-content-wrap">
         <header class="page-header">
-            <h1 class="page-title">orgType</h1>
+            <h1 class="page-title">Organization Types</h1>
         </header>
 
         <div class="page-content">
@@ -14,7 +14,7 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col" width="15%">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -27,11 +27,11 @@
                                     </td>
                                     <td>
                                         <div class="actions">
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
+                                            <button class="btn btn-info btn-sm btn-square"
                                                 wire:click.prevent="editdmin({{ $orgType }})">
                                                 <span class="btn-icon icofont-ui-edit"></span>
                                             </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill"
+                                            <button class="btn btn-error btn-sm btn-square "
                                                 wire:click.prevent="confirmOrgTypeRemoval({{ $orgType->id }})">
                                                 <span class="btn-icon icofont-ui-delete"></span>
                                             </button>

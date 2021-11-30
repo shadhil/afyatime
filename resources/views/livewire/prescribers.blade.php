@@ -1,362 +1,391 @@
 <div>
-    <div class="main-content-wrap">
-        <header class="page-header">
-            <h1 class="page-title">Prescribers</h1>
-
-            <form class="app-search d-none d-md-block" wire:submit.prevent="searchPrescriber">
-                <div class="form-group typeahead__container with-suffix-icon mb-0">
-                    <div class="typeahead__field">
-                        <div class="typeahead__query">
-                            <input class="form-control rounded autocomplete-control topbar-search" type="search"
-                                placeholder="Type prescriber's name" wire:model="searchTerm"
-                                wire:keydown.enter="searchPrescriber">
-                            <div class="suffix-icon icofont-search"></div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </header>
-
-        <div class="page-content">
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr class="bg-primary text-white">
-                                    <th scope="col">Photo</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Title</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Phone Number</th>
-                                    <th scope="col" align="center">Appointments</th>
-                                    @if (Auth::user()->isAdmin())
-                                    <th scope="col">Actions</th>
-                                    @endif
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (sizeof($prescribers)>0)
-                                @foreach ($prescribers as $prescriber)
-                                <tr>
-                                    <td>
-                                        <img src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
-                                            alt="" width="40" height="40" class="rounded-500">
-                                    </td>
-                                    <td>
-                                        {{ $prescriber->initial }} <strong>{{ $prescriber->first_name }}
-                                            {{ $prescriber->last_name }}</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">{{ $prescriber->type->title }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-email p-0 mr-2"></span>
-                                            {{ $prescriber->email }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            {{ $prescriber->phone_number }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap text-center">
-                                            {{ $prescriber->appointments()->count() }}</div>
-                                    </td>
-                                    @if (Auth::user()->isAdmin())
-                                    <td>
-                                        <div class="actions">
-                                            <a href="{{ route('patient-profile', $prescriber->id) }}"
-                                                class="btn btn-dark btn-sm btn-square">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square"
-                                                wire:click.prevent="editPrescriber({{ $prescriber->id }})">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square"
-                                                wire:click="deleteModal({{ $prescriber->id }})">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                    @endif
-                                </tr>
-                                @endforeach
-                                @else
-                                <tr>
-                                    <td colspan="9" align="center">No Prescriber Found</td>
-                                </tr>
-                                @endif
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="mt-4 float-right">
-                        {{ $prescribers->links() }}
-                    </div>
-                </div>
-            </div>
-
-            @if (Auth::user()->isAdmin() && $packageStatus == 2)
-            <div class="add-action-box">
-                <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addPrescriber">
-                    <span class="btn-icon icofont-plus"></span>
-                </button>
-            </div>
+    <h2 class="content-heading">Prescribers</h2>
+    @if (Auth::user()->isAdmin())
+    <div class="block-header">
+        {{-- <h3 class="block-title"></h3> --}}
+        {{-- <div class="block-title"> --}}
+            <button type="button" class="btn btn-alt-primary" wire:click="addPrescriber">
+                <i class="fa fa-plus mr-5"></i>New Prescriber
+            </button>
+            @if (Auth::user()->account_type == 'prescriber')
+            <button type="button" class="btn btn-alt-warning" wire:click="showTitleModal">
+                <i class="fa fa-plus mr-5"></i>New Role/Title
+            </button>
             @endif
-        </div>
-
-        {{-- <div class="page-content">
-            <div class="row">
-                @if (sizeof($prescribers)>0)
-                @foreach ($prescribers as $prescriber)
-                <div class="col-12 col-md-4">
-                    <div class="contact">
-                        <div class="img-box">
-                            <img src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
-        width="400" height="400" alt="">
+            {{--
+        </div> --}}
     </div>
-
-    <div class="info-box">
-        <h4 class="name">{{ $prescriber->initial }} {{ $prescriber->first_name }}
-            {{ $prescriber->last_name }}</h4>
-
-        <p class="role">{{ $prescriber->title }}</p>
-
-        <div class="social">
-            <a href="#" class="link icofont-email"></a>
-            <a href="#" class="link icofont-phone"></a>
-            <span class="link icofont-edit"></span>
-        </div>
-
-        <p class="address">{{ $prescriber->email }}</p>
-
-        <div class="button-box">
-            <a href="doctor.html" class="btn btn-primary">View profile</a>
-        </div>
-    </div>
-</div>
-</div>
-@endforeach
-
-@else
-<div class="col-md-12">
-    <div class="contact">
-
-        <div class="info-box">
-            <p class="address">No Prescriber found</p>
-        </div>
-    </div>
-</div>
-@endif
-</div>
-
-@if (Auth::user()->account_type == 'prescriber-admin' || Auth::user()->account_type == 'organization')
-<div class="add-action-box">
-    <button class="btn btn-dark btn-lg btn-square rounded-pill" wire:click="addPrescriber">
-        <span class="btn-icon icofont-contact-add"></span>
-    </button>
-</div>
-@endif
-</div> --}}
-</div>
-
-<!-- Add appointment modals -->
-<div class="modal fade" id="modal-prescriber" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    @if($showEditModal)
-                    <span>Edit Prescriber</span>
-                    @else
-                    <span>Add Prescriber</span>
-                    @endif
-                </h5>
-            </div>
-            <form autocomplete="off"
-                wire:submit.prevent="{{ $showEditModal ? 'updatePrescriber' : 'createPrescriber' }}">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12 col-sm-3">
+    @endif
+    <div class="row">
+        <!-- Row #1 -->
+        @if (sizeof($prescribers)>0)
+        @foreach ($prescribers as $prescriber)
+        <div class="col-md-4 col-xl-3">
+            <div class="block text-center">
+                <div class="block-content block-content-full block-sticky-options pt-30">
+                    <div class="block-options">
+                        @if (Auth::user()->isAdmin())
+                        <div class="dropdown">
+                            <button type="button" class="btn-block-option"
+                                wire:click.prevent="editPrescriber({{ $prescriber->id }})" aria-expanded="false">
+                                <i class="fa fa-edit"></i>
+                            </button>
                         </div>
-                        <div class="col-12 col-sm-6 text-center">
-                            <div class="form-group avatar-box">
-                                <div class="img-box">
+                        @endif
+                    </div>
+                    <img class="img-avatar"
+                        src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
+                        alt="">
+                </div>
+                <div class="block-content block-content-full block-content-sm bg-body-light" wire:click=""
+                    style="cursor: pointer;">
+                    <div class="font-w600 mb-5">{{ $prescriber->first_name }} {{ $prescriber->last_name }}</div>
+                    <div class="font-size-sm text-muted">{{ $prescriber->type->title }}</div>
+                </div>
+                <div class="block-content">
+                    <div class="row items-push">
+                        <div class="col-6">
+                            <div class="mb-5"><i class="si si-users fa-2x"></i></div>
+                            <div class="font-size-sm text-muted">9 Patients</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-5"><i class="si si-calendar fa-2x"></i></div>
+                            <div class="font-size-sm text-muted">2 Appointments</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
+        @endif
+        <!-- END Row #2 -->
+    </div>
+    <div class="float-right mb-15">
+        {{ $prescribers->links('vendor.livewire.bootstrap') }}
+    </div>
+
+    <!-- Pop Out Modal -->
+    <div class="modal fade" id="modal-prescriber" tabindex="-1" role="dialog" aria-labelledby="modal-popout"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-popout" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">
+                            @if($showEditModal)
+                            <span>Edit Prescriber</span>
+                            @else
+                            <span>Add Prescriber</span>
+                            @endif
+                        </h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <form wire:submit.prevent="{{ $showEditModal ? 'updatePrescriber' : 'createPrescriber' }}">
+                            <div class="form-group row">
+                                <div class="col-12 col-sm-12 text-center">
+                                    <div class="form-group avatar-box">
+                                        <div class="img-box">
+                                            @if ($photo)
+                                            <img src="{{ $photo->temporaryUrl() }}" width="150" height="150" alt="">
+                                            @else
+                                            <img src="{{ $profilePhoto == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($profilePhoto) }}"
+                                                width="150" height="150" alt="">
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-outline-primary self-center" type="button" id="browseImg"
+                                        type="button" onclick="document.getElementById('photo').click();">
+                                        Browse Image
+                                    </button>
+                                    <input wire:model="photo" type="file" accept="image/*" style="display:none;"
+                                        id="photo" name="photo">
                                     @if ($photo)
-                                    <img src="{{ $photo->temporaryUrl() }}" width="200" height="200" alt="">
-                                    @else
-                                    <img src="{{ $profilePhoto == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($profilePhoto) }}"
-                                        width="200" height="200" alt="">
+                                    {{ $photo->getClientOriginalName() }}
                                     @endif
                                 </div>
                             </div>
-                            <button class="btn btn-outline-primary self-center" type="button" id="browseImg"
-                                type="button" onclick="document.getElementById('photo').click();">
-                                Browse Image
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="firstname">Firstname</label>
+                                    <input type="text" class="form-control @error('first_name') is-invalid @enderror"
+                                        wire:model.defer="state.first_name" id="first_name" name="first_name"
+                                        placeholder="Enter your firstname.." {{ $canUpdate }}>
+                                    @error('first_name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="col-6">
+                                    <label for="lastname">Lastname</label>
+                                    <input type="text" class="form-control @error('last_name') is-invalid @enderror"
+                                        wire:model.defer="state.last_name" id="last_name" name="last_name"
+                                        placeholder="Enter your lastname.." {{ $canUpdate }}>
+                                    @error('last_name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="firstname">Title/Role</label>
+                                    <select class="form-control @error('prescriber_type') is-invalid @enderror"
+                                        title="Prescriber Type" wire:model.defer="state.prescriber_type"
+                                        id="prescriber_type" name="prescriber_type" size="1" {{ $canUpdate }}>
+                                        @foreach ($prescriberTypes as $type)
+                                        <option value="{{ $type->id }}">{{ $type->title }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('prescriber_type')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="col-6">
+                                    <label for="gender">Gender</label>
+                                    <select class="form-control @error('gender') is-invalid @enderror" title="Gender"
+                                        wire:model.defer="state.gender" id="gender" name="gender" size="1" {{ $canUpdate
+                                        }}>
+                                        <option value="Male">Male</option>
+                                        <option value="Male">Female</option>
+                                    </select>
+                                    @error('gender')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="phone_number">Phone Number</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="text"
+                                            class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                                            wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
+                                            placeholder="Enter your phone number.." {{ $canUpdate }}>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-phone"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('phone_number')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="email">Email</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                            type="text" wire:model.defer="state.email" id="email" name="email"
+                                            placeholder="Enter your email.." {{ $canUpdate }}>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-envelope-o"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            @if($showEditModal && Auth::user()->isAdmin())
+                            <div class="form-group row">
+                                <label class="col-12" for="password">Password</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="password"
+                                            class="form-control @error('password') is-invalid @enderror" type="text"
+                                            wire:model.defer="state.password" id="password" name="password"
+                                            placeholder="Enter your password..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-lock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('password')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="password">Confirm Password</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="password"
+                                            class="form-control @error('password') is-invalid @enderror" type="text"
+                                            wire:model.defer="state.password_confirmation" id="password_confirmation"
+                                            name="password_confirmation" placeholder="Confirm your password..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-lock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('password_confirmation')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            @endif
+                            @if (Auth::user()->isAdmin())
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <div class="custom-control custom-checkbox custom-control-inline mb-5">
+                                        <input class="custom-control-input" type="checkbox" name="is_admin"
+                                            id="is_admin" wire:model.defer="state.is_admin">
+                                        <label class="custom-control-label" for="is_admin">Assign as
+                                            ADMIN</label>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            @if (Auth::user()->isAdmin())
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <button type="button" class="btn btn-alt-info" wire:loading
+                                        wire:target="{{ $showEditModal ? 'updatePrescriber' : 'createPrescriber' }}">
+                                        <span class="btn-loader icofont-spinner"></span>
+                                    </button>
+                                    <button type="submit" class="btn btn-alt-info" wire:loading.attr="hidden">
+                                        <i class="fa fa-send mr-5"></i>
+                                        @if($showEditModal)
+                                        Save Changes
+                                        @else
+                                        Save
+                                        @endif
+                                    </button>
+                                </div>
+                            </div>
+                            @endif
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @if (Auth::user()->isAdmin())
+                    <button type="button" class="btn btn-alt-danger" wire:click="deleteModal()">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                    @endif
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Pop Out Modal -->
+
+    <!-- Slide Up Modal -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="modal-slideup"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-slideup" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">Delete Prescriber</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
                             </button>
-                            <input wire:model="photo" type="file" accept="image/*" style="display:none;" id="photo"
-                                name="photo">
-                            @if ($photo)
-                            {{ $photo->getClientOriginalName() }}
-                            @endif
-                        </div>
-                        <div class="col-12 col-sm-3">
                         </div>
                     </div>
-                    <br />
-
-                    <div class="form-group">
-                        <input class="form-control rounded @error('first_name') is-invalid @enderror" type="text"
-                            wire:model.defer="state.first_name" id="first_name" name="first_name"
-                            placeholder="First name">
-                        @error('first_name')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-
-                    <div class="form-group ">
-                        <input class="form-control rounded @error('last_name') is-invalid @enderror"
-                            wire:model.defer="state.last_name" id="last_name" name="last_name" type="text"
-                            placeholder="Last name">
-                        @error('last_name')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group">
-                                <select class="form-control rounded @error('prescriber_type') is-invalid @enderror"
-                                    title="Prescriber Type" wire:model.defer="state.prescriber_type"
-                                    id="prescriber_type" name="prescriber_type">
-                                    <option class="d-none">Title/Role</option>
-                                    @foreach ($prescriberTypes as $type)
-                                    <option value="{{ $type->id }}">{{ $type->title }}</option>
-                                    @endforeach
-                                </select>
-                                @error('prescriber_type')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group">
-                                <select class="form-control rounded @error('gender') is-invalid @enderror"
-                                    title="Gender" wire:model.defer="state.gender" id="gender" name="gender">
-                                    <option class="d-none">Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
-                                @error('gender')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <input class="form-control rounded @error('phone_number') is-invalid @enderror" type="text"
-                            wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
-                            placeholder="Phone Number">
-                        @error('phone_number')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <input class="form-control rounded @error('email') is-invalid @enderror" type="text"
-                            wire:model.defer="state.email" id="email" name="email" placeholder="email">
-                        @error('email')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-
-                    @if($showEditModal)
-                    <div class="form-group">
-                        <input class="form-control rounded @error('password') is-invalid @enderror" type="password"
-                            placeholder="password" wire:model.defer="state.password" id="password">
-                        @error('password')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <input class="form-control rounded" type="password" placeholder="confirm password"
-                            wire:model.defer="state.password_confirmation" id="passwordConfirmation">
-                    </div>
-                    @endif
-                    @if (Auth::user()->account_type == 'organization')
-                    <div class="custom-control custom-switch mb-3">
-                        <input type="checkbox" class="custom-control-input" id="customCheck2" name="is_admin"
-                            wire:model.defer="state.is_admin">
-                        <label class="custom-control-label" for="customCheck2">Assign as Admin</label>
-                    </div>
-                    @endif
-                </div>
-                <div class="modal-footer d-block">
-                    <div class="actions justify-content-between">
-                        <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-
-                        <button type="button" class="btn btn-info btn-load" wire:loading
-                            wire:target="{{ $showEditModal ? 'updatePrescriber' : 'createPrescriber' }}">
-                            <span class="btn-loader icofont-spinner"></span>
-                        </button>
-
-                        <button type="submit" class="btn btn-info" wire:loading.attr="hidden">
-                            @if($showEditModal)
-                            <span>Save Changes</span>
-                            @else
-                            <span>Save</span>
-                            @endif
-                        </button>
+                    <div class="block-content">
+                        <h5>Are you sure you want to delete this prescriber?</h5>
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-
-
-            <div class="modal-body">
-                <h4>Are you sure you want to delete this prescriber?</h4>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times mr-1"></i>
-                    Cancel</button>
-                <button type="button" wire:click.prevent="deletePrescriber" class="btn btn-danger"><i
-                        class="icofont-bin mr-1"></i>Delete Now</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-alt-danger" wire:click.prevent="deletePrescriber">
+                        <i class="fa fa-trash"></i> Confirm Delete
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <div class="modal fade" id="title-role-modal" tabindex="-1" role="dialog" aria-labelledby="modal-popout"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-popout" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">
+                            <span>New Title/Role</span>
+                        </h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <form wire:submit.prevent="updateTitleRole">
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <label for="initial">Initial</label>
+                                    <input type="text" class="form-control @error('initial') is-invalid @enderror"
+                                        wire:model.defer="initial" id="initial" name="initial"
+                                        placeholder="Enter your initials.." {{ $canUpdate }}>
+                                    @error('initial')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="col-8">
+                                    <label for="title">Title/Role</label>
+                                    <input type="text" class="form-control @error('title') is-invalid @enderror"
+                                        wire:model.defer="title" id="title" name="title"
+                                        placeholder="Enter your title/role.." {{ $canUpdate }}>
+                                    @error('title')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            @if (Auth::user()->isAdmin())
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-alt-info" wire:loading.attr="disabled">
+                                        <i class="fa fa-save mr-5"></i>
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+                            @endif
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- end Add appointment modals -->
+
 
 @push('scripts')
 <script>
@@ -368,7 +397,9 @@
 
         window.addEventListener('hide-prescriber-modal', event => {
             $('#modal-prescriber').modal('hide');
-            toastr.success(event.detail.message, 'Success!');
+            if(event.detail.message != 'none'){
+                toastr.success(event.detail.message, 'Success!');
+            }
         })
 
         window.addEventListener('show-error-toastr', event => {
@@ -388,6 +419,14 @@
     window.addEventListener('hide-delete-modal', event => {
         $('#delete-modal').modal('hide');
         toastr.success(event.detail.message, 'Success!');
+    })
+
+    window.addEventListener('show-title-modal', event => {
+        $('#title-role-modal').modal('show');
+    })
+
+    window.addEventListener('hide-title-modal', event => {
+        $('#title-role-modal').modal('hide');
     })
 
         // window.addEventListener('hide-prescriber-modal', event => {

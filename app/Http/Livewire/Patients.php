@@ -238,6 +238,6 @@ class Patients extends Component
             ->where('organization_id', Auth::user()->org_id)
             ->get();
         //dd($prescribers);
-        return view('livewire.patients', ['patients' => $patients, 'regions' => $regions, 'supporters' => $supporters]);
+        return view('livewire.patients', ['patients' => $patients, 'regions' => $regions, 'supporters' => $supporters])->layout('layouts.base');
     }
 }

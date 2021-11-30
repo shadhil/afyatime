@@ -19,19 +19,19 @@ class CreatePrescriberTypesTable extends Migration
             $table->tinyIncrements('id');
             $table->string('title', 50);
             $table->string('initial', 20)->nullable();
+            $table->foreignId('org_id')->constrained('organizations')->nullable();
             $table->timestamps();
         });
 
         DB::table('prescriber_types')->insert([
             [
+                'initial' => 'Dr.',
                 'title' => 'Doctor'
             ],
             [
+                'initial' => NULL,
                 'title' => 'Nurse'
             ],
-            [
-                'title' => 'Other'
-            ]
         ]);
     }
 

@@ -42,9 +42,21 @@ class Prescribers extends Component
     public $photo;
     public $profilePhoto;
 
+    public $canUpdate = 'disabled';
+
+    public $title;
+    public $initial;
+
+    public function mount()
+    {
+        if (Auth::user()->isAdmin()) {
+            $this->canUpdate = '';
+        }
+    }
+
     public function createPrescriber()
     {
-        // dd($this->packageSubscribers);
+        //  dd($this->state);
 
         $allPrescribers = Prescriber::query()
             ->where('organization_id', Auth::user()->org_id)
@@ -76,6 +88,8 @@ class Prescribers extends Component
             $this->state['is_admin'] = $this->state['is_admin'] == true ? 1 : 0;
             $phone = Str::replace(' ', '', $this->state['phone_number']);
             $this->state['phone_number'] = Str::start(Str::substr($phone, -9), '0');
+
+            // dd('PASS!');
 
             DB::transaction(function () {
 
@@ -176,9 +190,10 @@ class Prescribers extends Component
         });
     }
 
-    public function deleteModal($prescriberId)
+    public function deleteModal()
     {
-        $this->prescriberId = $prescriberId;
+        // $this->prescriberId = $prescriberId;
+        $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'none']);
         $this->dispatchBrowserEvent('show-delete-modal');
     }
 
@@ -189,6 +204,35 @@ class Prescribers extends Component
         $prescriber->delete();
 
         $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Prescriber deleted successfully!']);
+    }
+
+    public function showTitleModal()
+    {
+        $this->dispatchBrowserEvent('show-title-modal');
+    }
+
+    public function updateTitleRole()
+    {
+        // dd('Update!');
+        $validatedData = $this->validate([
+            'title' => 'required',
+        ]);
+
+        $orgId = Auth::user()->account->organization_id;
+
+        $titleRole = PrescriberType::query()->where('title', $this->title)->where('org_id', $orgId)->first();
+
+        if ($titleRole) {
+            $titleRole->delete();
+        } else {
+            $titleRole = PrescriberType::create([
+                'initial' => $this->initial ?? NULL,
+                'title' => $this->title,
+                'org_id' => $orgId,
+            ]);
+        }
+
+        $this->dispatchBrowserEvent('hide-title-modal');
     }
 
 
@@ -220,16 +264,20 @@ class Prescribers extends Component
                     $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
                         ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%');
                 })
-                ->latest()->limit($this->packageSubscribers)->paginate(15);
+                ->latest()->limit($this->packageSubscribers)->paginate(4);
         } else {
             $prescribers = Prescriber::query()
                 ->where('prescribers.organization_id', Auth::user()->org_id)
-                ->latest()->limit($this->packageSubscribers)->paginate(15);
+                ->latest()->limit($this->packageSubscribers)->paginate(4);
         }
 
-        $prescriberTypes = PrescriberType::all();
+        $prescriberTypes = PrescriberType::query()
+            ->where(function ($query) {
+                $query->where('org_id', Auth::user()->org_id)
+                    ->orWhereNull('org_id');
+            })->get();
 
         // dd($this->packageSubscribers);
-        return view('livewire.prescribers', ['prescribers' => $prescribers, 'prescriberTypes' => $prescriberTypes]);
+        return view('livewire.prescribers', ['prescribers' => $prescribers, 'prescriberTypes' => $prescriberTypes])->layout('layouts.base');
     }
 }

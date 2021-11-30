@@ -23,10 +23,10 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr class="bg-primary text-white">
-                                    <th scope="col">Photo</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Photo</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Location</th>
-                                    <th scope="col">Phone</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Phone</th>
                                     <th scope="col">Patient(s)</th>
                                     <th scope="col">Actions</th>
                                 </tr>
@@ -35,7 +35,7 @@
                                 @if (sizeof($supporters)>0)
                                 @foreach ($supporters as $supporter)
                                 <tr>
-                                    <td>
+                                    <td class="d-none d-sm-table-cell">
                                         <img src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($supporter->photo) }}"
                                             alt="" width="40" height="40" class="rounded-500">
                                     </td>
@@ -47,7 +47,7 @@
                                             {{ $supporter->district->name }}, {{ $supporter->district->region->name }}
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="d-none d-sm-table-cell">
                                         <div class="d-flex align-items-center nowrap text-primary">
                                             <span class="icofont-ui-cell-phone p-0 mr-2"></span>
                                             {{ $supporter->phone_number }}
@@ -61,7 +61,7 @@
                                         <div class="actions">
                                             <button class="btn btn-primary btn-sm rounded"
                                                 wire:click="editSupporter({{ $supporter->id }})">
-                                                <span class="btn-icon icofont-ui-edit"> Edit</span>
+                                                <span class="btn-icon icofont-ui-edit"></span>
                                             </button>
                                             <button class="btn btn-error btn-sm btn-square"
                                                 wire:click="supporterRemoval({{ $supporter->id }})">

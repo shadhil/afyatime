@@ -422,7 +422,7 @@ body.vertical-layout.scrolled .app-navbar.horizontal {
     }
 }
 body.horizontal-layout .app-navbar.horizontal-vertical {
-    background: #fbfbfb;
+    background: #fefefe;
 }
 @media (min-width: 992px) {
     body.horizontal-layout .app-navbar.horizontal-vertical .app-logo {

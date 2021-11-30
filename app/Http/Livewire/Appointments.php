@@ -18,8 +18,8 @@ class Appointments extends Component
         $appointments = Appointment::query()
             ->where('organization_id', Auth::user()->org_id)
             ->orderByDesc('date_of_visit')
-            ->paginate(15);
+            ->paginate(1);
 
-        return view('livewire.appointments', ['appointments' => $appointments]);
+        return view('livewire.appointments', ['appointments' => $appointments])->layout('layouts.base');
     }
 }

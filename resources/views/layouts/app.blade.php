@@ -54,7 +54,7 @@
 
                     <div class="app-logo">
                         <div class="logo-wrap">
-                            <img src="{{ asset('assets/img/logo.svg') }}" alt="" width="147" height="33"
+                            <img src="{{ asset('assets/img/logo.png') }}" alt="" width="147" height="33"
                                 class="logo-img">
                         </div>
                     </div>
