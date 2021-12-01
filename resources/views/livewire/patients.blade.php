@@ -1,118 +1,304 @@
 <div>
-    <div class="main-content-wrap">
-        <header class="page-header">
-            <h1 class="page-title">Patients</h1>
-            <form class="app-search d-none d-md-block" wire:submit.prevent="searchPatient">
-                <div class="form-group typeahead__container with-suffix-icon mb-0">
-                    <div class="typeahead__field">
-                        <div class="typeahead__query">
-                            <input class="form-control rounded autocomplete-control topbar-search" type="search"
-                                placeholder="Type patient's name" wire:model="searchTerm"
-                                wire:keydown.enter="searchPatient">
-                            <div class="suffix-icon icofont-search"></div>
+    <h2 class="content-heading">Prescribers</h2>
+    @if (Auth::user()->isAdmin())
+    <div class="block-header">
+        {{-- <h3 class="block-title"></h3> --}}
+        {{-- <div class="block-title"> --}}
+            <button type="button" class="btn btn-alt-primary" wire:click="addPatient">
+                <i class="fa fa-plus mr-5"></i>New Patient
+            </button>
+
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <div class="form-material form-material-primary">
+                        <input type="text" class="form-control" wire:model="searchTerm"
+                            wire:keydown.enter="searchPatient" name="searchPatient" placeholder="Search Patient"
+                            wire:keydown.enter="searchPatient">
+                    </div>
+                </div>
+            </div>
+            {{--
+        </div> --}}
+    </div>
+    @endif
+    @if (sizeof($patients)>0)
+    <div class="form-row">
+        <div class="form-group col-lg-8">
+            <label for="example-flatpickr-custom">Custom format</label>
+            <input type="text" class="js-flatpickr form-control bg-white" id="example-flatpickr-custom"
+                name="example-flatpickr-custom" placeholder="d-m-Y" data-date-format="d-m-Y" value="12-12-2021">
+        </div>
+    </div>
+    <div class="row">
+        @foreach ($patients as $patient)
+        @if ($patient->lastAppointment->date_of_visit ?? '' >= now())
+        <div class="col-md-4 col-xl-3">
+            <a class="block text-center" href="javascript:void(0)">
+                <div class="block-content block-content-full bg-gd-dusk">
+                    <img class="img-avatar img-avatar-thumb"
+                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
+                        alt="">
+                </div>
+                <div class="block-content block-content-full">
+                    <div class="font-w600 mb-5">{{ $patient->first_name }} {{ $patient->last_name }}</div>
+                    <div class="font-size-sm text-muted">#{{ $patient->patient_code }}</div>
+                </div>
+            </a>
+        </div>
+        @else
+        <div class="col-md-4 col-xl-3">
+            <a class="block block-link-pop text-center" href="javascript:void(0)">
+                <div class="block-content block-content-full">
+                    <img class="img-avatar"
+                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
+                        alt="">
+                </div>
+                <div class="block-content block-content-full bg-body-light">
+                    <div class="font-w600 mb-5">{{ $patient->first_name }} {{ $patient->last_name }}</div>
+                    <div class="font-size-sm text-muted">#{{ $patient->patient_code }}</div>
+                </div>
+            </a>
+        </div>
+        @endif
+        @endforeach
+    </div>
+    <div class="float-right mb-15">
+        {{ $patients->links('vendor.livewire.bootstrap') }}
+    </div>
+    @else
+    <div class="row mb-15">
+        <div class="col-sm-12 col-xl-12 text-center">
+            No Patient Found
+        </div>
+    </div>
+    @endif
+
+    <div class="modal fade" id="modal-patient" tabindex="-1" role="dialog" aria-labelledby="modal-popout"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-popout" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">
+                            @if($showEditModal)
+                            <span>Edit Patient</span>
+                            @else
+                            <span>Add Patient</span>
+                            @endif
+                        </h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
                         </div>
                     </div>
+                    <div class="block-content">
+                        <form wire:submit.prevent="{{ $showEditModal ? 'updatePatient' : 'createPatient' }}">
+                            <div class="form-group row">
+                                <div class="col-12 col-sm-12 text-center">
+                                    <div class="form-group avatar-box">
+                                        <div class="img-box">
+                                            @if ($photo)
+                                            <img src="{{ $photo->temporaryUrl() }}" width="150" height="150" alt="">
+                                            @else
+                                            <img src="{{ $profilePhoto == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($profilePhoto) }}"
+                                                width="150" height="150" alt="">
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-outline-primary self-center" type="button" id="browseImg"
+                                        type="button" onclick="document.getElementById('photo').click();">
+                                        Browse Image
+                                    </button>
+                                    <input wire:model="photo" type="file" accept="image/*" style="display:none;"
+                                        id="photo" name="photo">
+                                    @if ($photo)
+                                    {{ $photo->getClientOriginalName() }}
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="firstname">Firstname</label>
+                                    <input type="text" class="form-control @error('first_name') is-invalid @enderror"
+                                        wire:model.defer="state.first_name" id="first_name" name="first_name"
+                                        placeholder="Enter your firstname..">
+                                    @error('first_name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="col-6">
+                                    <label for="lastname">Lastname</label>
+                                    <input type="text" class="form-control @error('last_name') is-invalid @enderror"
+                                        wire:model.defer="state.last_name" id="last_name" name="last_name"
+                                        placeholder="Enter your lastname..">
+                                    @error('last_name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="date_of_birth">Date of Birth</label>
+                                    <input type="text" class="js-flatpickr form-control bg-white"
+                                        wire:model.defer="state.date_of_birth" id="date_of_birth" name="date_of_birth"
+                                        placeholder="d-m-Y" data-date-format="d-m-Y" value="12-12-2021">
+                                    @error('date_of_birth')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="col-6">
+                                    <label for="gender">Gender</label>
+                                    <select class="form-control @error('gender') is-invalid @enderror" title="Gender"
+                                        wire:model.defer="state.gender" id="gender" name="gender" size="1">
+                                        <option value="Male">Male</option>
+                                        <option value="Male">Female</option>
+                                    </select>
+                                    @error('gender')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="phone_number">Phone Number</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="text"
+                                            class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                                            wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
+                                            placeholder="Enter your phone number..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-phone"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('phone_number')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="email">Email</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                            type="text" wire:model.defer="state.email" id="email" name="email"
+                                            placeholder="Enter your email..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-envelope-o"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            @if($showEditModal && Auth::user()->isAdmin())
+                            <div class="form-group row">
+                                <label class="col-12" for="password">Password</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="password"
+                                            class="form-control @error('password') is-invalid @enderror" type="text"
+                                            wire:model.defer="state.password" id="password" name="password"
+                                            placeholder="Enter your password..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-lock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('password')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="password">Confirm Password</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="password"
+                                            class="form-control @error('password') is-invalid @enderror" type="text"
+                                            wire:model.defer="state.password_confirmation" id="password_confirmation"
+                                            name="password_confirmation" placeholder="Confirm your password..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-lock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('password_confirmation')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            @endif
+                            @if (Auth::user()->isAdmin())
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <div class="custom-control custom-checkbox custom-control-inline mb-5">
+                                        <input class="custom-control-input" type="checkbox" name="is_admin"
+                                            id="is_admin" wire:model.defer="state.is_admin">
+                                        <label class="custom-control-label" for="is_admin">Assign as
+                                            ADMIN</label>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            @if (Auth::user()->isAdmin())
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <button type="button" class="btn btn-alt-info" wire:loading
+                                        wire:target="{{ $showEditModal ? 'updatePrescriber' : 'createPrescriber' }}">
+                                        <span class="btn-loader icofont-spinner"></span>
+                                    </button>
+                                    <button type="submit" class="btn btn-alt-info" wire:loading.attr="hidden">
+                                        <i class="fa fa-send mr-5"></i>
+                                        @if($showEditModal)
+                                        Save Changes
+                                        @else
+                                        Save
+                                        @endif
+                                    </button>
+                                </div>
+                            </div>
+                            @endif
+                        </form>
+                    </div>
                 </div>
-            </form>
-        </header>
-
-        <div class="page-content">
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr class="bg-primary text-white">
-                                    <th scope="col" class="d-none d-sm-table-cell">Photo</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col" class="d-none d-sm-table-cell">Code</th>
-                                    <th scope="col">Age</th>
-                                    <th scope="col">Address</th>
-                                    <th scope="col" class="d-none d-sm-table-cell">Number</th>
-                                    <th scope="col" align="center" class="d-none d-sm-table-cell">Last visit</th>
-                                    <th scope="col" class="d-none d-sm-table-cell text-center">Status</th>
-                                    <th scope="col" width="10%">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (sizeof($patients)>0)
-                                @foreach ($patients as $patient)
-                                <tr>
-                                    <td class="d-none d-sm-table-cell">
-                                        <img src="{{ $patient->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($patient->photo) }}"
-                                            alt="" width="40" height="40" class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>{{ $patient->first_name }} {{ $patient->last_name }}</strong>
-                                    </td>
-                                    <td class="d-none d-sm-table-cell">
-                                        <div class="text-muted d-none d-sm-table-cell">{{ $patient->patient_code }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">
-                                            {{ \Carbon\Carbon::parse($patient->date_of_birth)->age }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="address-col">{{ $patient->location }},
-                                            {{ $patient->district->name }}</div>
-                                    </td>
-                                    <td class="d-none d-sm-table-cell">
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            {{ $patient->phone_number }}
-                                        </div>
-                                    </td>
-                                    <td class="d-none d-sm-table-cell">
-                                        <div class="text-muted text-nowrap text-center">-</div>
-                                    </td>
-                                    <td align="center" class="d-none d-sm-table-cell"><span
-                                            class="badge badge-success">Cleared</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="{{ route('patient-profile', $patient->id) }}"
-                                                class="btn btn-dark btn-sm btn-square">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square"
-                                                wire:click="editPatient({{ $patient->id }})">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                                @else
-                                <tr>
-                                    <td colspan="9" align="center">No Patient Found</td>
-                                </tr>
-                                @endif
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="mt-4 float-right">
-                        {{ $patients->links() }}
-                    </div>
+                <div class="modal-footer">
+                    @if (Auth::user()->isAdmin())
+                    <button type="button" class="btn btn-alt-danger" wire:click="deleteModal()">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                    @endif
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
-
-            @if (Auth::user()->isAdmin() && $packageStatus == 2)
-            <div class="add-action-box">
-                <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addPatient">
-                    <span class="btn-icon icofont-plus"></span>
-                </button>
-            </div>
-            @endif
         </div>
     </div>
 
     <!-- Add patients modals -->
-    <div class="modal fade" id="modal-patient" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
+    <div class="modal fade" id="modal-patient-0" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -319,6 +505,9 @@
 </div>
 
 @push('scripts')
+<script>
+    jQuery(function(){Codebase.helpers(['flatpickr', 'datepicker']);});
+</script>
 <script>
     $(document).ready(function() {
         toastr.options = {

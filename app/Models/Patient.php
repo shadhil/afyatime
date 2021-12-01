@@ -49,8 +49,23 @@ class Patient extends Model
         return $this->morphMany(User::class, 'account');
     }
 
-    public function appontments(): HasMany
+    public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class, 'patient_id');
+    }
+
+    public function latestAppointment()
+    {
+        return $this->hasOne(Appointment::class, 'patient_id')->latestOfMany();
+    }
+
+    public function lastAppointment()
+    {
+        return $this->hasOne(Appointment::class, 'patient_id')->ofMany([
+            'date_of_visit' => 'max',
+            'id' => 'max',
+        ], function ($query) {
+            $query->whereDate('date_of_visit', '>=', now());
+        });
     }
 }

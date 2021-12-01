@@ -33,7 +33,17 @@
     <!-- Fonts and Codebase framework -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700&display=swap">
     <link rel="stylesheet" id="css-main" href="{{ asset('assets/base/css/codebase.min.css') }}">
+
+    <!-- Plugins -->
     <link rel="stylesheet" href="{{ asset('assets/base/css/toastr.min.css') }}">
+
+    <link rel="stylesheet"
+        href="{{ asset('assets/base/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/base/js/plugins/flatpickr/flatpickr.min.css') }}">
+    {{--
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}"> --}}
+
     @livewireStyles
     @stack('styles')
 
@@ -106,7 +116,15 @@
         webpack is putting everything together at assets/_js/main/app.js
     -->
     <script src="{{ asset('assets/base/js/codebase.app.min.js') }}"></script>
+
+    <!-- Plugins -->
     <script src="{{ asset('assets/base/js/toastr.min.js') }}"></script>
+    <script src="{{ asset('assets/base/js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}">
+    </script>
+    <script src="{{ asset('assets/base/js/plugins/flatpickr/flatpickr.min.js') }}"></script>
+    {{-- <script type=" text/javascript"
+        src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script> --}}
+
     @livewireScripts
     @stack('scripts')
 </body>

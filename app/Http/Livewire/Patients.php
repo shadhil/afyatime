@@ -237,7 +237,9 @@ class Patients extends Component
             ->select('id', 'full_name', 'phone_number')
             ->where('organization_id', Auth::user()->org_id)
             ->get();
-        //dd($prescribers);
+
+        $this->state['date_of_birth'] = $patients[0]->date_of_birth;
+        // dd($patients[0]->lastAppointment->date_of_visit);
         return view('livewire.patients', ['patients' => $patients, 'regions' => $regions, 'supporters' => $supporters])->layout('layouts.base');
     }
 }

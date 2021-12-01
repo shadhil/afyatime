@@ -228,7 +228,7 @@ class PatientProfile extends Component
                 $query->where('patient_id', $this->patientId);
             })->limit(7)->get();
 
-        $appointments = $patient->appontments()
+        $appointments = $patient->appointments()
             ->orderByDesc('date_of_visit')
             ->paginate(15);
 
