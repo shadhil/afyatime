@@ -1,19 +1,19 @@
 <div>
-    <h2 class="content-heading">Prescribers</h2>
+    <h2 class="content-heading">Treatment Supporters</h2>
     @if (Auth::user()->isAdmin())
     <div class="block-header">
         {{-- <h3 class="block-title"></h3> --}}
         {{-- <div class="block-title"> --}}
-            <button type="button" class="btn btn-alt-primary" wire:click="addPatient">
-                <i class="fa fa-plus mr-5"></i>New Patient
+            <button type="button" class="btn btn-alt-primary" wire:click="addSupporter">
+                <i class="fa fa-plus mr-5"></i>New Supporter
             </button>
 
             <div class="form-group row">
                 <div class="col-md-12">
                     <div class="form-material form-material-primary">
                         <input type="text" class="form-control" wire:model="searchTerm"
-                            wire:keydown.enter="searchPatient" name="searchPatient" placeholder="Search Patient"
-                            wire:keydown.enter="searchPatient">
+                            wire:keydown.enter="searchSupporter" name="searchTerm" placeholder="Search Supporter"
+                            wire:keydown.enter="searchSupporter">
                     </div>
                 </div>
             </div>
@@ -21,301 +21,312 @@
         </div> --}}
     </div>
     @endif
-    @if (sizeof($patients)>0)
+    @if (sizeof($supporters)>0)
     <div class="row">
-        @foreach ($patients as $patient)
-        @if ($patient->lastAppointment->date_of_visit ?? '' >= now())
+        @foreach ($supporters as $supporter)
         <div class="col-md-4 col-xl-3">
-            <a class="block text-center" href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
-                <div class="block-content block-content-full bg-gd-dusk">
-                    <img class="img-avatar img-avatar-thumb"
-                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
-                        alt="">
-                </div>
-                <div class="block-content block-content-full">
-                    <div class="font-w600 mb-5">{{ $patient->first_name }} {{ $patient->last_name }}</div>
-                    <div class="font-size-sm text-muted">#{{ $patient->patient_code }}</div>
+            <a class="block block-link-shadow" href="javascript:void(0)"
+                wire:click.prevent="viewSupporter({{ $supporter->id }})">
+                <div class="block-content block-content-full clearfix">
+                    <div class="float-right">
+                        <img class="img-avatar"
+                            src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($supporter->photo) }}"
+                            alt="">
+                    </div>
+                    <div class="float-left mt-10">
+                        <div class="font-w600 mb-5">{{ $supporter->full_name }}</div>
+                        <div class="font-size-sm text-muted">{{ $supporter->patients()->count() }} Patient(s)</div>
+                    </div>
                 </div>
             </a>
         </div>
-        @else
-        <div class="col-md-4 col-xl-3">
-            <a class="block block-link-pop text-center"
-                href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
-                <div class="block-content block-content-full">
-                    <img class="img-avatar"
-                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
-                        alt="">
-                </div>
-                <div class="block-content block-content-full bg-body-light">
-                    <div class="font-w600 mb-5">{{ $patient->first_name }} {{ $patient->last_name }}</div>
-                    <div class="font-size-sm text-muted">#{{ $patient->patient_code }}</div>
-                </div>
-            </a>
-        </div>
-        @endif
         @endforeach
     </div>
     <div class="float-right mb-15">
-        {{ $patients->links('vendor.livewire.bootstrap') }}
+        {{ $supporters->links('vendor.livewire.bootstrap') }}
     </div>
     @else
     <div class="row mb-15">
         <div class="col-sm-12 col-xl-12 text-center">
-            No Patient Found
+            No Supporter Found
         </div>
     </div>
     @endif
-    <div class="main-content-wrap">
-        <header class="page-header">
-            <h1 class="page-title">Treatment Supporters</h1>
-            <form class="app-search d-none d-md-block" wire:submit.prevent="searchPatient">
-                <div class="form-group typeahead__container with-suffix-icon mb-0">
-                    <div class="typeahead__field">
-                        <div class="typeahead__query">
-                            <input class="form-control rounded autocomplete-control topbar-search" type="search"
-                                placeholder="Type supporter's name" wire:model="searchTerm"
-                                wire:keydown.enter="searchSupporter">
-                            <div class="suffix-icon icofont-search"></div>
+
+    <div class="modal fade" id="modal-supporter" tabindex="-1" role="dialog" aria-labelledby="modal-popout"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-popout" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">
+                            @if($showEditModal)
+                            <span>Edit Patient</span>
+                            @else
+                            <span>Add Patient</span>
+                            @endif
+                        </h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
                         </div>
                     </div>
+                    <div class="block-content">
+                        <form wire:submit.prevent="{{ $showEditModal ? 'updateSupporter' : 'createSupporter' }}">
+                            <div class="form-group row">
+                                <div class="col-12 col-sm-12 text-center">
+                                    <div class="form-group avatar-box">
+                                        <div class="img-box" onclick="document.getElementById('photo').click();"
+                                            style="cursor: pointer">
+                                            @if ($photo)
+                                            <img src="{{ $photo->temporaryUrl() }}" width="150" height="150" alt="">
+                                            @else
+                                            <img src="{{ $profilePhoto == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($profilePhoto) }}"
+                                                width="150" height="150" alt="">
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- <button class="btn btn-outline-primary self-center" type="button"
+                                        id="browseImg" type="button"
+                                        onclick="document.getElementById('photo').click();">
+                                        Browse Image
+                                    </button> --}}
+                                    <input wire:model="photo" type="file" accept="image/*" style="display:none;"
+                                        id="photo" name="photo">
+                                    @if ($photo)
+                                    {{ $photo->getClientOriginalName() }}
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <label for="full_name">Firstname</label>
+                                    <input type="text" class="form-control @error('full_name') is-invalid @enderror"
+                                        wire:model.defer="state.full_name" id="full_name" name="full_name"
+                                        placeholder="Enter your full name..">
+                                    @error('full_name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="phone_number">Phone Number</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="text"
+                                            class="form-control @error('phone_number') is-invalid @enderror"
+                                            wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
+                                            placeholder="Enter your phone number..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-phone"></i>
+                                            </span>
+                                        </div>
+                                        @error('phone_number')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="email">Email</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                            wire:model.defer="state.email" id="email" name="email"
+                                            placeholder="Enter your email..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-envelope-o"></i>
+                                            </span>
+                                        </div>
+                                        @error('email')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="location">Location</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control @error('location') is-invalid @enderror"
+                                            wire:model.defer="state.location" id="location" name="location"
+                                            placeholder="Enter your location..">
+                                        @error('location')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                        {{-- <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-location"></i>
+                                            </span>
+                                        </div> --}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="region_id">Region</label>
+                                    <select class="form-control @error('region_id') is-invalid @enderror"
+                                        title="Region Name" wire:model="state.region_id" id="region_id" name="region_id"
+                                        size="1">
+                                        <option value="" class="d-none">Select Region</option>
+                                        @foreach ($regions as $region)
+                                        <option value="{{ $region->id }}">{{ $region->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('region_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="col-6">
+                                    <label for="district_id">District</label>
+                                    <select class="form-control @error('district_id') is-invalid @enderror"
+                                        title="District Name" wire:model.defer="state.district_id" id="district_id"
+                                        name="district_id" size="1">
+                                        <option value="" class="d-none">Select District</option>
+                                        @foreach ($districts as $district)
+                                        <option value="{{ $district->id }}">{{ $district->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('district_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            @if (Auth::user()->isAdmin())
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-alt-info" wire:loading.attr="disabled">
+                                        <i class="fa fa-send mr-5"></i>
+                                        @if($showEditModal)
+                                        Save Changes
+                                        @else
+                                        Save
+                                        @endif
+                                    </button>
+                                </div>
+                            </div>
+                            @endif
+                        </form>
+                    </div>
                 </div>
-            </form>
-        </header>
+                <div class="modal-footer">
+                    @if ($showEditModal)
+                    <button type="button" class="btn btn-alt-danger" wire:click="deleteModal()">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                    @endif
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <div class="page-content">
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr class="bg-primary text-white">
-                                    <th scope="col" class="d-none d-sm-table-cell">Photo</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Location</th>
-                                    <th scope="col" class="d-none d-sm-table-cell">Phone</th>
-                                    <th scope="col">Patient(s)</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
+    <div class="modal fade" id="view-modal" tabindex="-1" role="dialog" aria-labelledby="modal-slideup"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-slideup" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">Patient's Appointment</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <table class="table table-striped table-borderless mt-20">
                             <tbody>
-                                @if (sizeof($supporters)>0)
-                                @foreach ($supporters as $supporter)
                                 <tr>
-                                    <td class="d-none d-sm-table-cell">
-                                        <img src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($supporter->photo) }}"
-                                            alt="" width="40" height="40" class="rounded-500">
-                                    </td>
+                                    <td class="font-w600">Full Name</td>
+                                    <td>{{ $viewState['full_name'] ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-w600">Phone Number</td>
+                                    <td>{{ $viewState['phone_number'] ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-w600">Email</td>
+                                    <td>{{ $viewState['email'] ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-w600">Location</td>
                                     <td>
-                                        <strong>{{ $supporter->full_name }} </strong>
-                                    </td>
-                                    <td>
-                                        <div class="address-col">{{ $supporter->location }} -
-                                            {{ $supporter->district->name }}, {{ $supporter->district->region->name }}
-                                        </div>
-                                    </td>
-                                    <td class="d-none d-sm-table-cell">
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            {{ $supporter->phone_number }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">
-                                            {{ $supporter->patients()->count() }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="actions">
-                                            <button class="btn btn-primary btn-sm rounded"
-                                                wire:click="editSupporter({{ $supporter->id }})">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square"
-                                                wire:click="supporterRemoval({{ $supporter->id }})">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
+                                        {{ $viewState['location'] ?? '' }} - {{ $viewState['district'] ?? '' }}, {{
+                                        $viewState['region'] ?? '' }}
                                     </td>
                                 </tr>
-                                @endforeach
-                                @else
                                 <tr>
-                                    <td colspan="7" align="center">No Treatment Supporter Found</td>
+                                    <td class="font-w600">Patients</td>
+                                    <td>
+                                        @foreach ($viewState['patients'] ?? [] as $patient)
+                                        <a
+                                            href="{{ route('patients.profile', ['code' => $patient->patient_code ?? '0']) }}">{{
+                                            $patient->first_name ?? '' }} {{ $patient->last_name ?? ''
+                                            }}</a> <br>
+                                        @endforeach
+                                    </td>
                                 </tr>
-                                @endif
-
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-4 float-right">
-                        {{ $supporters->links() }}
-                    </div>
                 </div>
-            </div>
-
-            @if ($packageStatus == 2)
-            <div class="add-action-box">
-                <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addSupporter">
-                    <span class="btn-icon icofont-plus"></span>
-                </button>
-            </div>
-            @endif
-        </div>
-    </div>
-
-    <!-- Add patients modals -->
-    <div class="modal fade" id="modal-supporter" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        @if($showEditModal)
-                        <span>Edit Supporter</span>
-                        @else
-                        <span> New Supporter</span>
-                        @endif
-                    </h5>
-                </div>
-                <form autocomplete="off"
-                    wire:submit.prevent="{{ $showEditModal ? 'updateSupporter' : 'createSupporter' }}">
-                    <div class="modal-body">
-                        <div class="form-group avatar-box d-flex align-items-center">
-                            @if ($photo)
-                            <img src="{{ $photo->temporaryUrl() }}" width="100" height="100" alt=""
-                                class="rounded-500 mr-4">
-                            @else
-                            <img src="{{ $profilePhoto == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($profilePhoto) }}"
-                                width="100" height="100" alt="" class="rounded-500 mr-4">
-                            @endif
-
-                            <button class="btn btn-outline-primary" type="button"
-                                onclick="document.getElementById('photo').click();">
-                                Change photo
-                            </button>
-                            <input wire:model="photo" type="file" accept="image/*" style="display:none;" id="photo"
-                                name="photo">
-                        </div>
-                        <br />
-                        <div class="form-group">
-                            <input class="form-control rounded @error('full_name') is-invalid @enderror" type="text"
-                                wire:model.defer="state.full_name" id="full_name" name="full_name"
-                                placeholder="Full name">
-                            @error('full_name')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <input class="form-control rounded @error('phone_number') is-invalid @enderror" type="text"
-                                wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
-                                placeholder="Phone Number">
-                            @error('phone_number')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <input class="form-control rounded @error('email') is-invalid @enderror" type="text"
-                                wire:model.defer="state.email" id="email" name="email" placeholder="email">
-                            @error('email')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <input class="form-control rounded @error('location') is-invalid @enderror" type="text"
-                                placeholder="Street/Ward" wire:model.defer="state.location" id="location">
-                            @error('location')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <select class="form-control rounded @error('region_id') is-invalid @enderror"
-                                wire:model="state.region_id" id="region_id" name="region_id">
-                                <option value="">Select Region</option>
-                                @foreach ($regions as $region)
-                                <option value="{{ $region->id }}">{{ $region->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('region_id')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <select class="form-control rounded @error('district_id') is-invalid @enderror"
-                                wire:model.defer="state.district_id" id="district_id" name="district_id">
-                                <option value="">Select District</option>
-                                @foreach ($districts as $district)
-                                <option value="{{ $district->id }}">{{ $district->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('district_id')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="modal-footer d-block">
-                        <div class="actions justify-content-between">
-                            <button type="button" class="btn btn-error" data-dismiss="modal">Cancel</button>
-
-                            <button type="button" class="btn btn-info btn-load" wire:loading
-                                wire:target="{{ $showEditModal ? 'updateSupporter' : 'createSupporter' }}">
-                                <span class="btn-loader icofont-spinner"></span>
-                            </button>
-
-                            <button type="submit" class="btn btn-info" wire:loading.attr="hidden">
-                                @if($showEditModal)
-                                <span>Save Changes</span>
-                                @else
-                                <span>Save</span>
-                                @endif
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- end Add patients modals -->
-
-    <!-- start Delete supporter modals -->
-    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-
-                <div class="modal-body">
-                    <h4>Are you sure you want to delete this supporter?</h4>
-                </div>
-
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
-                            class="fa fa-times mr-1"></i>
-                        Cancel</button>
-
-                    <button type="button" class="btn btn-danger btn-load" wire:loading wire:target="deleteAppointment">
-                        <span class="btn-loader icofont-spinner"></span>
+                    @if (Auth::user()->isAdmin())
+                    <button type="button" class="btn btn-alt-info"
+                        wire:click="editSupporter({{ $viewState['id'] ?? '0' }})">
+                        <i class="fa fa-edit"></i> Edit Appointment
                     </button>
-
-                    <button type="button" wire:click.prevent="deleteSupporter" class="btn btn-danger"
-                        wire:loading.attr="hidden"><i class="icofont-bin mr-1"></i>Delete Now</button>
+                    @endif
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="modal-slideup"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-slideup" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">Delete Supporter</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <h5>Are you sure you want to delete this treatment supporter?, because all the patient
+                            associated with him/her will be without one.</h5>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-alt-danger" wire:click.prevent="deleteSupporter">
+                        <i class="fa fa-trash"></i> Confirm Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @push('scripts')
@@ -328,13 +339,22 @@
 
         window.addEventListener('hide-supporter-modal', event => {
             $('#modal-supporter').modal('hide');
-            toastr.success(event.detail.message, 'Success!');
+            if(event.detail.message != 'none'){
+                toastr.success(event.detail.message, 'Success!');
+            }
         })
     });
 </script>
 <script>
     window.addEventListener('show-supporter-modal', event => {
-        $('#modal-supporter').modal('show');
+        // alert(event.detail.hide_first);
+        if (event.detail.hide_first == true ) {
+            $('#view-modal').modal('hide');
+            setTimeout(function(){ $('#modal-supporter').modal('show'); }, 1000);
+        }else{
+            $('#modal-supporter').modal('show');
+        }
+
     })
 
     window.addEventListener('show-delete-modal', event => {
@@ -344,6 +364,20 @@
     window.addEventListener('hide-delete-modal', event => {
         $('#delete-modal').modal('hide');
         toastr.success(event.detail.message, 'Success!');
+    })
+
+    window.addEventListener('show-view-modal', event => {
+        $('#view-modal').modal('show');
+    })
+
+    window.addEventListener('hide-view-modal', event => {
+        $('#view-modal').modal('hide');
+        // window.location.href = event.detail.url;
+        // toastr.success(event.detail.message, 'Success!');
+    })
+
+    window.addEventListener('show-error-toastr', event => {
+        toastr.error(event.detail.message, 'Error!');
     })
 
         // window.addEventListener('hide-supporter-modal', event => {

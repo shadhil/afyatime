@@ -1,5 +1,5 @@
 <div>
-    <h2 class="content-heading">Prescribers</h2>
+    <h2 class="content-heading">Patients</h2>
     @if (Auth::user()->isAdmin())
     <div class="block-header">
         {{-- <h3 class="block-title"></h3> --}}

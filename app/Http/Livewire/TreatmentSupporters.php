@@ -26,6 +26,8 @@ class TreatmentSupporters extends Component
     public $state = [];
     public $editState = [];
 
+    public $viewState = [];
+
     public $showEditModal = false;
 
     public $supporterId = null;
@@ -91,7 +93,7 @@ class TreatmentSupporters extends Component
     {
         $this->reset('state', 'photo', 'profilePhoto', 'supporterId');
         $this->showEditModal = false;
-        $this->dispatchBrowserEvent('show-supporter-modal');
+        $this->dispatchBrowserEvent('show-supporter-modal', ['hide_first' => false]);
     }
 
     public function editSupporter($supporterId)
@@ -115,7 +117,7 @@ class TreatmentSupporters extends Component
         $this->state['region_id'] = $supporter->district->region_id;
         $this->state['district_id'] = $supporter->district_id;
 
-        $this->dispatchBrowserEvent('show-supporter-modal');
+        $this->dispatchBrowserEvent('show-supporter-modal', ['hide_first' => true]);
         //dd($admin);
     }
 
@@ -155,9 +157,32 @@ class TreatmentSupporters extends Component
         });
     }
 
-    public function supporterRemoval($supporterId)
+    public function viewSupporter($supporterId)
     {
-        $this->supporterId = $supporterId;
+
+        $this->reset('viewState');
+        $supporter = TreatmentSupporter::find($supporterId);
+        $this->viewState['id'] = $supporter->id;
+        $this->viewState['full_name'] = $supporter->full_name;
+        $this->viewState['phone_number'] = $supporter->phone_number;
+        $this->viewState['email'] = $supporter->email ?? ' - - - ';
+        $this->viewState['location'] = $supporter->location;
+        $this->viewState['district'] = $supporter->district->name;
+        $this->viewState['region'] = $supporter->district->region->name;
+        $this->viewState['total_patients'] = $supporter->patients()->count();
+        $this->viewState['patients'] = $supporter->patients;
+        $this->dispatchBrowserEvent('show-view-modal');
+    }
+
+    public function viewPatient($code = null)
+    {
+        // dd(route('patients.profile', ['code' => $code]));
+        $this->dispatchBrowserEvent('hide-view-modal', ['url' => route('patients.profile', ['code' => $code])]);
+    }
+
+    public function deleteModal()
+    {
+        $this->dispatchBrowserEvent('hide-supporter-modal', ['message' => 'none']);
         $this->dispatchBrowserEvent('show-delete-modal');
     }
 
@@ -170,10 +195,14 @@ class TreatmentSupporters extends Component
         $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Appointment deleted successfully!']);
     }
 
+    public function updatedsearchTerm()
+    {
+        $this->resetPage();
+    }
 
     public function searchSupporter()
     {
-        // dd($this->searchTerm);
+        $this->resetPage();
     }
 
     public function render()
@@ -192,11 +221,11 @@ class TreatmentSupporters extends Component
             $supporters = TreatmentSupporter::query()
                 ->where('organization_id', Auth::user()->org_id)
                 ->where('full_name', 'like', '%' . $this->searchTerm . '%')
-                ->latest()->paginate(15);
+                ->latest()->paginate(4);
         } else {
             $supporters = TreatmentSupporter::query()
                 ->where('organization_id', Auth::user()->org_id)
-                ->latest()->paginate(15);
+                ->latest()->paginate(4);
         }
 
 

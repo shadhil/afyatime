@@ -42,7 +42,7 @@
                     <div class="font-w600 mb-5">{{ $prescriber->first_name }} {{ $prescriber->last_name }}</div>
                     <div class="font-size-sm text-muted">{{ $prescriber->type->title }}</div>
                 </div>
-                <div class="block-content">
+                {{-- <div class="block-content">
                     <div class="row items-push">
                         <div class="col-6">
                             <div class="mb-5"><i class="si si-users fa-2x"></i></div>
@@ -53,7 +53,7 @@
                             <div class="font-size-sm text-muted">2 Appointments</div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
         @endforeach
