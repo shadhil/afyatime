@@ -33,7 +33,7 @@
                                 src="{{ $appointment->patient->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($appointment->patient->photo) }}"
                                 alt="">
                         </td>
-                        <td class="font-w600"> <a href="{{ route('patient-profile', $appointment->patient->id) }}"> {{
+                        <td class="font-w600"> <a href="{{ route('patients.profile', $appointment->patient->patient_code) }}"> {{
                                 $appointment->patient->first_name }}
                                 {{ $appointment->patient->last_name }} </a> </td>
                         <td class="d-none d-sm-table-cell">Tomorrow at {{

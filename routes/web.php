@@ -59,9 +59,9 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/appointments', Appointments::class)->name('appointments');
     Route::get('/patients', Patients::class)->name('patients');
     Route::get('/prescribers', Prescribers::class)->name('prescribers');
-    Route::get('/treatment-supporters', TreatmentSupporters::class)->name('supporters');
+    Route::get('/treatment-supporters/{new?}', TreatmentSupporters::class)->name('patients.supporters');
     Route::get('/admins', AdminAdmins::class)->name('admins');
-    Route::get('/patient/{id}', PatientProfile::class)->name('patient-profile');
+    Route::get('/patient/{code}', PatientProfile::class)->name('patients.profile');
     Route::get('/subscriptions', Subscriptions::class)->name('subscriptions');
     Route::get('/api-tests', ApiTests::class);
 });

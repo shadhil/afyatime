@@ -67,7 +67,7 @@
                                     <td align="center"><span class="badge badge-success">Cleared</span></td>
                                     <td>
                                         <div class="actions">
-                                            <a href="{{ route('patient-profile', $patient->id) }}"
+                                            <a href="{{ route('patients.profile', $patient->code) }}"
                                                 class="btn btn-dark btn-sm btn-square rounded-pill">
                                                 <span class="btn-icon icofont-external-link"></span>
                                             </a>

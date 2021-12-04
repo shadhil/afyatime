@@ -22,18 +22,11 @@
     </div>
     @endif
     @if (sizeof($patients)>0)
-    <div class="form-row">
-        <div class="form-group col-lg-8">
-            <label for="example-flatpickr-custom">Custom format</label>
-            <input type="text" class="js-flatpickr form-control bg-white" id="example-flatpickr-custom"
-                name="example-flatpickr-custom" placeholder="d-m-Y" data-date-format="d-m-Y" value="12-12-2021">
-        </div>
-    </div>
     <div class="row">
         @foreach ($patients as $patient)
         @if ($patient->lastAppointment->date_of_visit ?? '' >= now())
         <div class="col-md-4 col-xl-3">
-            <a class="block text-center" href="javascript:void(0)">
+            <a class="block text-center" href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
                 <div class="block-content block-content-full bg-gd-dusk">
                     <img class="img-avatar img-avatar-thumb"
                         src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
@@ -47,7 +40,8 @@
         </div>
         @else
         <div class="col-md-4 col-xl-3">
-            <a class="block block-link-pop text-center" href="javascript:void(0)">
+            <a class="block block-link-pop text-center"
+                href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
                 <div class="block-content block-content-full">
                     <img class="img-avatar"
                         src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
@@ -97,7 +91,8 @@
                             <div class="form-group row">
                                 <div class="col-12 col-sm-12 text-center">
                                     <div class="form-group avatar-box">
-                                        <div class="img-box">
+                                        <div class="img-box" onclick="document.getElementById('photo').click();"
+                                            style="cursor: pointer">
                                             @if ($photo)
                                             <img src="{{ $photo->temporaryUrl() }}" width="150" height="150" alt="">
                                             @else
@@ -106,10 +101,11 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <button class="btn btn-outline-primary self-center" type="button" id="browseImg"
-                                        type="button" onclick="document.getElementById('photo').click();">
+                                    {{-- <button class="btn btn-outline-primary self-center" type="button"
+                                        id="browseImg" type="button"
+                                        onclick="document.getElementById('photo').click();">
                                         Browse Image
-                                    </button>
+                                    </button> --}}
                                     <input wire:model="photo" type="file" accept="image/*" style="display:none;"
                                         id="photo" name="photo">
                                     @if ($photo)
@@ -144,9 +140,10 @@
                             <div class="form-group row">
                                 <div class="col-6">
                                     <label for="date_of_birth">Date of Birth</label>
-                                    <input type="text" class="js-flatpickr form-control bg-white"
+                                    <input type="text"
+                                        class="js-flatpickr form-control bg-white @error('date_of_birth') is-invalid @enderror"
                                         wire:model.defer="state.date_of_birth" id="date_of_birth" name="date_of_birth"
-                                        placeholder="d-m-Y" data-date-format="d-m-Y" value="12-12-2021">
+                                        placeholder="d-m-Y" data-date-format="d-m-Y">
                                     @error('date_of_birth')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -157,8 +154,9 @@
                                     <label for="gender">Gender</label>
                                     <select class="form-control @error('gender') is-invalid @enderror" title="Gender"
                                         wire:model.defer="state.gender" id="gender" name="gender" size="1">
-                                        <option value="Male">Male</option>
-                                        <option value="Male">Female</option>
+                                        <option value="" class="d-none">Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
                                     </select>
                                     @error('gender')
                                     <div class="invalid-feedback">
@@ -172,7 +170,7 @@
                                 <div class="col-12">
                                     <div class="input-group">
                                         <input type="text"
-                                            class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                                            class="form-control @error('phone_number') is-invalid @enderror"
                                             wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
                                             placeholder="Enter your phone number..">
                                         <div class="input-group-append">
@@ -180,12 +178,12 @@
                                                 <i class="fa fa-phone"></i>
                                             </span>
                                         </div>
+                                        @error('phone_number')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
-                                    @error('phone_number')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -193,85 +191,79 @@
                                 <div class="col-12">
                                     <div class="input-group">
                                         <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                            type="text" wire:model.defer="state.email" id="email" name="email"
+                                            wire:model.defer="state.email" id="email" name="email"
                                             placeholder="Enter your email..">
                                         <div class="input-group-append">
                                             <span class="input-group-text">
                                                 <i class="fa fa-envelope-o"></i>
                                             </span>
                                         </div>
-                                    </div>
-                                    @error('email')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            @if($showEditModal && Auth::user()->isAdmin())
-                            <div class="form-group row">
-                                <label class="col-12" for="password">Password</label>
-                                <div class="col-12">
-                                    <div class="input-group">
-                                        <input type="password"
-                                            class="form-control @error('password') is-invalid @enderror" type="text"
-                                            wire:model.defer="state.password" id="password" name="password"
-                                            placeholder="Enter your password..">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="fa fa-lock"></i>
-                                            </span>
+                                        @error('email')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
                                         </div>
+                                        @enderror
                                     </div>
-                                    @error('password')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-12" for="password">Confirm Password</label>
+                                <label class="col-12" for="location">Location</label>
                                 <div class="col-12">
                                     <div class="input-group">
-                                        <input type="password"
-                                            class="form-control @error('password') is-invalid @enderror" type="text"
-                                            wire:model.defer="state.password_confirmation" id="password_confirmation"
-                                            name="password_confirmation" placeholder="Confirm your password..">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="fa fa-lock"></i>
-                                            </span>
+                                        <input type="text" class="form-control @error('location') is-invalid @enderror"
+                                            wire:model.defer="state.location" id="location" name="location"
+                                            placeholder="Enter your location..">
+                                        @error('location')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
                                         </div>
+                                        @enderror
+                                        {{-- <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-location"></i>
+                                            </span>
+                                        </div> --}}
                                     </div>
-                                    @error('password_confirmation')
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="region_id">Region</label>
+                                    <select class="form-control @error('region_id') is-invalid @enderror"
+                                        title="Region Name" wire:model="state.region_id" id="region_id" name="region_id"
+                                        size="1">
+                                        <option value="" class="d-none">Select Region</option>
+                                        @foreach ($regions as $region)
+                                        <option value="{{ $region->id }}">{{ $region->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('region_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="col-6">
+                                    <label for="district_id">District</label>
+                                    <select class="form-control @error('district_id') is-invalid @enderror"
+                                        title="District Name" wire:model.defer="state.district_id" id="district_id"
+                                        name="district_id" size="1">
+                                        <option value="" class="d-none">Select District</option>
+                                        @foreach ($districts as $district)
+                                        <option value="{{ $district->id }}">{{ $district->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('district_id')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
                                     @enderror
                                 </div>
                             </div>
-                            @endif
                             @if (Auth::user()->isAdmin())
                             <div class="form-group row">
                                 <div class="col-12">
-                                    <div class="custom-control custom-checkbox custom-control-inline mb-5">
-                                        <input class="custom-control-input" type="checkbox" name="is_admin"
-                                            id="is_admin" wire:model.defer="state.is_admin">
-                                        <label class="custom-control-label" for="is_admin">Assign as
-                                            ADMIN</label>
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-                            @if (Auth::user()->isAdmin())
-                            <div class="form-group row">
-                                <div class="col-12">
-                                    <button type="button" class="btn btn-alt-info" wire:loading
-                                        wire:target="{{ $showEditModal ? 'updatePrescriber' : 'createPrescriber' }}">
-                                        <span class="btn-loader icofont-spinner"></span>
-                                    </button>
-                                    <button type="submit" class="btn btn-alt-info" wire:loading.attr="hidden">
+                                    <button type="submit" class="btn btn-alt-info" wire:loading.attr="disabled">
                                         <i class="fa fa-send mr-5"></i>
                                         @if($showEditModal)
                                         Save Changes
@@ -286,11 +278,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    @if (Auth::user()->isAdmin())
-                    <button type="button" class="btn btn-alt-danger" wire:click="deleteModal()">
-                        <i class="fa fa-trash"></i> Delete
-                    </button>
-                    @endif
                     <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -518,6 +505,7 @@
         window.addEventListener('hide-patient-modal', event => {
             $('#modal-patient').modal('hide');
             toastr.success(event.detail.message, 'Success!');
+            window.location.href = event.detail.url;
         })
     });
 </script>

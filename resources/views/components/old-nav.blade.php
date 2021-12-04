@@ -36,7 +36,7 @@
                         </a>
                     </li>
                     <li class="menu-item {{ request()->routeIs('supporters*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('supporters') }}">
+                        <a class="item-link" href="{{ route('patients.supporters') }}">
                             <span class="link-text">Treatment Supporters</span>
                         </a>
                     </li>

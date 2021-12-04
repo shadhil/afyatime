@@ -14,8 +14,9 @@ class AppointmentsLog extends Model
     protected $table = "appointments_logs";
 
     protected $fillable = [
+        'app_action',
         'appointment_id',
-        'org_subscription_id'
+        'prescriber_id'
     ];
 
     public function subscription(): BelongsTo
@@ -28,4 +29,8 @@ class AppointmentsLog extends Model
         return $this->belongsTo(Appointment::class, 'appointment_id');
     }
 
+    public function appAction(): BelongsTo
+    {
+        return $this->belongsTo(AppAction::class, 'app_action_id');
+    }
 }

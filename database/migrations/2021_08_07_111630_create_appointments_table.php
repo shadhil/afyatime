@@ -22,7 +22,9 @@ class CreateAppointmentsTable extends Migration
             $table->date('date_of_visit');
             $table->time('visit_time')->default(date("08:00:00"));
             $table->unsignedBigInteger('organization_id')->nullable();
+            $table->foreignId('received_by')->constrained('prescribers')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             //FOREIGN KEY CONSTRAINTS
             $table->foreign('organization_id')->references('id')->on('organizations')->onUpdate('cascade')->onDelete('set null');

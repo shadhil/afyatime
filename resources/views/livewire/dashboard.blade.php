@@ -192,17 +192,17 @@
                 </div>
                 <div class="col-md-6 col-xl-4">
                     <a class="block text-center" href="javascript:void(0)">
-                <div class="block-content block-content-full bg-gd-dusk">
-                  <img class="img-avatar img-avatar-thumb" src="assets/media/avatars/avatar13.jpg" alt="">
-                </div>
-                <div class="block-content block-content-full">
-                  <div class="font-w600 mb-5">Ralph Murray</div>
-                  <div class="font-size-sm text-muted">Photographer</div>
-                </div>
-                <div class="block-content block-content-full block-content-sm bg-body-light">
-                  <span class="font-w600 font-size-sm text-elegance">user@example.com</span>
-                </div>
-              </a>
+                        <div class="block-content block-content-full bg-gd-dusk">
+                            <img class="img-avatar img-avatar-thumb" src="assets/media/avatars/avatar13.jpg" alt="">
+                        </div>
+                        <div class="block-content block-content-full">
+                            <div class="font-w600 mb-5">Ralph Murray</div>
+                            <div class="font-size-sm text-muted">Photographer</div>
+                        </div>
+                        <div class="block-content block-content-full block-content-sm bg-body-light">
+                            <span class="font-w600 font-size-sm text-elegance">user@example.com</span>
+                        </div>
+                    </a>
                 </div>
                 <div class="col-md-6 col-xl-4">
                     <a class="block text-center" href="javascript:void(0)">
@@ -354,7 +354,8 @@
 
             <div class="row mb-15">
                 <div class="col-sm-12 col-xl-12 text-center">
-                    <a href="{{ route('supporters') }}" type="button" class="btn btn-primary min-width-125">View All</a>
+                    <a href="{{ route('patients.supporters') }}" type="button"
+                        class="btn btn-primary min-width-125">View All</a>
                 </div>
             </div>
 

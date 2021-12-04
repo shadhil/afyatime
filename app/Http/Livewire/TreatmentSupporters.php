@@ -40,6 +40,13 @@ class TreatmentSupporters extends Component
 
     public $packageStatus = 4;
 
+    public function mount($new = null)
+    {
+        if ($new == 'new') {
+            dd('NEW!');
+        }
+    }
+
     public function createSupporter()
     {
         // dd($this->newCode());
@@ -206,6 +213,6 @@ class TreatmentSupporters extends Component
             ->select('id', 'name')
             ->get();
         //dd($prescribers);
-        return view('livewire.treatment-supporters', ['supporters' => $supporters, 'regions' => $regions]);
+        return view('livewire.treatment-supporters', ['supporters' => $supporters, 'regions' => $regions])->layout('layouts.base');
     }
 }

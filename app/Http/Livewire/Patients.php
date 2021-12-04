@@ -102,7 +102,8 @@ class Patients extends Component
             }
 
             if ($newPatient) {
-                $this->dispatchBrowserEvent('hide-patient-modal', ['message' => 'Patient added successfully!']);
+                $this->dispatchBrowserEvent('hide-patient-modal', ['message' => 'Patient added successfully!', 'url' => route('patients.profile', $this->state['patient_code'])]);
+                // return redirect()->route('patients.profile', $this->state['patient_code']);
             }
         });
     }
@@ -189,9 +190,14 @@ class Patients extends Component
     }
 
 
+    public function updatedsearchTerm()
+    {
+        $this->resetPage();
+    }
 
     public function searchPatient()
     {
+        $this->resetPage();
         // dd($this->searchTerm);
     }
 
@@ -214,10 +220,10 @@ class Patients extends Component
                         ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
                         ->orWhere('patient_code', 'like', '%' . $this->searchTerm . '%');
                 })
-                ->latest()->paginate(15);
+                ->latest()->paginate(4);
         } else {
             $patients = Patient::where('organization_id', Auth::user()->org_id)
-                ->latest()->paginate(15);
+                ->latest()->paginate(4);
         }
 
 
@@ -238,7 +244,6 @@ class Patients extends Component
             ->where('organization_id', Auth::user()->org_id)
             ->get();
 
-        $this->state['date_of_birth'] = $patients[0]->date_of_birth;
         // dd($patients[0]->lastAppointment->date_of_visit);
         return view('livewire.patients', ['patients' => $patients, 'regions' => $regions, 'supporters' => $supporters])->layout('layouts.base');
     }

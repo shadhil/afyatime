@@ -24,14 +24,14 @@ if (!function_exists('sms_phone_number')) {
 if (!function_exists('db_date')) {
     function db_date($date)
     {
-        return Carbon::createFromFormat('m/d/Y', $date)->format('Y-m-d');
+        return Carbon::createFromFormat('d-m-Y', $date)->format('Y-m-d');
     }
 }
 
 if (!function_exists('form_date')) {
     function form_date($date)
     {
-        return Carbon::createFromFormat('Y-m-d', $date)->format('m/d/Y');
+        return Carbon::createFromFormat('Y-m-d', $date)->format('d-m-Y');
     }
 }
 
@@ -92,5 +92,17 @@ if (!function_exists('organization_admins')) {
             ->get();
 
         return $result;
+    }
+}
+
+if (!function_exists('is_valid_date')) {
+    function is_valid_date($date): bool
+    {
+        $today = \Carbon\CarbonImmutable::parse(now('Africa/Dar_es_Salaam'));
+        $theDate = \Carbon\CarbonImmutable::parse($date);
+        if ($theDate->greaterThan($today)) {
+            return true;
+        }
+        return false;
     }
 }

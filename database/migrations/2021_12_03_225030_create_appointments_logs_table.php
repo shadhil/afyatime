@@ -15,15 +15,14 @@ class CreateAppointmentsLogsTable extends Migration
     {
         Schema::create('appointments_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('appointment_id')->nullable();
-            // $table->tinyInteger('total_sms');
-            $table->unsignedBigInteger('org_subscription_id')->nullable();
+            $table->unsignedTinyInteger('app_action_id')->nullable();
+            $table->foreignId('appointment_id')->constrained('appointments')->nullable();
+            $table->foreignId('prescriber_id')->constrained('prescribers')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             //FOREIGN KEY CONSTRAINTS
-            $table->foreign('appointment_id')->references('id')->on('appointments')->onUpdate('cascade')->onDelete('set null');
-            $table->foreign('org_subscription_id')->references('id')->on('organization_subscriptions')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('app_action_id')->references('id')->on('app_actions')->onUpdate('cascade')->onDelete('set null');
         });
     }
 

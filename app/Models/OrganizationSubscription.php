@@ -50,8 +50,8 @@ class OrganizationSubscription extends Model
         return $this->belongsTo(Admin::class, 'confirmed_by');
     }
 
-    public function logs(): HasMany
-    {
-        return $this->hasMany(AppointmentsLog::class, 'org_subscription_id');
-    }
+    // public function logs(): HasMany
+    // {
+    //     return $this->hasMany(AppointmentsLog::class, 'org_subscription_id');
+    // }
 }
