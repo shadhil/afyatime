@@ -47,6 +47,23 @@ class Prescribers extends Component
     public $title;
     public $initial;
 
+    public function newCode()
+    {
+        $testCode = '';
+        $isFound = false;
+        while (!$isFound) {
+            $testCode = Str::before((string) Str::uuid(), '-');
+            $code = DB::table('prescribers')
+                ->select('prescriber_code')
+                ->where('prescriber_code', $testCode)
+                ->first();
+            if (!$code) {
+                $isFound = true;
+            }
+        }
+        return Str::upper($testCode);
+    }
+
     public function mount()
     {
         if (Auth::user()->isAdmin()) {
@@ -88,6 +105,7 @@ class Prescribers extends Component
             $this->state['is_admin'] = $this->state['is_admin'] == true ? 1 : 0;
             $phone = Str::replace(' ', '', $this->state['phone_number']);
             $this->state['phone_number'] = Str::start(Str::substr($phone, -9), '0');
+            $this->state['prescriber_code'] = $this->newCode();
 
             // dd('PASS!');
 
@@ -105,6 +123,7 @@ class Prescribers extends Component
                 ]);
 
                 if ($newPrescriber) {
+                    user_log('9', Auth::user()->account_id, 'prescriber', $newPrescriber->id);
                     $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'Prescriber added successfully!']);
                     $details = [
                         'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
@@ -185,6 +204,7 @@ class Prescribers extends Component
             $updatedPresc->accounts()->update($this->editState);
 
             if ($updatedPresc) {
+                user_log('10', Auth::user()->account_id, 'prescriber', $this->prescriberId);
                 $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'Prescriber updated successfully!']);
             }
         });
@@ -202,6 +222,8 @@ class Prescribers extends Component
         $prescriber = Prescriber::findOrFail($this->prescriberId);
 
         $prescriber->delete();
+
+        user_log('11', Auth::user()->account_id, 'prescriber', $this->prescriberId);
 
         $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Prescriber deleted successfully!']);
     }
@@ -231,15 +253,22 @@ class Prescribers extends Component
                 'org_id' => $orgId,
             ]);
         }
+        $this->title = '';
+        $this->initial = '';
+
+        user_log('17', Auth::user()->account_id, 'prescriber_type', $titleRole->id);
 
         $this->dispatchBrowserEvent('hide-title-modal');
     }
 
-
+    public function updatedsearchTerm()
+    {
+        $this->resetPage();
+    }
 
     public function searchPrescriber()
     {
-        // dd($this->searchTerm);
+        $this->resetPage();
     }
 
     public function render()

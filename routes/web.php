@@ -15,6 +15,8 @@ use App\Http\Livewire\Admin\OrganizationTypes;
 use App\Http\Livewire\Admin\PrescriberTypes;
 use App\Http\Livewire\Admin\Users as AdminUsers;
 use App\Http\Livewire\Admin\OrgProfile as AdminOrgProfile;
+use App\Http\Livewire\Admin\PatientProfile as AdminPatientProfile;
+use App\Http\Livewire\Admin\PrescriberProfile as AdminPrescriberProfile;
 use App\Http\Livewire\Admin\TreatmentSupporters as AdminTreatmentSupporters;
 use App\Http\Livewire\ApiTests;
 use App\Http\Livewire\Appointments;
@@ -22,9 +24,13 @@ use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\Home;
 use App\Http\Livewire\PatientProfile;
 use App\Http\Livewire\Patients;
+use App\Http\Livewire\PrescriberProfile;
 use App\Http\Livewire\Prescribers;
+use App\Http\Livewire\PrescriberTimeline;
 use App\Http\Livewire\Subscriptions;
 use App\Http\Livewire\TreatmentSupporters;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,6 +65,20 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/appointments', Appointments::class)->name('appointments');
     Route::get('/patients', Patients::class)->name('patients');
     Route::get('/prescribers', Prescribers::class)->name('prescribers');
+    Route::get('/prescriber/{id}', PrescriberProfile::class)->name('prescribers.profile');
+    Route::get('/my-profile', PrescriberProfile::class)->name('my-profile');
+    // Route::get('/presc-profile/{id}', function ($id) {
+    //     $prescriber = App\Models\Prescriber::where('id', $id)
+    //         ->where('organization_id', Auth::user()->org_id)->first();
+    //     // return dd($prescriber);
+    //     if ($prescriber == null) {
+    //         return redirect()->route('prescribers');
+    //     } else {
+
+    //         return redirect()->route('prescribers.profile', ['id' => Crypt::encryptString('presc-'.$id)]);
+    //     }
+    // })->name('presc.profile');
+    Route::get('/prescriber-timeline/{id}', PrescriberTimeline::class)->name('prescribers.timeline');
     Route::get('/treatment-supporters/{new?}', TreatmentSupporters::class)->name('patients.supporters');
     Route::get('/admins', AdminAdmins::class)->name('admins');
     Route::get('/patient/{code}', PatientProfile::class)->name('patients.profile');
@@ -82,7 +102,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::get('/subscriptions/{id}', OrganizationSubscriptions::class)->name('subscriptions');
     Route::get('/appointments/{id}', AdminAppointments::class)->name('appointments');
     Route::get('/prescribers/{id}', AdminPrescribers::class)->name('prescribers');
+    Route::get('/prescriber/{org_id}/{id}', AdminPrescriberProfile::class)->name('prescribers.profile');
     Route::get('/patients/{id}', AdminPatients::class)->name('patients');
+    Route::get('/patient/{org_id}/{code}', AdminPatientProfile::class)->name('patients.profile');
     Route::get('/treatment-supporters/{id}', AdminTreatmentSupporters::class)->name('supporters');
 });
 

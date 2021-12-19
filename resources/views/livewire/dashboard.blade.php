@@ -17,15 +17,15 @@
                     <div class="row gutters-tiny">
                         <div class="col-4">
                             <div class="font-size-xs text-muted">Upcoming</div>
-                            <a class="font-size-lg" href="javascript:void(0)">750</a>
+                            <a class="font-size-lg" href="javascript:void(0)">{{ $upcomingAppointments }}</a>
                         </div>
                         <div class="col-4">
-                            <div class="font-size-xs text-muted">Completed</div>
-                            <a class="font-size-lg" href="javascript:void(0)">230</a>
+                            <div class="font-size-xs text-muted">Previous</div>
+                            <a class="font-size-lg" href="javascript:void(0)">{{ $previousAppointments }}</a>
                         </div>
                         <div class="col-4">
-                            <div class="font-size-xs text-muted">Total</div>
-                            <a class="font-size-lg" href="javascript:void(0)">1,680</a>
+                            <div class="font-size-xs text-muted">Attended</div>
+                            <a class="font-size-lg" href="javascript:void(0)">{{ $receivedAppointments }}</a>
                         </div>
                     </div>
                 </div>
@@ -52,8 +52,24 @@
                     <p class="text-muted">{{ $organization->email }}</p>
                     <a class="font-w600" href="javascript:void(0)">Phone</a>
                     <p class="text-muted">{{ $organization->phone_number }}</p>
+                    @if (Auth::user()->isAdmin())
                     <a class="font-w600" href="javascript:void(0)">#Subscription</a>
-                    <p class="text-muted">17.2k Updates</p>
+                    <p class="text-muted">{{
+                        \Carbon\Carbon::parse($subscription->end_date)->format('F j, Y')
+                        }}
+                        @if ($subscriptionStatus == 'UNSUBSCRIBED')
+                        <br>
+                        <span class="badge badge-danger">SUBSCRIPTION ENDED</span>
+                        @elseif ($subscriptionStatus == 'SUBSCRIBED')
+                        <br>
+                        <span class="badge badge-success">SUBSCRIBED</span>
+                        @else
+                        <br>
+                        <span class="badge badge-secondary">NOT SUBSCRIBED</span>
+                        @endif
+                    </p>
+                    @endif
+
                 </div>
             </div>
             <!-- END Worldwide Trends -->
@@ -163,11 +179,11 @@
                                 </tr>
                                 @endforeach
                                 @else
-                                <div class="row mb-15">
-                                    <div class="col-sm-12 col-xl-12 text-center">
+                                <tr class="mb-15">
+                                    <td colspan="5" class="text-center">
                                         No Appointment Found
-                                    </div>
-                                </div>
+                                    </td>
+                                </tr>
                                 @endif
                             </tbody>
                         </table>
@@ -182,7 +198,8 @@
             <div class="row">
                 @foreach ($prescribers as $prescriber)
                 <div class="col-md-6 col-xl-4">
-                    <a class="block block-link-pop text-center" href="javascript:void(0)">
+                    <a class="block block-link-pop text-center"
+                        href="{{ route('prescribers.profile', ['id' => $prescriber->prescriber_code ]) }}">
                         <div class="block-content block-content-full">
                             <img class="img-avatar"
                                 src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
@@ -190,7 +207,7 @@
                         </div>
                         <div class="block-content block-content-full bg-body-light">
                             <div class="font-w600 mb-5">{{ $prescriber->first_name }} {{ $prescriber->last_name }}</div>
-                            <div class="font-size-sm text-muted">{{ $prescriber->type->title }}</div>
+                            <div class="font-size-sm text-muted">{{ $prescriber->type->title ?? ''}}</div>
                         </div>
                     </a>
                 </div>
@@ -236,7 +253,7 @@
                     <a class="block block-link-pop text-center"
                         href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
                         <div class="block-content block-content-full">
-                            <img class="img-avatar"
+                            <img class="img-avatar img-avatar-thumb"
                                 src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
                                 alt="">
                         </div>

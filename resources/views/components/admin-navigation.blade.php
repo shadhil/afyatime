@@ -1,118 +1,184 @@
-@props(['mobile'])
+<nav id="sidebar">
+    <!-- Sidebar Content -->
+    <div class="sidebar-content">
+        <!-- Side Header -->
+        <div class="content-header content-header-fullrow bg-black-op-10">
+            <div class="content-header-section text-center align-parent">
+                <!-- Close Sidebar, Visible only on mobile screens -->
+                <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+                <button type="button" class="btn btn-circle btn-dual-secondary d-lg-none align-v-r" data-toggle="layout"
+                    data-action="sidebar_close">
+                    <i class="fa fa-times text-danger"></i>
+                </button>
+                <!-- END Close Sidebar -->
 
-<div id="navbar2" class="app-navbar horizontal horizontal-vertical {{ $mobile ?? '' }}">
-    <div class="navbar-wrap">
-
-        <button class="no-style navbar-toggle navbar-close icofont-close-line d-lg-none"></button>
-
-        <div class="app-logo">
-            <div class="logo-wrap">
-                <img src="{{ asset('assets/img/logo.png') }}" alt="" width="147" height="33" class="logo-img">
+                <!-- Logo -->
+                <div class="content-header-item">
+                    <a class="link-effect font-w700" href="{{ route('admin.organizations') }}">
+                        <i class="si si-fire text-primary"></i>
+                        <span class="font-size-xl text-dual-primary-dark">afya</span><span
+                            class="font-size-xl text-primary">time</span>
+                    </a>
+                </div>
+                <!-- END Logo -->
             </div>
         </div>
+        <!-- END Side Header -->
 
-        <div class="main-menu">
-            <nav class="main-menu-wrap">
-                <ul class="menu-ul">
-                    <li class="menu-item {{ request()->routeIs('admin.organizations*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('admin.organizations') }}">
-                            <span class="link-text">Home</span>
+        <!-- Sidebar Scrolling -->
+        <div class="js-sidebar-scroll">
+            <!-- Side Main Navigation -->
+            <div class="content-side content-side-full">
+                <!--
+              Mobile navigation, desktop navigation can be found in #page-header
+
+              If you would like to use the same navigation in both mobiles and desktops, you can use exactly the same markup inside sidebar and header navigation ul lists
+              -->
+                <ul class="nav-main">
+                    <li>
+                        <a href="{{ route('admin.organizations') }}"><i class="si si-cup"></i>Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.appointments.all') }}"><i class="si si-rocket"></i>Appointments</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.regions') }}"><i class="si si-wallet"></i>Location</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.types.org') }}"><i class="si si-grid"></i>Plan</a>
+                    </li>
+                    <li>
+                        <a href=""><i class="si si-user"></i>Account</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.logout') }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="si si-logout"></i>Logout
                         </a>
                     </li>
-                    <li class="menu-item {{ request()->routeIs('admin.appointments*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('admin.appointments.all',) }}">
-                            <span class="link-text">Appointments</span>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ request()->routeIs('admin.regions*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('admin.regions') }}">
-                            <span class="link-text">Regions</span>
-                        </a>
-                    </li>
-                    <li class="menu-item has-sub {{ request()->routeIs('admin.types*') ? 'active' : '' }}">
-                        <spam class="item-link" href="#">
-                            <span class="link-text">Types</span>
-                            <span class="link-caret icofont-thin-right"></span>
-                        </spam>
-                        <ul class="sub">
-                            <li class="menu-item {{ request()->routeIs('admin.types.org') ? 'active' : '' }}">
-                                <a class="item-link" href="{{ route('admin.types.org') }}"><span
-                                        class="link-text">Organization
-                                        Types</span></a>
-                            </li>
-                            <li class="menu-item {{ request()->routeIs('admin.types.prescriber') ? 'active' : '' }}">
-                                <a class="item-link" href="{{ route('admin.types.prescriber') }}"><span
-                                        class="link-text">Prescriber
-                                        Types</span></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item {{ request()->routeIs('admin.admins*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('admin.admins') }}">
-                            <span class="link-text">Admins</span>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('admin.users') }}">
-                            <span class="link-text">Users</span>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ request()->routeIs('admin.invoices*') ? 'active' : '' }}">
-                        <a class="item-link" href="{{ route('admin.invoices') }}">
-                            <span class="link-text">Invoices</span>
-                        </a>
-                    </li>
+                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
                 </ul>
-            </nav>
+            </div>
+            <!-- END Side Main Navigation -->
         </div>
-
-
-        <div class="navbar-skeleton vertical">
-            <div class="top-part">
-                <div class="sk-logo bg animated-bg"></div>
-                <div class="sk-menu">
-                    <span class="sk-menu-item menu-header bg-1 animated-bg"></span>
-                    <span class="sk-menu-item bg animated-bg w-75"></span>
-                    <span class="sk-menu-item bg animated-bg w-80"></span>
-                    <span class="sk-menu-item bg animated-bg w-50"></span>
-                    <span class="sk-menu-item bg animated-bg w-75"></span>
-                    <span class="sk-menu-item bg animated-bg w-50"></span>
-                    <span class="sk-menu-item bg animated-bg w-60"></span>
-                </div>
-                <div class="sk-menu">
-                    <span class="sk-menu-item menu-header bg-1 animated-bg"></span>
-                    <span class="sk-menu-item bg animated-bg w-60"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                    <span class="sk-menu-item bg animated-bg w-60"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                    <span class="sk-menu-item bg animated-bg w-40"></span>
-                </div>
-                <div class="sk-menu">
-                    <span class="sk-menu-item menu-header bg-1 animated-bg"></span>
-                    <span class="sk-menu-item bg animated-bg w-60"></span>
-                    <span class="sk-menu-item bg animated-bg w-50"></span>
-                </div>
-                <div class="sk-button animated-bg w-90"></div>
-            </div>
-
-            <div class="bottom-part">
-                <div class="sk-menu">
-                    <span class="sk-menu-item bg-1 animated-bg w-60"></span>
-                    <span class="sk-menu-item bg-1 animated-bg w-80"></span>
-                </div>
-            </div>
-
-            <div class="horizontal-menu">
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-                <span class="sk-menu-item bg animated-bg"></span>
-            </div>
-        </div>
-
+        <!-- END Sidebar Scrolling -->
     </div>
-</div>
+    <!-- Sidebar Content -->
+</nav>
+<!-- END Sidebar -->
+
+<!-- Header -->
+<header id="page-header">
+    <!-- Header Content -->
+    <div class="content-header">
+        <!-- Left Section -->
+        <div class="content-header-section">
+            <!-- Logo -->
+            <div class="content-header-item mr-5">
+                <a class="link-effect font-w700" href="{{ route('admin.organizations') }}">
+                    <i class="si si-fire text-primary"></i>
+                    <span class="font-size-xl text-dual-primary-dark">afya</span><span
+                        class="font-size-xl text-primary">time</span>
+                </a>
+            </div>
+            <!-- END Logo -->
+        </div>
+        <!-- END Left Section -->
+
+        <!-- Right Section -->
+        <div class="content-header-section">
+            <!-- Header Navigation -->
+            <!--
+            Desktop Navigation, mobile navigation can be found in #sidebar
+
+            If you would like to use the same navigation in both mobiles and desktops, you can use exactly the same markup inside sidebar and header navigation ul lists
+            If your sidebar menu includes headings, they won't be visible in your header navigation by default
+            If your sidebar menu includes icons and you would like to hide them, you can add the class 'nav-main-header-no-icons'
+            -->
+            <ul class="nav-main-header">
+                <li>
+                    <a class="nav-submenu" data-toggle="nav-submenu" href="#">
+                        <i class="si si-layers"></i> Menu
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="{{ route('admin.organizations') }}"><i class="si si-cup"></i>Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.appointments.all') }}"><i class="si si-rocket"></i>Appointments</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.regions') }}"><i class="si si-wallet"></i>Location</a>
+                        </li>
+                        <li>
+                            <a href=""><i class="si si-grid"></i>Plan</a>
+                        </li>
+                        <li>
+                            <a href=""><i class="si si-user"></i>Account</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="si si-logout"></i>Logout
+                            </a>
+                        </li>
+                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
+                            style="display: none;">
+                            @csrf
+                        </form>
+                    </ul>
+                </li>
+            </ul>
+            <!-- END Header Navigation -->
+
+            <!-- Toggle Sidebar -->
+            <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+            <button type="button" class="btn btn-dual-secondary d-lg-none" data-toggle="layout"
+                data-action="sidebar_toggle">
+                Menu <i class="fa fa-navicon ml-5"></i>
+            </button>
+            <!-- END Toggle Sidebar -->
+        </div>
+        <!-- END Right Section -->
+    </div>
+    <!-- END Header Content -->
+
+    <!-- Header Search -->
+    <div id="page-header-search" class="overlay-header">
+        <div class="content-header content-header-fullrow">
+            <form>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <!-- Close Search Section -->
+                        <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+                        <button type="button" class="btn btn-secondary px-15" data-toggle="layout"
+                            data-action="header_search_off">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <!-- END Close Search Section -->
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search or hit ESC.."
+                        id="page-header-search-input" name="page-header-search-input">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-secondary px-15">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END Header Search -->
+
+    <!-- Header Loader -->
+    <div id="page-header-loader" class="overlay-header bg-primary">
+        <div class="content-header content-header-fullrow text-center">
+            <div class="content-header-item">
+                <i class="fa fa-sun-o fa-spin text-white"></i>
+            </div>
+        </div>
+    </div>
+    <!-- END Header Loader -->
+</header>

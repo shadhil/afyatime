@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Admin;
 
 use App\Models\Prescriber;
-use App\Models\UserLog;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,6 +15,7 @@ class PrescriberProfile extends Component
 
     public $prescriberId;
     public $prescriberCode;
+    public $orgId;
 
     public $vPatient;
     public $vPrescriber;
@@ -29,16 +27,12 @@ class PrescriberProfile extends Component
 
     public $searchTerm;
 
-    public function mount($id = 'null')
+    public function mount($id = 'null', $org_id)
     {
-        if ($id == 'null') {
-            $this->prescriberCode = Auth::user()->account->prescriber_code;
-            $this->prescriberId = Auth::user()->account_id;
-        } else {
-            $this->prescriberCode = $id;
-            $presc = DB::table('prescribers')->select('id')->where('prescriber_code', $id)->first();
-            $this->prescriberId = $presc->id;
-        }
+        $this->prescriberCode = $id;
+        $presc = DB::table('prescribers')->select('id')->where('prescriber_code', $id)->first();
+        $this->prescriberId = $presc->id;
+        $this->orgId = $org_id;
     }
 
     public function viewAppointmentModal($id, $patient, $prescriber, $date, $time, $type, $condition, $receiver = null, $editable)
@@ -85,12 +79,12 @@ class PrescriberProfile extends Component
                                 ->orWhere('patients.patient_code', 'like', '%' . $searchTerm . '%');
                         }
                     )
-                    ->where('organization_id', Auth::user()->org_id)
+                    ->where('organization_id', $this->orgId)
                     ->orderByDesc('date_of_visit')
                     ->paginate(1);
             } else {
                 $appointments = $prescriber->appointments()
-                    ->where('organization_id', Auth::user()->org_id)
+                    ->where('organization_id', $this->orgId)
                     ->orderByDesc('date_of_visit')
                     ->paginate(1);
             }
@@ -98,6 +92,6 @@ class PrescriberProfile extends Component
             $prescriber = [];
         }
 
-        return view('livewire.prescriber-profile', compact(['prescriber', 'appointments']))->layout('layouts.base');
+        return view('livewire.admin.prescriber-profile', compact(['prescriber', 'appointments']))->layout('layouts.admin-base');
     }
 }

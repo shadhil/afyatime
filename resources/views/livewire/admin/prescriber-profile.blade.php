@@ -1,4 +1,4 @@
-<div>
+<div class="content">
     <div class="row">
         <!-- User -->
         <div class="col-lg-4 col-xl-3">
@@ -29,14 +29,6 @@
                     <a class="font-w600" href="javascript:void(0)">Appointments</a>
                     <p class="text-muted">{{ $prescriber->appointments->count() }}</p>
                 </div>
-                @if (Auth::user()->isAdmin() || Auth::user()->account_id == $prescriberId)
-                <div class="block-options-item text-center pb-15">
-                    <a href="{{ route('prescribers.timeline', ['id' => $prescriberCode]) }}" type="button"
-                        class="btn btn-outline-primary">
-                        <i class="fa fa-list-alt mr-5"></i>View Timeline
-                    </a>
-                </div>
-                @endif
             </div>
             <!-- END Account -->
         </div>
@@ -82,11 +74,12 @@
                             <tr>
                                 <td style="width: 100px;">
                                     <a class="font-weight-bold"
-                                        href="{{ route('patients.profile', ['code' => $appointment->patient->patient_code]) }}">#{{
+                                        href="{{ route('admin.patients.profile', ['code' => $appointment->patient->patient_code, 'org_id' => $orgId]) }}">#{{
                                         $appointment->patient->patient_code }}</a>
                                 </td>
                                 <td class="font-w600"> <a
-                                        href="{{ route('patients.profile', $appointment->patient->patient_code) }}"> {{
+                                        href="{{ route('admin.patients.profile', ['code' => $appointment->patient->patient_code, 'org_id' => $orgId]) }}">
+                                        {{
                                         $appointment->patient->first_name }}
                                         {{ $appointment->patient->last_name }} </a> </td>
                                 <td class="d-none d-sm-table-cell text-center">

@@ -24,4 +24,8 @@ class UserLog extends Model
         return $this->belongsTo(UserAction::class, 'user_action_id');
     }
 
+    public function prescriber(): BelongsTo
+    {
+        return $this->belongsTo(Prescriber::class, 'prescriber_id');
+    }
 }

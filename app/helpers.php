@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -102,6 +103,42 @@ if (!function_exists('is_valid_date')) {
         $theDate = \Carbon\CarbonImmutable::parse($date);
         if ($theDate->greaterThan($today)) {
             return true;
+        }
+        return false;
+    }
+}
+
+
+if (!function_exists('user_log')) {
+    function user_log($actionId, $prescriberId, $entityType = NULL, $entityId = NULL, $note = NULL)
+    {
+        $newLog = \App\Models\UserLog::create([
+            'user_action_id' => $actionId,
+            'prescriber_id' => $prescriberId,
+            'entity_type' => $entityType,
+            'entity_id' => $entityId,
+            'note' => $note
+        ]);
+
+        return $newLog == null ? false : true;
+    }
+}
+
+if (!function_exists('is_subscribed')) {
+    function is_subscribed()
+    {
+        $subscription = \App\Models\OrganizationSubscription::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->where('status', '2')
+            ->latest('end_date')
+            ->first();
+
+        if ($subscription) {
+            if ((today('Africa/Dar_es_Salaam')->greaterThan(Carbon::parse($subscription->end_date)))) {
+                return false;
+            } else {
+                return true;
+            }
         }
         return false;
     }

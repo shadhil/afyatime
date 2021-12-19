@@ -63,10 +63,13 @@ class CreateUserActionsTable extends Migration
                 'action' => 'Delete Appointment',
             ],
             [
-                'action' => 'Completed Appointment',
+                'action' => 'Confirmed Appointment',
             ],
             [
                 'action' => 'Failed Appointment',
+            ],
+            [
+                'action' => 'Update Role/Title',
             ]
         ]);
     }

@@ -9,8 +9,10 @@ use App\Models\OrganizationSubscription;
 use App\Models\Patient;
 use App\Models\Prescriber;
 use App\Models\TreatmentSupporter;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -26,6 +28,12 @@ class Dashboard extends Component
     public $totalAppointments;
     public $myAppointments;
     public $totalPrescribers;
+
+    public $receivedAppointments;
+    public $previousAppointments;
+    public $upcomingAppointments;
+
+    public $subscriptionStatus;
 
     public function viewSupporter($supporterId)
     {
@@ -46,11 +54,40 @@ class Dashboard extends Component
 
     public function render()
     {
+        if (Session::get('logged_in')) {
+            user_log('1', Auth::user()->account_id);
+            Session::put('logged_in', false);
+        }
         $this->totalPatients = DB::table('patients')->count();
         $this->myPatients = DB::table('user_logs')->where('prescriber_id', Auth::user()->account->id)->where('user_action_id', '3')->count();
 
-        $this->totalAppointments = DB::table('appointments')->count();
-        $this->myAppointments = DB::table('appointments')->where('prescriber_id', Auth::user()->account->id)->count();
+        $this->totalAppointments = DB::table('appointments')
+            ->whereNull('deleted_at')
+            ->count();
+        $this->myAppointments = DB::table('appointments')
+            ->where('prescriber_id', Auth::user()->account->id)
+            ->whereNull('deleted_at')
+            ->count();
+
+        $this->receivedAppointments = DB::table('appointments')
+            ->where('prescriber_id', Auth::user()->account->id)
+            ->whereNotNull('received_by')
+            ->whereNull('deleted_at')
+            ->count();
+
+        $this->previousAppointments = DB::table('appointments')
+            ->where('prescriber_id', Auth::user()->account->id)
+            ->whereDate('date_of_visit', '<', Carbon::today()->toDateString())
+            ->whereNull('deleted_at')
+            ->count();
+
+
+        $this->upcomingAppointments = DB::table('appointments')
+            ->where('prescriber_id', Auth::user()->account->id)
+            ->whereDate('date_of_visit', '>=', Carbon::today()->toDateString())
+            ->whereNull('deleted_at')
+            ->count();
+
 
         $this->totalPrescribers = DB::table('prescribers')->count();
 
@@ -76,6 +113,9 @@ class Dashboard extends Component
         $this->orgName = $organization->name;
 
         $appointments = Appointment::query()
+            ->with(['prescriber' => function ($query) {
+                $query->withTrashed();
+            }])
             ->where('organization_id', Auth::user()->org_id)
             ->orderByDesc('date_of_visit')
             ->limit(10)
@@ -84,8 +124,18 @@ class Dashboard extends Component
         $subscription = OrganizationSubscription::query()
             ->where('organization_id', Auth::user()->org_id)
             ->where('status', '2')
-            ->latest()
+            ->latest('end_date')
             ->first();
+
+        if ($subscription) {
+            if ((today('Africa/Dar_es_Salaam')->greaterThan(Carbon::parse($subscription->end_date)))) {
+                $this->subscriptionStatus = 'UNSUBSCRIBED';
+            } else {
+                $this->subscriptionStatus = "SUBSCRIBED";
+            }
+        } else {
+            $this->subscriptionStatus = "NOT_SUBSCRIBED";
+        }
 
         $prescribers = Prescriber::query()
             ->where('organization_id', Auth::user()->org_id)
@@ -96,7 +146,7 @@ class Dashboard extends Component
         $packages = DB::table('subscription_packages')
             ->get();
 
-        // dd(Auth::user()->org_id);
+        // dd($appointments);
         return view('livewire.dashboard', ['patients' => $patients, 'supporters' => $supporters, 'organization' => $organization, 'appointments' => $appointments, 'subscription' => $subscription, 'packages' => $packages, 'prescribers' => $prescribers])->layout('layouts.base');
     }
 }

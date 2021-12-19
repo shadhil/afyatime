@@ -1,96 +1,103 @@
-<div>
-    <div class="main-content-wrap">
-        <header class="page-header">
-            <h1 class="page-title">Treatment Supporters</h1>
-            <form class="app-search d-none d-md-block" wire:submit.prevent="searchPatient">
-                <div class="form-group typeahead__container with-suffix-icon mb-0">
-                    <div class="typeahead__field">
-                        <div class="typeahead__query">
-                            <input class="form-control autocomplete-control topbar-search" type="search"
-                                placeholder="Type supporter's name" wire:model="searchTerm"
-                                wire:keydown.enter="searchPatient">
-                            <div class="suffix-icon icofont-search"></div>
-                        </div>
-                    </div>
+<div class="content">
+    <h2 class="content-heading">{{ $orgName }}</h2>
+    <div class="block-header">
+        <h3 class="block-title">All Treatment Supporter</h3>
+        <div class="form-group row">
+            <div class="col-md-12">
+                <div class="form-material form-material-primary">
+                    <input type="text" class="form-control" wire:model="searchTerm" wire:keydown.enter="searchSupporter"
+                        name="searchTerm" placeholder="Search Supporter" wire:keydown.enter="searchSupporter">
                 </div>
-            </form>
-        </header>
-
-        <div class="page-content">
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr class="bg-primary text-white">
-                                    <th scope="col">Photo</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Location</th>
-                                    <th scope="col">Phone</th>
-                                    <th scope="col">Patient(s)</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (sizeof($supporters)>0)
-                                @foreach ($supporters as $supporter)
-                                <tr>
-                                    <td>
-                                        <img src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($supporter->photo) }}"
-                                            alt="" width="40" height="40" class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>{{ $supporter->full_name }} </strong>
-                                    </td>
-                                    <td>
-                                        <div class="address-col">{{ $supporter->location }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            {{ $supporter->phone_number }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">
-                                            {{ $supporter->id }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="patient.html" class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
-                                                wire:click="editSupporter({{ $supporter->id }})">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                                @else
-                                <tr>
-                                    <td colspan="7" align="center">No Treatment Supporter Found</td>
-                                </tr>
-                                @endif
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {{ $supporters->links() }}
-                </div>
-            </div>
-
-            <div class="add-action-box">
-                <button class="btn btn-primary btn-lg btn-square rounded-pill" wire:click.prevent="addSupporter">
-                    <span class="btn-icon icofont-plus"></span>
-                </button>
             </div>
         </div>
     </div>
+    @if (sizeof($supporters)>0)
+    <div class="row">
+        @foreach ($supporters as $supporter)
+        <div class="col-md-4 col-xl-3">
+            <a class="block block-link-shadow" href="javascript:void(0)"
+                wire:click.prevent="viewSupporter({{ $supporter->id }})">
+                <div class="block-content block-content-full clearfix">
+                    <div class="float-right">
+                        <img class="img-avatar"
+                            src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($supporter->photo) }}"
+                            alt="">
+                    </div>
+                    <div class="float-left mt-10">
+                        <div class="font-w600 mb-5">{{ $supporter->full_name }}</div>
+                        <div class="font-size-sm text-muted">{{ $supporter->patients()->count() }} Patient(s)</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        @endforeach
+    </div>
+    <div class="float-right mb-15">
+        {{ $supporters->links('vendor.livewire.bootstrap') }}
+    </div>
+    @else
+    <div class="row mb-15">
+        <div class="col-sm-12 col-xl-12 text-center">
+            No Supporter Found
+        </div>
+    </div>
+    @endif
+
 </div>
 
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        toastr.options = {
+            "positionClass": "toast-bottom-right",
+            "progressBar": true,
+        }
+
+        window.addEventListener('hide-supporter-modal', event => {
+            $('#modal-supporter').modal('hide');
+            if(event.detail.message != 'none'){
+                toastr.success(event.detail.message, 'Success!');
+            }
+        })
+    });
+</script>
+<script>
+    window.addEventListener('show-supporter-modal', event => {
+        // alert(event.detail.hide_first);
+        if (event.detail.hide_first == true ) {
+            $('#view-modal').modal('hide');
+            setTimeout(function(){ $('#modal-supporter').modal('show'); }, 1000);
+        }else{
+            $('#modal-supporter').modal('show');
+        }
+
+    })
+
+    window.addEventListener('show-delete-modal', event => {
+        $('#delete-modal').modal('show');
+    })
+
+    window.addEventListener('hide-delete-modal', event => {
+        $('#delete-modal').modal('hide');
+        toastr.success(event.detail.message, 'Success!');
+    })
+
+    window.addEventListener('show-view-modal', event => {
+        $('#view-modal').modal('show');
+    })
+
+    window.addEventListener('hide-view-modal', event => {
+        $('#view-modal').modal('hide');
+        // window.location.href = event.detail.url;
+        // toastr.success(event.detail.message, 'Success!');
+    })
+
+    window.addEventListener('show-error-toastr', event => {
+        toastr.error(event.detail.message, 'Error!');
+    })
+
+        // window.addEventListener('hide-supporter-modal', event => {
+        //     $('#add-admin').modal('hide');
+        // })
+</script>
+@endpush

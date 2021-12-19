@@ -16,6 +16,7 @@ class Prescriber extends Model
     protected $fillable = [
         'first_name',
         'last_name',
+        'prescriber_code',
         'profile_photo',
         'gender',
         'prescriber_type',
@@ -46,5 +47,15 @@ class Prescriber extends Model
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class, 'prescriber_id');
+    }
+
+    public function logs(): MorphMany
+    {
+        return $this->morphMany(UserLog::class, 'entity');
+    }
+
+    public function entities(): MorphMany
+    {
+        return $this->morphMany(UserLog::class, 'entity');
     }
 }

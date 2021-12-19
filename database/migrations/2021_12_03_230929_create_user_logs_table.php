@@ -18,7 +18,7 @@ class CreateUserLogsTable extends Migration
             $table->unsignedTinyInteger('user_action_id')->nullable();
             $table->foreignId('prescriber_id')->constrained('prescribers')->nullable();
             $table->morphs('entity');
-            $table->string('note');
+            $table->string('note')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

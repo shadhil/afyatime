@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class AuthenticatedSessionController extends Controller
@@ -33,7 +34,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // // dd(Auth::user());
+        // user_log('1', Auth::user()->account_id);
+
+        Session::put('logged_in', true);
+
         return redirect()->intended(RouteServiceProvider::HOME);
+
+        // user_log('1', Auth::user()->account_id);
     }
 
     /**
@@ -44,6 +52,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
+        user_log('2', Auth::user()->account_id);
+
         Auth::guard('user')->logout();
 
         $request->session()->invalidate();

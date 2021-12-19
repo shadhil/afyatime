@@ -57,19 +57,13 @@
     <div id="page-container" class="sidebar-inverse side-scroll page-header-fixed main-content-boxed">
 
         <!-- Sidebar & Header -->
-        <x-navigation />
+        <x-admin-navigation />
         <!-- END Sidebar & Header -->
 
 
         <!-- Main Container -->
         <main id="main-container">
-            <!-- Page Content -->
-            <div class="content">
-
-                {{ $slot }}
-
-            </div>
-            <!-- END Page Content -->
+            {{ $slot }}
         </main>
         <!-- END Main Container -->
 

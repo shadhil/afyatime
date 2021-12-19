@@ -4,13 +4,15 @@
     <div class="block-header">
         {{-- <h3 class="block-title"></h3> --}}
         {{-- <div class="block-title"> --}}
+            @if (is_subscribed() && Auth::user()->isAdmin())
             <button type="button" class="btn btn-alt-primary" wire:click="addPrescriber">
                 <i class="fa fa-plus mr-5"></i>New Prescriber
             </button>
-            @if (Auth::user()->account_type == 'prescriber')
+            @if (Auth::user()->account_type == 'organization')
             <button type="button" class="btn btn-alt-warning" wire:click="showTitleModal">
                 <i class="fa fa-plus mr-5"></i>New Role/Title
             </button>
+            @endif
             @endif
             {{--
         </div> --}}
@@ -37,11 +39,12 @@
                         src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
                         alt="">
                 </div>
-                <div class="block-content block-content-full block-content-sm bg-body-light" wire:click=""
-                    style="cursor: pointer;">
-                    <div class="font-w600 mb-5">{{ $prescriber->first_name }} {{ $prescriber->last_name }}</div>
-                    <div class="font-size-sm text-muted">{{ $prescriber->type->title }}</div>
-                </div>
+                <a href="{{ route('prescribers.profile',  $prescriber->prescriber_code ) }}">
+                    <div class="block-content block-content-full block-content-sm bg-body-light">
+                        <div class="font-w600 mb-5">{{ $prescriber->first_name }} {{ $prescriber->last_name }}</div>
+                        <div class="font-size-sm text-muted">{{ $prescriber->type->title ?? '' }}</div>
+                    </div>
+                </a>
                 {{-- <div class="block-content">
                     <div class="row items-push">
                         <div class="col-6">

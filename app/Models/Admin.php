@@ -66,4 +66,9 @@ class Admin extends Authenticatable
     // {
     //     return Carbon::parse($value)->toFormattedTime();
     // }
+
+    public function isAdmin(): bool
+    {
+        return false;
+    }
 }

@@ -15,13 +15,27 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
+use Livewire\WithPagination;
+use Illuminate\Support\Str;
 
 class OrganizationSubscriptions extends Component
 {
+    use WithPagination;
+    protected $paginationTheme = "bootstrap";
+
     public $orgId;
     public $orgName;
     public $state = [];
     public $editState = [];
+
+
+    public $vPatient;
+    public $vPrescriber;
+    public $vDate;
+    public $vTime;
+    public $vType;
+    public $vReceiver;
+    public $vCondition;
 
     public $showEditModal = false;
 
@@ -34,6 +48,25 @@ class OrganizationSubscriptions extends Component
     public function mount($id)
     {
         $this->orgId = $id;
+        $org = DB::table('organizations')->select('name')->find($id);
+        $this->orgName = $org->name;
+    }
+
+    public function newCode()
+    {
+        $testCode = '';
+        $isFound = false;
+        while (!$isFound) {
+            $testCode = Str::before((string) Str::uuid(), '-');
+            $code = DB::table('organization_subscriptions')
+                ->select('payment_ref')
+                ->where('payment_ref', $testCode)
+                ->first();
+            if (!$code) {
+                $isFound = true;
+            }
+        }
+        return Str::upper($testCode);
     }
 
     public function createSubscription()
@@ -42,18 +75,10 @@ class OrganizationSubscriptions extends Component
         Validator::make($this->state, [
             'package_id' => 'required',
             'paid_by' => 'required',
-            'payment_ref' => 'string',
+            'status' => 'string',
             'start_date' => 'required',
             'end_date' => 'required',
         ])->validate();
-
-        if (!empty($this->state['start_date'])) {
-            $this->state['start_date'] = CarbonImmutable::createFromFormat('m/d/Y', $this->state['start_date'])->format('Y-m-d');
-        }
-
-        if (!empty($this->state['end_date'])) {
-            $this->state['end_date'] = CarbonImmutable::createFromFormat('m/d/Y', $this->state['end_date'])->format('Y-m-d');
-        }
 
         $diffDays = CarbonImmutable::parse($this->state['start_date'])->diffInDays(CarbonImmutable::parse($this->state['end_date']));
         $package = SubscriptionPackage::find($this->state['package_id']);
@@ -64,7 +89,8 @@ class OrganizationSubscriptions extends Component
             $this->state['total_price'] = $package->monthly_cost;
         }
         $this->state['confirmed_by'] = Auth::user()->id;
-        $this->state['status'] = '2';
+        $this->state['status'] = $this->state['status'];
+        $this->state['payment_ref'] = $this->newCode();
 
         $prevSub = OrganizationSubscription::query()->latest()->first();
         if ($prevSub != null) {
@@ -75,6 +101,14 @@ class OrganizationSubscriptions extends Component
 
         if (!$res) {
             $this->state['organization_id'] = $this->orgId;
+
+            if (!empty($this->state['start_date'])) {
+                $this->state['start_date'] = db_date($this->state['start_date']);
+            }
+
+            if (!empty($this->state['end_date'])) {
+                $this->state['end_date'] = db_date($this->state['end_date']);
+            }
 
             $newSubscription = OrganizationSubscription::create($this->state);
 
@@ -117,11 +151,11 @@ class OrganizationSubscriptions extends Component
         $this->state = $collection->toArray();
 
         if (!empty($this->state['start_date'])) {
-            $this->state['start_date'] = Carbon::createFromFormat('Y-m-d', $this->state['start_date'])->format('m/d/Y');
+            $this->state['start_date'] = form_date($this->state['start_date']);
         }
 
         if (!empty($this->state['end_date'])) {
-            $this->state['end_date'] = Carbon::createFromFormat('Y-m-d', $this->state['end_date'])->format('m/d/Y');
+            $this->state['end_date'] = form_date($this->state['end_date']);
             $this->state['old_end_date'] = $this->state['end_date'];
         }
 
@@ -154,12 +188,13 @@ class OrganizationSubscriptions extends Component
 
             if (Auth::user()->admin_type == Admin::SYSTEM) {
                 $this->editState['total_price'] = $this->state['total_price'];
+
                 if (!empty($this->state['start_date'])) {
-                    $this->editState['start_date'] = CarbonImmutable::createFromFormat('m/d/Y', $this->state['start_date'])->format('Y-m-d');
+                    $this->state['start_date'] = db_date($this->state['start_date']);
                 }
 
                 if (!empty($this->state['end_date'])) {
-                    $this->editState['end_date'] = CarbonImmutable::createFromFormat('m/d/Y', $this->state['end_date'])->format('Y-m-d');
+                    $this->state['end_date'] = db_date($this->state['end_date']);
                 }
             }
 
@@ -216,15 +251,13 @@ class OrganizationSubscriptions extends Component
                     ->orWhere('account_type', 'prescriber');
             })->get();
 
-        $subscriptions = OrganizationSubscription::query()->where('organization_id', $this->orgId)->latest()->paginate(15);
+        $subscriptions = OrganizationSubscription::query()->where('organization_id', $this->orgId)->latest()->paginate(12);
         $this->isfirstSub = $subscriptions->total() > 0 ? false : true;
         // dd($this->isfirstSub);
 
         $packages = SubscriptionPackage::all();
         // dd($packages);
-        $org = DB::table('organizations')->select('name')->find($this->orgId);
-        $this->orgName = $org->name;
         // dd($subscriptions);
-        return view('livewire.admin.organization-subscriptions', ['subscriptions' => $subscriptions, 'users' => $users, 'packages' => $packages, 'org' => $org]);
+        return view('livewire.admin.organization-subscriptions', ['subscriptions' => $subscriptions, 'users' => $users, 'packages' => $packages])->layout('layouts.admin-base');
     }
 }

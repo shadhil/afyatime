@@ -1,69 +1,121 @@
-<div>
-    <div class="main-content-wrap">
-        <header class="page-header">
-            <h1 class="page-title">Prescribers</h1>
+<div class="content">
+    <h2 class="content-heading">{{ $orgName }}</h2>
+    <div class="block-header">
+        <h3 class="block-title">Prescribers</h3>
+    </div>
+    <div class="row">
+        <!-- Row #1 -->
+        @if (sizeof($prescribers)>0)
+        @foreach ($prescribers as $prescriber)
+        <div class="col-md-4 col-xl-3">
+            <div class="block text-center">
+                <div class="block-content block-content-full block-sticky-options pt-30">
+                    <div class="block-options">
 
-            {{-- <form class="app-search d-none d-md-block" wire:submit.prevent="searchPrescriber">
-                <div class="form-group typeahead__container with-suffix-icon mb-0">
-                    <div class="typeahead__field">
-                        <div class="typeahead__query">
-                            <input class="form-control autocomplete-control topbar-search" type="search"
-                                placeholder="Type prescriber's name" wire:model="searchTerm"
-                                wire:keydown.enter="searchPrescriber">
-                            <div class="suffix-icon icofont-search"></div>
+                    </div>
+                    <img class="img-avatar"
+                        src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
+                        alt="">
+                </div>
+                <span>
+                    <div class="block-content block-content-full block-content-sm bg-body-light">
+                        <div class="font-w600 mb-5 text-primary">{{ $prescriber->first_name }} {{ $prescriber->last_name
+                            }}</div>
+                        <div class="font-size-sm text-muted">{{ $prescriber->type->title ?? '' }}</div>
+                    </div>
+                </span>
+                {{-- <div class="block-content">
+                    <div class="row items-push">
+                        <div class="col-6">
+                            <div class="mb-5"><i class="si si-users fa-2x"></i></div>
+                            <div class="font-size-sm text-muted">9 Patients</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-5"><i class="si si-calendar fa-2x"></i></div>
+                            <div class="font-size-sm text-muted">2 Appointments</div>
                         </div>
                     </div>
-                </div>
-            </form> --}}
-        </header>
-
-        <div class="page-content">
-            <div class="row">
-                @if (sizeof($prescribers)>0)
-                @foreach ($prescribers as $prescriber)
-                <div class="col-12 col-md-4">
-                    <div class="contact">
-                        <div class="img-box">
-                            <img src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
-                                width="400" height="400" alt="">
-                        </div>
-
-                        <div class="info-box">
-                            <h4 class="name">{{ $prescriber->initial }} {{ $prescriber->first_name }}
-                                {{ $prescriber->last_name }}</h4>
-
-                            <p class="role">{{ $prescriber->title }}</p>
-
-                            <div class="social">
-                                <a href="#" class="link icofont-email"></a>
-                                <a href="#" class="link icofont-phone"></a>
-                                <span wire:click.prevent="editPrescriber({{ $prescriber->id }})"
-                                    class="link icofont-edit"></span>
-                            </div>
-
-                            <p class="address">{{ $prescriber->email }}</p>
-
-                            <div class="button-box">
-                                <a href="doctor.html" class="btn btn-primary">View profile</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-
-                @else
-                <div class="col-md-12">
-                    <div class="contact">
-
-                        <div class="info-box">
-                            <p class="address">No Prescriber found</p>
-                        </div>
-                    </div>
-                </div>
-                @endif
+                </div> --}}
             </div>
         </div>
+        @endforeach
+        @endif
+        <!-- END Row #2 -->
+    </div>
+    <div class="float-right mb-15">
+        {{ $prescribers->links('vendor.livewire.bootstrap') }}
     </div>
 
 </div>
+<!-- end Add appointment modals -->
 
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        toastr.options = {
+            "positionClass": "toast-bottom-right",
+            "progressBar": true,
+        }
+
+        window.addEventListener('hide-prescriber-modal', event => {
+            $('#modal-prescriber').modal('hide');
+            if(event.detail.message != 'none'){
+                toastr.success(event.detail.message, 'Success!');
+            }
+        })
+
+        window.addEventListener('show-error-toastr', event => {
+            toastr.error(event.detail.message, 'Error!');
+        })
+    });
+</script>
+<script>
+    window.addEventListener('show-prescriber-modal', event => {
+        $('#modal-prescriber').modal('show');
+    })
+
+    window.addEventListener('show-delete-modal', event => {
+        $('#delete-modal').modal('show');
+    })
+
+    window.addEventListener('hide-delete-modal', event => {
+        $('#delete-modal').modal('hide');
+        toastr.success(event.detail.message, 'Success!');
+    })
+
+    window.addEventListener('show-title-modal', event => {
+        $('#title-role-modal').modal('show');
+    })
+
+    window.addEventListener('hide-title-modal', event => {
+        $('#title-role-modal').modal('hide');
+    })
+
+        // window.addEventListener('hide-prescriber-modal', event => {
+        //     $('#add-admin').modal('hide');
+        // })
+</script>
+<script>
+    // $('#gender').selectpicker({
+    //         style: '',
+    //         styleBase: 'form-control',
+    //         tickIcon: 'icofont-check-alt'
+    //     });
+
+    //     $('#prescriber_type').selectpicker({
+    //         style: '',
+    //         styleBase: 'form-control',
+    //         tickIcon: 'icofont-check-alt'
+    //     });
+
+
+    //     window.livewire.on('setGender', gender => {
+    //         $('#gender').selectpicker('val', gender);
+    //     });
+
+    //     window.livewire.on('setPrescriberType', type => {
+    //         $('#prescriber_type').selectpicker('val', gender);
+    //     });
+</script>
+@endpush

@@ -16,8 +16,8 @@
                 <div class="content-header-item">
                     <a class="link-effect font-w700" href="{{ route('dashboard') }}">
                         <i class="si si-fire text-primary"></i>
-                        <span class="font-size-xl text-dual-primary-dark">code</span><span
-                            class="font-size-xl text-primary">base</span>
+                        <span class="font-size-xl text-dual-primary-dark">afya</span><span
+                            class="font-size-xl text-primary">time</span>
                     </a>
                 </div>
                 <!-- END Logo -->
@@ -108,8 +108,8 @@
                         <a class="link-effect font-w700" href="index.html">
                             <i class="si si-fire text-primary"></i>
                             <span class="d-none d-md-inline-block">
-                                <span class="font-size-xl text-dual-primary-dark">code</span><span
-                                    class="font-size-xl text-primary">base</span>
+                                <span class="font-size-xl text-dual-primary-dark">afya</span><span
+                                    class="font-size-xl text-primary">time</span>
                             </span>
                         </a>
                     </div>
@@ -118,7 +118,7 @@
                 <div class="col text-right">
 
                     <!-- User-Profile -->
-                    <a href="{{ route('patients') }}" type="button" class="btn btn-alt-info ml-5">
+                    <a href="{{ route('my-profile') }}" type="button" class="btn btn-alt-info ml-5">
                         <i class="si si-info"></i>
                         <span class="d-none d-sm-inline">My Profile</span>
                     </a>

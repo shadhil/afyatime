@@ -27,7 +27,7 @@
             <table class="table table-striped table-vcenter">
                 <thead>
                     <tr>
-                        <th class="d-sm-table-cell text-center" style="width: 100px;"><i class="si si-user"></i></th>
+                        <th style="width: 100px;">ID</th>
                         <th>Patient's Name</th>
                         <th class="d-none d-sm-table-cell text-center" style="width: 35%;">Date & Time</th>
                         <th class="d-none d-md-table-cell" width="15%">Prescriber</th>
@@ -39,10 +39,10 @@
                     @if (sizeof($appointments)>0)
                     @foreach ($appointments as $appointment)
                     <tr>
-                        <td class="d-sm-table-cell text-center">
-                            <img class="img-avatar img-avatar48"
-                                src="{{ $appointment->patient->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($appointment->patient->photo) }}"
-                                alt="">
+                        <td style="width: 100px;">
+                            <a class="font-weight-bold"
+                                href="{{ route('patients.profile', ['code' => $appointment->patient->patient_code]) }}">#{{
+                                $appointment->patient->patient_code }}</a>
                         </td>
                         <td class="font-w600"> <a
                                 href="{{ route('patients.profile', $appointment->patient->patient_code) }}"> {{
@@ -67,38 +67,29 @@
                             <div class="btn-group">
                                 @if ($appointment->visited() == \App\Models\Appointment::NOT_VISITED)
                                 <button type="button" class="btn btn-sm btn-danger" data-toggle="tooltip"
-                                    title="Not Visited" wire:click="viewAppointmentModal('{{ $appointment->id }}', '{{
-                                                                $appointment->prescriber->prescriber_type->initial ?? '' }} {{
-                                                                $appointment->prescriber->first_name }} {{ $appointment->prescriber->last_name
-                                                                }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{
-                                                                $appointment->received_by->prescriber_type->initial ?? '' }} {{
-                                                                $appointment->received_by->first_name ?? '' }} {{ $appointment->received_by->last_name ?? ''
-                                                                }}', false)">
+                                    title="Not Visited"
+                                    wire:click="viewAppointmentModal('{{ $appointment->id }}', '{{
+                                                                    $appointment->patient->first_name }} {{ $appointment->patient->last_name
+                                                                    }}', '{{ $appointment->prescriber->type->initial ?? '' }} {{ $appointment->prescriber->first_name }} {{ $appointment->prescriber->last_name }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{ $appointment->received_by->prescriber_type->initial ?? '' }} {{ $appointment->received_by->first_name ?? '' }} {{ $appointment->received_by->last_name ?? '' }}', false)">
                                     <i class="fa fa-calendar-times-o"></i>
                                 </button>
                                 @elseif ($appointment->visited() == \App\Models\Appointment::VISITED)
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-success" data-toggle="tooltip"
-                                        title="Visited" wire:click="viewAppointmentModal('{{ $appointment->id }}', '{{
-                                                                $appointment->prescriber->prescriber_type->initial ?? '' }} {{
-                                                                $appointment->prescriber->first_name }} {{ $appointment->prescriber->last_name
-                                                                }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{
-                                                                $appointment->receiver->prescriber_type->initial ?? '' }} {{
-                                                                $appointment->receiver->first_name ?? '' }} {{ $appointment->receiver->last_name ?? ''
-                                                                }}', false)">
+                                        title="Visited"
+                                        wire:click="viewAppointmentModal('{{ $appointment->id }}', '{{
+                                                                    $appointment->patient->first_name }} {{ $appointment->patient->last_name
+                                                                    }}', '{{ $appointment->prescriber->type->initial ?? '' }} {{ $appointment->prescriber->first_name }} {{ $appointment->prescriber->last_name }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{ $appointment->received_by->prescriber_type->initial ?? '' }} {{ $appointment->received_by->first_name ?? '' }} {{ $appointment->received_by->last_name ?? '' }}', false)">
                                         <i class="fa fa-check-square-o"></i>
                                     </button>
                                 </div>
                                 @else
                                 <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip"
-                                    title="View" wire:click="viewAppointmentModal('{{ $appointment->id }}', '{{
-                                                                $appointment->prescriber->prescriber_type->initial ?? '' }} {{
-                                                                $appointment->prescriber->first_name }} {{ $appointment->prescriber->last_name
-                                                                }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{
-                                                                $appointment->receiver->prescriber_type->initial ?? '' }} {{
-                                                                $appointment->receiver->first_name ?? '' }} {{ $appointment->receiver->last_name ?? ''
-                                                                }}', {{ $appointment->updatable() }})">
-                                    <i class="fa fa-eye"></i>
+                                    title="View"
+                                    wire:click="viewAppointmentModal('{{ $appointment->id }}', '{{
+                                                                    $appointment->patient->first_name }} {{ $appointment->patient->last_name
+                                                                    }}', '{{ $appointment->prescriber->type->initial ?? '' }} {{ $appointment->prescriber->first_name }} {{ $appointment->prescriber->last_name }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{ $appointment->received_by->prescriber_type->initial ?? '' }} {{ $appointment->received_by->first_name ?? '' }} {{ $appointment->received_by->last_name ?? '' }}', {{ $appointment->updatable() }})"">
+                                                                    <i class=" fa fa-eye"></i>
                                 </button>
                                 @endif
                             </div>
@@ -161,6 +152,10 @@
                     <div class="block-content">
                         <table class="table table-striped table-borderless mt-20">
                             <tbody>
+                                <tr>
+                                    <td class="font-w600">Patient</td>
+                                    <td>{{ $vPatient }}</td>
+                                </tr>
                                 <tr>
                                     <td class="font-w600">Prescriber</td>
                                     <td>{{ $vPrescriber }}</td>

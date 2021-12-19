@@ -4,9 +4,11 @@
     <div class="block-header">
         {{-- <h3 class="block-title"></h3> --}}
         {{-- <div class="block-title"> --}}
+            @if (is_subscribed())
             <button type="button" class="btn btn-alt-primary" wire:click="addPatient">
                 <i class="fa fa-plus mr-5"></i>New Patient
             </button>
+            @endif
 
             <div class="form-group row">
                 <div class="col-md-12">
@@ -43,7 +45,7 @@
             <a class="block block-link-pop text-center"
                 href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
                 <div class="block-content block-content-full">
-                    <img class="img-avatar"
+                    <img class="img-avatar img-avatar-thumb"
                         src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
                         alt="">
                 </div>

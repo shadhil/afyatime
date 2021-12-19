@@ -1,103 +1,70 @@
-<div>
-    <div class="main-content-wrap">
-        <header class="page-header">
-            <h1 class="page-title">Patients</h1>
-            {{-- <form class="app-search d-none d-md-block" wire:submit.prevent="searchPatient">
-                <div class="form-group typeahead__container with-suffix-icon mb-0">
-                    <div class="typeahead__field">
-                        <div class="typeahead__query">
-                            <input class="form-control autocomplete-control topbar-search" type="search"
-                                placeholder="Type patient's name" wire:model="searchTerm"
-                                wire:keydown.enter="searchPatient">
-                            <div class="suffix-icon icofont-search"></div>
-                        </div>
-                    </div>
-                </div>
-            </form> --}}
-        </header>
+<div class="content">
+    <h2 class="content-heading">{{ $orgName }}</h2>
+    <div class="block-header">
+        <h3 class="block-title">All Patients</h3>
+        {{-- <div class="block-title"> --}}
 
-        <div class="page-content">
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr class="bg-primary text-white">
-                                    <th scope="col">Photo</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Code</th>
-                                    <th scope="col">Age</th>
-                                    <th scope="col">Address</th>
-                                    <th scope="col">Number</th>
-                                    <th scope="col" align="center">Last visit</th>
-                                    <th scope="col" calss="text-center">Status</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (sizeof($patients)>0)
-                                @foreach ($patients as $patient)
-                                <tr>
-                                    <td>
-                                        <img src="{{ $patient->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($patient->photo) }}"
-                                            alt="" width="40" height="40" class="rounded-500">
-                                    </td>
-                                    <td>
-                                        <strong>{{ $patient->first_name }} {{ $patient->first_name }}</strong>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">{{ $patient->patient_code }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap">
-                                            {{ \Carbon\Carbon::parse($patient->date_of_birth)->age }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="address-col">{{ $patient->location }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center nowrap text-primary">
-                                            <span class="icofont-ui-cell-phone p-0 mr-2"></span>
-                                            {{ $patient->phone_number }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-nowrap text-center">-</div>
-                                    </td>
-                                    <td align="center"><span class="badge badge-success">Cleared</span></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="{{ route('patients.profile', $patient->code) }}"
-                                                class="btn btn-dark btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-external-link"></span>
-                                            </a>
-                                            <button class="btn btn-info btn-sm btn-square rounded-pill"
-                                                wire:click="editPatient({{ $patient->id }})">
-                                                <span class="btn-icon icofont-ui-edit"></span>
-                                            </button>
-                                            <button class="btn btn-error btn-sm btn-square rounded-pill">
-                                                <span class="btn-icon icofont-ui-delete"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                                @else
-                                <tr>
-                                    <td colspan="9" align="center">No Patient Found</td>
-                                </tr>
-                                @endif
 
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="mt-4">
-                        {{ $patients->links() }}
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <div class="form-material form-material-primary">
+                        <input type="text" class="form-control" wire:model="searchTerm"
+                            wire:keydown.enter="searchPatient" name="searchPatient" placeholder="Search Patient"
+                            wire:keydown.enter="searchPatient">
                     </div>
                 </div>
             </div>
+            {{--
+        </div> --}}
+    </div>
+    @if (sizeof($patients)>0)
+    <div class="row">
+        @foreach ($patients as $patient)
+        @if ($patient->lastAppointment->date_of_visit ?? '' >= now())
+        <div class="col-md-4 col-xl-3">
+            <a class="block text-center" href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
+                <div class="block-content block-content-full bg-gd-dusk">
+                    <img class="img-avatar img-avatar-thumb"
+                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
+                        alt="">
+                </div>
+                <div class="block-content block-content-full">
+                    <div class="font-w600 mb-5">{{ $patient->first_name }} {{ $patient->last_name }}</div>
+                    <div class="font-size-sm text-muted">#{{ $patient->patient_code }}</div>
+                </div>
+            </a>
+        </div>
+        @else
+        <div class="col-md-4 col-xl-3">
+            <a class="block block-link-pop text-center"
+                href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
+                <div class="block-content block-content-full">
+                    <img class="img-avatar img-avatar-thumb"
+                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
+                        alt="">
+                </div>
+                <div class="block-content block-content-full bg-body-light">
+                    <div class="font-w600 mb-5">{{ $patient->first_name }} {{ $patient->last_name }}</div>
+                    <div class="font-size-sm text-muted">#{{ $patient->patient_code }}</div>
+                </div>
+            </a>
+        </div>
+        @endif
+        @endforeach
+    </div>
+    <div class="float-right mb-15">
+        {{ $patients->links('vendor.livewire.bootstrap') }}
+    </div>
+    @else
+    <div class="row mb-15">
+        <div class="col-sm-12 col-xl-12 text-center">
+            No Patient Found
         </div>
     </div>
+    @endif
 
 </div>
+
+@push('scripts')
+
+@endpush

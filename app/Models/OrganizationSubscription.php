@@ -50,6 +50,38 @@ class OrganizationSubscription extends Model
         return $this->belongsTo(Admin::class, 'confirmed_by');
     }
 
+    public function status()
+    {
+        if ($this->status == $this::UNSUBSCRIBED) {
+            return 'Subscription End';
+        } elseif ($this->status == $this::SUBSCRIBED) {
+            return 'Subscribed';
+        } elseif ($this->status == $this::PAID) {
+            return 'Waiting for Confirmation';
+        } elseif ($this->status == $this::CONFIRMED) {
+            return 'Subscription Confirmed';
+        } else {
+            return 'Blocked Organization';
+        }
+    }
+
+    public function shortStatus()
+    {
+        if ($this->status == $this::UNSUBSCRIBED) {
+            return 'UnSubscribed';
+        } elseif ($this->status == $this::SUBSCRIBED) {
+            return 'Subscribed';
+        } elseif ($this->status == $this::PAID) {
+            return 'Confirmation';
+        } elseif ($this->status == $this::CONFIRMED) {
+            return 'Confirmed';
+        } elseif ($this->status == $this::BLOCKED) {
+            return 'Blocked';
+        } else {
+            return 'Registerd';
+        }
+    }
+
     // public function logs(): HasMany
     // {
     //     return $this->hasMany(AppointmentsLog::class, 'org_subscription_id');

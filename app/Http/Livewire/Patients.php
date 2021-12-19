@@ -102,6 +102,7 @@ class Patients extends Component
             }
 
             if ($newPatient) {
+                user_log('3', Auth::user()->account_id, 'patient', $newPatient->id);
                 $this->dispatchBrowserEvent('hide-patient-modal', ['message' => 'Patient added successfully!', 'url' => route('patients.profile', $this->state['patient_code'])]);
                 // return redirect()->route('patients.profile', $this->state['patient_code']);
             }
@@ -184,6 +185,7 @@ class Patients extends Component
             $updatedPatient->accounts()->update($this->editState);
 
             if ($updatedPatient) {
+                user_log('4', Auth::user()->account_id, 'patient', $this->patientId);
                 $this->dispatchBrowserEvent('hide-patient-modal', ['message' => 'Patient updated successfully!']);
             }
         });

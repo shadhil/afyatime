@@ -127,6 +127,8 @@ class PatientProfile extends Component
                     ];
                     WelcomePatientJob::dispatch($details);
                 }
+
+                user_log('12', Auth::user()->account_id, 'appointment', $newAppointment->id);
                 $this->dispatchBrowserEvent('hide-appointment-modal', ['message' => 'Appointment added successfully!']);
             }
         } else {
@@ -191,6 +193,7 @@ class PatientProfile extends Component
             ]);
 
             if ($updatedAppointment) {
+                user_log('13', Auth::user()->account_id, 'appointment', $this->appointmentId);
                 $this->dispatchBrowserEvent('hide-appointment-modal', ['message' => 'Appointment updated successfully!']);
             }
         });
@@ -209,6 +212,7 @@ class PatientProfile extends Component
 
         $appointment->delete();
 
+        user_log('14', Auth::user()->account_id, 'appointment', $this->appointmentId);
         $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Appointment deleted successfully!']);
     }
 
@@ -220,13 +224,18 @@ class PatientProfile extends Component
 
     public function confirmCompletion()
     {
-        $appointment = Appointment::findOrFail($this->appointmentId);
+        if (is_subscribed()) {
+            $appointment = Appointment::findOrFail($this->appointmentId);
 
-        $appointment->received_by = Auth::user()->account->id;
+            $appointment->received_by = Auth::user()->account->id;
 
-        $appointment->save();
+            $appointment->save();
 
-        $this->dispatchBrowserEvent('hide-complete-modal', ['message' => 'The Patient is Confirmed to attend his/her Appointment successfully!']);
+            user_log('14', Auth::user()->account_id, 'appointment', $this->appointmentId);
+            $this->dispatchBrowserEvent('hide-complete-modal', ['message' => 'The Patient is Confirmed to attend his/her Appointment successfully!']);
+        }
+
+        $this->dispatchBrowserEvent('show-error-toastr', ['message' => 'Your subscription is up so you can not aupdate this appointment']);
     }
 
     public function viewAppointmentModal($id, $prescriber, $date, $time, $type, $condition, $receiver = null, $editable)
@@ -315,6 +324,7 @@ class PatientProfile extends Component
             $updatedPatient->accounts()->update($this->editState);
 
             if ($updatedPatient) {
+                user_log('4', Auth::user()->account_id, 'patient', $this->patientId);
                 $this->dispatchBrowserEvent('hide-patient-modal', ['message' => 'Patient updated successfully!']);
             }
         });
@@ -408,6 +418,9 @@ class PatientProfile extends Component
             })->limit(7)->get();
 
         $appointments = $patient->appointments()
+            ->with(['prescriber' => function ($query) {
+                $query->withTrashed();
+            }])
             ->orderByDesc('date_of_visit')
             ->paginate(15);
 

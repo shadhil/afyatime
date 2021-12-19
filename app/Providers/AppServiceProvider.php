@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'organization' => 'App\Models\Organization',
             'prescriber' => 'App\Models\Prescriber',
+            'prescriber_type' => 'App\Models\PrescriberType',
             'patient' => 'App\Models\Patient',
             'supporter' => 'App\Models\TreatmentSupporter',
         ]);

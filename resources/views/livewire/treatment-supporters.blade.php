@@ -4,9 +4,11 @@
     <div class="block-header">
         {{-- <h3 class="block-title"></h3> --}}
         {{-- <div class="block-title"> --}}
+            @if (is_subscribed())
             <button type="button" class="btn btn-alt-primary" wire:click="addSupporter">
                 <i class="fa fa-plus mr-5"></i>New Supporter
             </button>
+            @endif
 
             <div class="form-group row">
                 <div class="col-md-12">
@@ -242,7 +244,7 @@
             <div class="modal-content">
                 <div class="block block-themed block-transparent mb-0">
                     <div class="block-header bg-primary-dark">
-                        <h3 class="block-title">Patient's Appointment</h3>
+                        <h3 class="block-title">Supporter's Details</h3>
                         <div class="block-options">
                             <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
                                 <i class="si si-close"></i>
@@ -287,11 +289,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    @if (is_subscribed())
                     @if (Auth::user()->isAdmin())
                     <button type="button" class="btn btn-alt-info"
                         wire:click="editSupporter({{ $viewState['id'] ?? '0' }})">
                         <i class="fa fa-edit"></i> Edit Appointment
                     </button>
+                    @endif
                     @endif
                     <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
                 </div>

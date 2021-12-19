@@ -17,6 +17,7 @@ class CreateTreatmentSupportersTable extends Migration
             $table->id();
             $table->string('full_name');
             $table->string('photo')->nullable();
+            $table->string('prescriber_code')->unique()->nullable();
             $table->string('phone_number');
             $table->string('email')->nullable();
             $table->string('location');

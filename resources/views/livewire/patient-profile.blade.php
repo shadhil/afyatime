@@ -39,12 +39,14 @@
                     <a class="font-w600" href="javascript:void(0)">Tensel Leader's Phone</a>
                     <p class="text-muted">{{ $patient->tensel_leader_phone ?? '- - -' }}</p>
                     @endif
+                    @if (is_subscribed())
                     @if (Auth::user()->isAdmin())
                     <div class="block-options-item text-center pb-15">
                         <button type="button" class="btn btn-alt-info" wire:click="editPatient">
                             <i class="fa fa-edit mr-5"></i>Edit Patient Details
                         </button>
                     </div>
+                    @endif
                     @endif
                 </div>
             </div>
@@ -57,11 +59,13 @@
                     </div>
                 </div>
                 @if ($patient->supporter_id == NULL)
+                @if (is_subscribed())
                 <div class="block-options-item text-center p-10">
                     <button type="button" class="btn btn-alt-primary" wire:click="addSupporter">
                         <i class="fa fa-plus mr-5"></i>Add Supporter
                     </button>
                 </div>
+                @endif
                 @else
                 <div class="block-content pull-t mt-0">
                     <a class="font-w600" href="javascript:void(0)">Supporter' Name</a>
@@ -77,12 +81,14 @@
                     <a class="font-w600" href="javascript:void(0)">Phone</a>
                     <p class="text-muted">{{ $patient->supporter->phone_number ?? '- - -' }}</p>
                     @if (Auth::user()->isAdmin())
+                    @if (is_subscribed())
                     <div class="block-options-item text-center">
                         <button type="button" class="btn btn-alt-info" wire:click="editSupporter">
                             <i class="fa fa-edit mr-5"></i>Change Supporter
                         </button>
                     </div>
                     <br>
+                    @endif
                     <div class="block-options-item text-center">
                         <address>
                             <a href="{{ route('patients.supporters') }}">View All Supporters</a>
@@ -102,9 +108,11 @@
                     <h3 class="block-title">Patient's Appointments</h3>
                     <div class="block-options">
                         <div class="block-options-item">
+                            @if (is_subscribed())
                             <button type="button" class="btn btn-alt-primary" wire:click="addAppointment">
                                 <i class="fa fa-calendar-plus-o mr-5"></i>New Appointment
                             </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -119,6 +127,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if (sizeof($appointments)>0)
                             @foreach ($appointments as $appointment)
                             <tr>
                                 <td class="d-none d-sm-table-cell"><a href="javascript:void(0)">{{
@@ -139,7 +148,7 @@
                                         @if ($appointment->visited() == \App\Models\Appointment::NOT_VISITED)
                                         <button type="button" class="btn btn-sm btn-danger" data-toggle="tooltip"
                                             title="Not Visited" wire:click="viewAppointmentModal('{{ $appointment->id }}', '{{
-                                        $appointment->prescriber->prescriber_type->initial ?? '' }} {{
+                                        $appointment->prescriber->type->initial ?? '' }} {{
                                         $appointment->prescriber->first_name }} {{ $appointment->prescriber->last_name
                                         }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{
                                         $appointment->received_by->prescriber_type->initial ?? '' }} {{
@@ -186,6 +195,11 @@
                                 </td>
                             </tr>
                             @endforeach
+                            @else
+                            <tr class="mt-5">
+                                <td colspan="4" class="text-center text-info mt-5">No Appointment Found</td>
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -480,9 +494,11 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    @if (is_subscribed())
                     <button type="button" class="btn btn-alt-success" wire:click="newSupporter">
                         <i class="fa fa-check"></i> Add Supporter
                     </button>
+                    @endif
                     <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -726,10 +742,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    @if (is_subscribed())
                     @if ($showEditModal)
                     <button type="button" class="btn btn-alt-info" wire:click="editAppointment({{ $appointmentId }})">
                         <i class="fa fa-edit"></i> Edit Appointment
                     </button>
+                    @endif
                     @endif
                     <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
                 </div>
@@ -822,6 +840,7 @@
     })
 
     window.addEventListener('show-error-toastr', event => {
+        $('#complete-modal').modal('hide');
         toastr.error(event.detail.message, 'Error!');
     })
 

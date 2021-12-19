@@ -31,9 +31,12 @@ class Organizations extends Component
 
     //public $organization;
 
+    public $logo;
+    public $orgLogo;
+
     public $showEditModal = false;
 
-    public $orgIdSelected = null;
+    public $orgId = null;
 
     public $searchTerm = null;
 
@@ -52,6 +55,12 @@ class Organizations extends Component
             // 'password' => 'required|confirmed',
         ])->validate();
 
+        if ($this->logo) {
+            $this->state['logo'] = $this->logo->store('/', 'profiles');
+        } else {
+            $this->state['logo'] = NULL;
+        }
+
         $this->state['password'] = Str::random(10);
         if (empty($this->state['known_as'])) {
             $this->state['known_as'] = $this->state['name'];
@@ -67,6 +76,7 @@ class Organizations extends Component
             $newOrg->accounts()->create([
                 'name' => $this->state['name'],
                 'email' => $this->state['email'],
+                'profile_photo' => $this->state['logo'],
                 'password' => Hash::make($this->state['password']),
                 'org_id' => $newOrg->id,
             ]);
@@ -86,7 +96,7 @@ class Organizations extends Component
 
     public function addOrg()
     {
-        $this->reset('state');
+        $this->reset('state', 'logo', 'orgLogo', 'orgId');
         $this->state = [];
         $this->showEditModal = false;
         $this->dispatchBrowserEvent('show-org-modal');
@@ -94,7 +104,7 @@ class Organizations extends Component
 
     public function editOrg($orgId)
     {
-        $this->reset('state');
+        $this->reset('state', 'logo', 'orgLogo', 'orgId');
         $this->showEditModal = true;
         $organization = DB::table('organizations')
             ->join('full_regions', 'organizations.district_id', '=', 'full_regions.district_id')
@@ -103,10 +113,11 @@ class Organizations extends Component
             ->first();
 
         $collection = collect($organization);
-        $this->orgIdSelected = $organization->id;
+        $this->orgId = $organization->id;
+        $this->orgLogo = $organization->logo;
 
         $this->state = $collection->toArray();
-        //dd($this->orgIdSelected);
+        //dd($this->orgId);
         $this->dispatchBrowserEvent('show-org-modal');
         //dd($organization);
     }
@@ -116,7 +127,7 @@ class Organizations extends Component
         //dd($this->state);
         $validatedData = Validator::make($this->state, [
             'name' => 'required',
-            'email' => 'required|email|unique:organizations,email,' . $this->orgIdSelected,
+            'email' => 'required|email|unique:organizations,email,' . $this->orgId,
             'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'location' => 'required',
             'region_id' => 'required',
@@ -140,7 +151,7 @@ class Organizations extends Component
             $phone = Str::replace(' ', '', $this->state['phone_number']);
             $this->state['phone_number'] = Str::start(Str::substr($phone, -9), '0');
 
-            $updatedOrg = Organization::find($this->orgIdSelected);
+            $updatedOrg = Organization::find($this->orgId);
             $updatedOrg->update($this->state);
             // $this->organization->update($this->state);
 
@@ -169,17 +180,28 @@ class Organizations extends Component
 
     public function confirmOrgRemoval($orgId)
     {
-        $this->orgIdSelected = $orgId;
+        $this->orgId = $orgId;
         $this->dispatchBrowserEvent('show-delete-modal');
     }
 
     public function deleteOrg()
     {
-        $organization = Organization::findOrFail($this->orgIdSelected);
+        $organization = Organization::findOrFail($this->orgId);
 
         $organization->delete();
 
         $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Organization deleted successfully!']);
+    }
+
+    public function updatedsearchTerm()
+    {
+        $this->resetPage();
+    }
+
+    public function searchOrganization()
+    {
+        $this->resetPage();
+        // dd($this->searchTerm);
     }
 
     public function render()
@@ -209,9 +231,20 @@ class Organizations extends Component
         //     ->paginate(5);
         // dd($organizations);
 
-        $organizations = Organization::query()->paginate(6);
+        if ($this->searchTerm != null) {
+            $organizations = Organization::query()
+                ->where(function ($query) {
+                    $query->where('name', 'like', '%' . $this->searchTerm . '%')
+                        ->orWhere('email', 'like', '%' . $this->searchTerm . '%')
+                        ->orWhere('phone_number', 'like', '%' . $this->searchTerm . '%');
+                })
+                ->latest()->paginate(4);
+        } else {
+            $organizations = Organization::query()->latest()->paginate(6);
+        }
+        // $organizations = Organization::query()->paginate(6);
         // $org = $organizations[0];
-        // dd($org->subscriptions()->latest()->first());
-        return view('livewire.admin.organizations', ['organizations' => $organizations, 'orgTypes' => $orgTypes, 'regions' => $regions, 'packages' => $packages]);
+        // dd($org->latestSubscription->status());
+        return view('livewire.admin.organizations', ['organizations' => $organizations, 'orgTypes' => $orgTypes, 'regions' => $regions, 'packages' => $packages])->layout('layouts.admin-base');
     }
 }
