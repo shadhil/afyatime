@@ -88,8 +88,8 @@ class PrescriberTypes extends Component
 
     public function render()
     {
-        $prescriberTypes = PrescriberType::latest()->paginate(15);
+        $prescriberTypes = PrescriberType::paginate(15);
         //dd($admins);
-        return view('livewire.admin.prescriber-types', ['prescriberTypes' => $prescriberTypes]);
+        return view('livewire.admin.prescriber-types', ['prescriberTypes' => $prescriberTypes])->layout('layouts.admin-base');
     }
 }

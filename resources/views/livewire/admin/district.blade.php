@@ -1,25 +1,29 @@
-<div class="main-content-wrap">
-    <header class="page-header">
-        <h1 class="page-title">{{ $region->name }}</h1>
-    </header>
-
-    <div class="page-content">
-        <div class="row">
-            @foreach ($districts as $district)
-            <div class="col-12 col-md-4">
-                <div class="contact">
-                    <div class="info-box">
-                        <h4 class="name"><span href="">{{ $district->name }}</span></h4>
+<div class="content">
+    <h2 class="content-heading">{{ $region->name }}</h2>
+    <div class="block-header">
+        <h3 class="block-title">All Districts</h3>
+    </div>
+    @if (sizeof($districts)>0)
+    <div class="row">
+        @foreach ($districts as $district)
+        <div class="col-md-6 col-xl-4">
+            <a class="block block-link-shadow" href="javascript:void(0)">
+                <div class="block-content block-content-full clearfix">
+                    <div class="float-left mt-10">
+                        <div class="font-w600 mb-5">{{ $district->name }}</div>
+                        <div class="font-size-sm text-muted">{{ $district->organizations()->count() }} Organization(s)
+                        </div>
                     </div>
                 </div>
-            </div>
-            @endforeach
+            </a>
         </div>
-
-        {{-- <div class="add-action-box">
-            <button class="btn btn-dark btn-lg btn-square rounded-pill" data-toggle="modal" data-target="#add-doctor">
-                <span class="btn-icon icofont-contact-add"></span>
-            </button>
-        </div> --}}
+        @endforeach
     </div>
+    @else
+    <div class="row mb-15">
+        <div class="col-sm-12 col-xl-12 text-center">
+            No District Found
+        </div>
+    </div>
+    @endif
 </div>

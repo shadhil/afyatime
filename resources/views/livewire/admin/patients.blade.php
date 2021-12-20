@@ -64,7 +64,3 @@
     @endif
 
 </div>
-
-@push('scripts')
-
-@endpush

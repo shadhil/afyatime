@@ -79,20 +79,11 @@ class Admins extends Component
             'phone_number' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
         ])->validate();
 
-        // $validatedData['admin_type'] = 'admin';
-        //dd($validatedData);
-
         if (!empty($validatedData['password'])) {
             $validatedData['password'] = bcrypt($validatedData['password']);
         }
 
-        //dd('DONE!');
-        // if ($this->photo) {
-        //     $validatedData['avatar'] = $this->photo->store('/', 'avatars');
-        // }
         $this->admin->update($validatedData);
-
-        // session()->flash('message', 'User added successfully!');
 
         $this->dispatchBrowserEvent('hide-admin-modal', ['message' => 'Admin updated successfully!']);
     }
@@ -116,6 +107,6 @@ class Admins extends Component
     {
         $admins = Admin::latest()->paginate(5);
         //dd($admins);
-        return view('livewire.admin.admins', ['admins' => $admins]);
+        return view('livewire.admin.admins', ['admins' => $admins])->layout('layouts.admin-base');
     }
 }

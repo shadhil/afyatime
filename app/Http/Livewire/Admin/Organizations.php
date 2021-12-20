@@ -5,9 +5,13 @@ namespace App\Http\Livewire\Admin;
 use App\Events\OrganizationRegistered;
 use App\Jobs\WelcomeOrganizationJob;
 use App\Models\Admin;
+use App\Models\Appointment;
 use App\Models\Organization;
 use App\Models\OrganizationSubscription;
 use App\Models\OrganizationType;
+use App\Models\Patient;
+use App\Models\Prescriber;
+use App\Models\TreatmentSupporter;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +43,11 @@ class Organizations extends Component
     public $orgId = null;
 
     public $searchTerm = null;
+
+    public $totalPatients;
+    public $totalAppointments;
+    public $totalPrescribers;
+    public $totalSupporters;
 
     public function createOrg()
     {
@@ -220,16 +229,9 @@ class Organizations extends Component
         $regions = DB::table('regions')
             ->select('id', 'name')
             ->get();
-        //dd($admins);
+
         $packages = DB::table('subscription_packages')
             ->get();
-
-        // $organizations = DB::table('organizations')
-        //     ->join('full_regions', 'full_regions.district_id', '=', 'organizations.district_id')
-        //     ->select('organizations.*', 'full_regions.region', 'full_regions.district', DB::raw("(SELECT COUNT(prescribers.id) FROM prescribers WHERE prescribers.organization_id = organizations.id GROUP BY prescribers.organization_id) as prescribers"), DB::raw("(SELECT COUNT(patients.id) FROM patients WHERE patients.organization_id = organizations.id GROUP BY patients.organization_id) as patients"), DB::raw("(SELECT COUNT(treatment_supporters.id) FROM treatment_supporters WHERE treatment_supporters.organization_id = organizations.id GROUP BY treatment_supporters.organization_id) as supporters"), DB::raw("(SELECT COUNT(appointments.id) FROM appointments WHERE appointments.organization_id = organizations.id GROUP BY appointments.organization_id) as appointments"))
-        //     ->groupBy('organizations.id')
-        //     ->paginate(5);
-        // dd($organizations);
 
         if ($this->searchTerm != null) {
             $organizations = Organization::query()
@@ -242,6 +244,15 @@ class Organizations extends Component
         } else {
             $organizations = Organization::query()->latest()->paginate(6);
         }
+
+        $this->totalPatients = Patient::count();
+
+        $this->totalAppointments = Appointment::count();
+
+        $this->totalPrescribers = Prescriber::count();
+
+        $this->totalSupporters = TreatmentSupporter::count();
+
         // $organizations = Organization::query()->paginate(6);
         // $org = $organizations[0];
         // dd($org->latestSubscription->status());

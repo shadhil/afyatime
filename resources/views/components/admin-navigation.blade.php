@@ -45,10 +45,10 @@
                         <a href="{{ route('admin.regions') }}"><i class="si si-wallet"></i>Location</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.types.org') }}"><i class="si si-grid"></i>Plan</a>
+                        <a href="{{ route('admin.types.prescriber') }}"><i class="si si-grid"></i>Prescriber Types</a>
                     </li>
                     <li>
-                        <a href=""><i class="si si-user"></i>Account</a>
+                        <a href="{{ route('admin.admins') }}"><i class="si si-user"></i>Admins</a>
                     </li>
                     <li>
                         <a href="{{ route('admin.logout') }}"
@@ -113,10 +113,11 @@
                             <a href="{{ route('admin.regions') }}"><i class="si si-wallet"></i>Location</a>
                         </li>
                         <li>
-                            <a href=""><i class="si si-grid"></i>Plan</a>
+                            <a href="{{ route('admin.types.prescriber') }}"><i class="si si-grid"></i>Prescriber
+                                Types</a>
                         </li>
                         <li>
-                            <a href=""><i class="si si-user"></i>Account</a>
+                            <a href="{{ route('admin.admins') }}"><i class="si si-user"></i>Admins</a>
                         </li>
                         <li>
                             <a href="{{ route('admin.logout') }}"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\District as ModelsDistrict;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -18,10 +19,10 @@ class District extends Component
     {
         $region = DB::table('regions')->find($this->regionId);
 
-        $districts = DB::table('districts')
-            ->select('id', 'name')
+        $districts = ModelsDistrict::query()
             ->where('region_id', $this->regionId)
             ->get();
-        return view('livewire.admin.district', ['districts' => $districts, 'region' => $region]);
+
+        return view('livewire.admin.district', ['districts' => $districts, 'region' => $region])->layout('layouts.admin-base');
     }
 }

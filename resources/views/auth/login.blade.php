@@ -13,7 +13,7 @@
                                 <span class="font-size-xl text-primary-dark">afya</span><span
                                     class="font-size-xl">time</span>
                             </a>
-                            <h1 class="h4 font-w700 mt-30 mb-10">Welcome to Your Dashboard</h1>
+                            <h1 class="h4 font-w700 mt-30 mb-10">Welcome to Your Doc. Dashboard</h1>
                             <h2 class="h5 font-w400 text-muted mb-0">It’s a great day today!</h2>
                         </div>
                         <!-- END Header -->
