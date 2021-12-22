@@ -60,7 +60,17 @@ use Illuminate\Support\Facades\Route;
 //     return view('dashboard');
 // })->middleware(['auth'])->name('dashboard');
 
-Route::middleware(['auth:user'])->group(function () {
+Route::get('/', Home::class)->name('home');
+
+Route::get('/welcome', function () {
+    if (Auth::user()->account_type == 'admin') {
+        return redirect()->route('admin.organizations');
+    } else {
+        return redirect()->route('dashboard');
+    }
+});
+
+Route::middleware(['auth.user'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/appointments', Appointments::class)->name('appointments');
     Route::get('/patients', Patients::class)->name('patients');
@@ -80,16 +90,16 @@ Route::middleware(['auth:user'])->group(function () {
     // })->name('presc.profile');
     Route::get('/prescriber-timeline/{id}', PrescriberTimeline::class)->name('prescribers.timeline');
     Route::get('/treatment-supporters/{new?}', TreatmentSupporters::class)->name('patients.supporters');
-    Route::get('/admins', AdminAdmins::class)->name('admins');
+    // Route::get('/admins', AdminAdmins::class)->name('admins');
     Route::get('/patient/{code}', PatientProfile::class)->name('patients.profile');
     Route::get('/subscriptions', Subscriptions::class)->name('subscriptions');
     Route::get('/api-tests', ApiTests::class);
 });
 
 
-Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth.admin'])->group(function () {
     // Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
-    Route::get('/', AdminOrganizations::class)->name('organizations');
+    Route::get('/dashboard', AdminOrganizations::class)->name('organizations');
     Route::get('/organization/{id}', AdminOrgProfile::class)->name('organizations.profile');
     Route::get('/all-appointments', AdminAllAppointments::class)->name('appointments.all');
     Route::get('/regions', AdminRegions::class)->name('regions');
@@ -106,6 +116,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::get('/patients/{id}', AdminPatients::class)->name('patients');
     Route::get('/patient/{org_id}/{code}', AdminPatientProfile::class)->name('patients.profile');
     Route::get('/treatment-supporters/{id}', AdminTreatmentSupporters::class)->name('supporters');
+    Route::get('/admins', AdminAdmins::class)->name('admins');
 });
 
 
@@ -115,4 +126,4 @@ Route::get('/mail', function () {
     return view('vendor.mail.html.message');
 });
 
-Route::get('/{action?}/{package?}', Home::class)->name('home');
+// Route::get('/{action?}/{package?}', Home::class)->name('home');

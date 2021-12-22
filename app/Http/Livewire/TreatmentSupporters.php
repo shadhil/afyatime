@@ -42,11 +42,11 @@ class TreatmentSupporters extends Component
 
     public $packageStatus = 4;
 
+    public $new;
+
     public function mount($new = null)
     {
-        if ($new == 'new') {
-            dd('NEW!');
-        }
+        $this->new = $new;
     }
 
     public function createSupporter()
@@ -152,6 +152,7 @@ class TreatmentSupporters extends Component
             $updatedSupporter->accounts()->update($this->editState);
 
             if ($updatedSupporter) {
+                $this->resetPage();
                 $this->dispatchBrowserEvent('hide-supporter-modal', ['message' => 'Supporter updated successfully!']);
             }
         });
@@ -242,6 +243,7 @@ class TreatmentSupporters extends Component
             ->select('id', 'name')
             ->get();
         //dd($prescribers);
+
         return view('livewire.treatment-supporters', ['supporters' => $supporters, 'regions' => $regions])->layout('layouts.base');
     }
 }

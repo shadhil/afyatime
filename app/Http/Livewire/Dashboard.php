@@ -54,6 +54,7 @@ class Dashboard extends Component
 
     public function render()
     {
+        // dd(Auth::user());
         if (Session::get('logged_in')) {
             user_log('1', Auth::user()->account_id);
             Session::put('logged_in', false);

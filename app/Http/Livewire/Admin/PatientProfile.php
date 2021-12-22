@@ -6,6 +6,7 @@ use App\Models\OrganizationSubscription;
 use App\Models\Patient;
 use App\Models\Prescriber;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -34,7 +35,7 @@ class PatientProfile extends Component
     }
 
 
-    public function viewAppointmentModal($id, $prescriber, $date, $time, $type, $condition, $receiver = null, $editable)
+    public function viewAppointmentModal($id, $prescriber, $date, $time, $type, $condition, $receiver = null, $prescriber_id)
     {
         $this->appointmentId = $id;
         $this->vPrescriber = $prescriber;
@@ -43,9 +44,15 @@ class PatientProfile extends Component
         $this->vType = Str::ucfirst($type);
         $this->vReceiver = Str::of($receiver)->trim();
         $this->vCondition = $condition;
-        $this->showEditModal = $editable;
 
-        // dd($this->vReceiver);
+        if (Auth::user()->isAdmin() || $prescriber_id == Auth::user()->account->id) {
+            $this->showEditModal = true;
+        } else {
+            $this->showEditModal = true;
+        }
+        // return 'false';
+
+        dd($this->showEditModal);
 
         $this->dispatchBrowserEvent('show-view-modal');
     }

@@ -15,7 +15,7 @@
                 <!-- Logo -->
                 <div class="content-header-item">
                     <a class="link-effect font-w700" href="{{ route('dashboard') }}">
-                        <i class="si si-fire text-primary"></i>
+                        <img class="mb-1" src="{{ asset('assets/base/afyatime-logo.png') }}" alt="" height="20px">
                         <span class="font-size-xl text-dual-primary-dark">afya</span><span
                             class="font-size-xl text-primary">time</span>
                     </a>
@@ -105,8 +105,9 @@
                 <div class="col-3 text-center">
                     <!-- Logo -->
                     <div class="content-header-item">
-                        <a class="link-effect font-w700" href="index.html">
-                            <i class="si si-fire text-primary"></i>
+                        <a class="link-effect font-w700" href="{{ route('dashboard') }}">
+                            <img class="mb-1" src="{{ asset('assets/base/afyatime-logo.png') }}" alt="" height="20px">
+                            {{-- <i class="si si-fire text-primary"></i> --}}
                             <span class="d-none d-md-inline-block">
                                 <span class="font-size-xl text-dual-primary-dark">afya</span><span
                                     class="font-size-xl text-primary">time</span>

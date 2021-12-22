@@ -14,6 +14,7 @@ use App\Models\Prescriber;
 use App\Models\TreatmentSupporter;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;

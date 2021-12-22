@@ -186,7 +186,7 @@ class OrganizationSubscriptions extends Component
             $this->editState['status'] = $this->state['status'];
             $this->editState['payment_ref'] = $this->state['payment_ref'];
 
-            if (Auth::user()->admin_type == Admin::SYSTEM) {
+            if (Auth::user()->status == '2') {
                 $this->editState['total_price'] = $this->state['total_price'];
 
                 if (!empty($this->state['start_date'])) {

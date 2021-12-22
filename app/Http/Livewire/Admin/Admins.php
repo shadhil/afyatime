@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
-use App\Models\Admin;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -36,14 +36,20 @@ class Admins extends Component
             'email' => 'required|email|unique:admins',
             'password' => 'required|confirmed',
         ])->validate();
-        $this->state['password'] = bcrypt($validatedData['password']);
-        $this->state['admin_type'] = '1';
 
         if ($this->photo) {
-            $this->state['profile_img'] = $this->photo->store('/', 'profiles');
+            $this->state['profile_photo'] = $this->photo->store('/', 'profiles');
         }
 
-        Admin::create($this->state);
+        User::create([
+            'name' => $this->state['name'],
+            'email' => $this->state['email'],
+            'phone_number' => $this->state['phone_number'],
+            'password' => bcrypt($this->state['password']),
+            'account_type' => 'admin',
+            'account_id' => '0',
+            'org_id' => NULL,
+        ]);
 
         // session()->flash('message', 'User added successfully!');
 
@@ -58,7 +64,7 @@ class Admins extends Component
         $this->dispatchBrowserEvent('show-admin-modal');
     }
 
-    public function editdmin(Admin $admin)
+    public function editdmin(User $admin)
     {
         $this->reset();
         $this->showEditModal = true;
@@ -96,7 +102,7 @@ class Admins extends Component
 
     public function deleteAdmin()
     {
-        $admin = Admin::findOrFail($this->adminIdBeingRemoved);
+        $admin = User::findOrFail($this->adminIdBeingRemoved);
 
         $admin->delete();
 
@@ -105,7 +111,7 @@ class Admins extends Component
 
     public function render()
     {
-        $admins = Admin::latest()->paginate(5);
+        $admins = User::where('account_type', 'admin')->latest()->paginate(5);
         //dd($admins);
         return view('livewire.admin.admins', ['admins' => $admins])->layout('layouts.admin-base');
     }

@@ -52,9 +52,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
-        user_log('2', Auth::user()->account_id);
+        if (Auth::user()->account_type != 'admin') {
+            user_log('2', Auth::user()->account_id);
+        }
 
-        Auth::guard('user')->logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 

@@ -33,6 +33,7 @@ class PatientProfile extends Component
     public $patientId;
     public $userId;
     public $appointmentId;
+    public $prescriberId;
     public $removeAppointmentId;
 
     public $firstTime = false;
@@ -144,6 +145,7 @@ class PatientProfile extends Component
 
         // $collection = collect($appointment);
         $this->appointmentId = $appointment->id;
+        // $this->prescriberId = $prescriberId;
         // $this->conditionId = $appointment->condition_id;
 
         $this->state = $appointment->toArray();
@@ -175,20 +177,20 @@ class PatientProfile extends Component
 
         DB::transaction(function () use ($validatedData) {
 
-            if (!empty($this->state['date_of_visit'])) {
-                $this->state['date_of_visit'] = db_date($this->state['date_of_visit']);
-            }
+            // if (!empty($this->state['date_of_visit'])) {
+            //     $this->state['date_of_visit'] = db_date($this->state['date_of_visit']);
+            // }
 
 
-            if (!empty($this->state['visit_time'])) {
-                $this->state['visit_time'] = Carbon::createFromFormat('H:i', $this->state['visit_time'])->format('H:i:s');
-            }
+            // if (!empty($this->state['visit_time'])) {
+            //     $this->state['visit_time'] = Carbon::createFromFormat('H:i', $this->state['visit_time'])->format('H:i:s');
+            // }
 
             // $this->state['received_by'] = $this->state['received_by'] == true ? Auth::user()->account_id : NULL;
 
             $updatedAppointment = Appointment::find($this->appointmentId)->update([
-                'date_of_visit' => $this->state['date_of_visit'],
-                'visit_time' => $this->state['visit_time'],
+                'date_of_visit' => db_date($this->state['date_of_visit']),
+                'visit_time' => Carbon::createFromFormat('H:i', $this->state['visit_time'])->format('H:i:s'),
                 'app_type' => $this->state['app_type']
             ]);
 
@@ -224,6 +226,11 @@ class PatientProfile extends Component
 
     public function confirmCompletion()
     {
+        if (Auth::user()->isAdmin() || $prescriber_id == Auth::user()->account->id) {
+            $this->showEditModal = true;
+        } else {
+            $this->showEditModal = false;
+        }
         if (is_subscribed()) {
             $appointment = Appointment::findOrFail($this->appointmentId);
 
@@ -238,7 +245,7 @@ class PatientProfile extends Component
         $this->dispatchBrowserEvent('show-error-toastr', ['message' => 'Your subscription is up so you can not aupdate this appointment']);
     }
 
-    public function viewAppointmentModal($id, $prescriber, $date, $time, $type, $condition, $receiver = null, $editable)
+    public function viewAppointmentModal($id, $prescriber, $date, $time, $type, $condition, $receiver = null, $prescriber_id)
     {
         $this->appointmentId = $id;
         $this->vPrescriber = $prescriber;
@@ -247,9 +254,13 @@ class PatientProfile extends Component
         $this->vType = Str::ucfirst($type);
         $this->vReceiver = Str::of($receiver)->trim();
         $this->vCondition = $condition;
-        $this->showEditModal = $editable;
 
-        // dd($this->vReceiver);
+        if (Auth::user()->isAdmin() || $prescriber_id == Auth::user()->account->id) {
+            $this->showEditModal = true;
+        } else {
+            $this->showEditModal = false;
+        }
+        // dd($this->showEditModal);
 
         $this->dispatchBrowserEvent('show-view-modal');
     }

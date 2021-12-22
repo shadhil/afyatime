@@ -24,9 +24,9 @@ class Appointments extends Component
 
     public $searchTerm;
 
-    public function viewAppointmentModal($id, $patient, $prescriber, $date, $time, $type, $condition, $receiver = null, $editable)
+    public function viewAppointmentModal($id, $prescriber, $date, $time, $type, $condition, $receiver = null, $prescriber_id)
     {
-        $this->vPatient = $patient;
+        $this->appointmentId = $id;
         $this->vPrescriber = $prescriber;
         $this->vDate = $date;
         $this->vTime = $time;
@@ -34,7 +34,12 @@ class Appointments extends Component
         $this->vReceiver = Str::of($receiver)->trim();
         $this->vCondition = $condition;
 
-        // dd($this->vReceiver);
+        if (Auth::user()->isAdmin() || $prescriber_id == Auth::user()->account->id) {
+            $this->showEditModal = true;
+        } else {
+            $this->showEditModal = false;
+        }
+        // dd($this->showEditModal);
 
         $this->dispatchBrowserEvent('show-view-modal');
     }

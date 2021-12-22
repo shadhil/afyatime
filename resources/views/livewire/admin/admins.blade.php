@@ -3,7 +3,7 @@
     <div class="block">
         <div class="block-header block-header-default">
             {{-- <h3 class="block-title">All Organizations</h3> --}}
-            @if (Auth::user()->admin_type == '2')
+            @if (Auth::user()->status == '2')
             <button type="button" class="btn btn-alt-primary" wire:click="addAdmin">
                 <i class="fa fa-plus mr-5"></i>New Admin
             </button>
@@ -19,7 +19,7 @@
                         <th width="25%"> Name</th>
                         <th class="text-center" width="25%">Email</th>
                         <th class="d-none d-md-table-cell text-center">Phone Number</th>
-                        @if (Auth::user()->admin_type == '2')
+                        @if (Auth::user()->status == '2')
                         <th class="text-center" style="width: 100px;">Actions</th>
                         @endif
                     </tr>
@@ -37,7 +37,7 @@
                         <td class="d-none d-md-table-cell text-center">
                             {{ $admin->phone_number }}
                         </td>
-                        @if (Auth::user()->admin_type == '2')
+                        @if (Auth::user()->status == '2')
                         <td class="text-center">
                             <div class="btn-group">
                                 <div class="btn-group">
@@ -91,7 +91,7 @@
                                     <label for="name">Name</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
                                         wire:model.defer="state.name" id="name" name="name"
-                                        placeholder="Enter organization's name..">
+                                        placeholder="Enter admin's full name..">
                                     @error('name')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -106,7 +106,7 @@
                                         <input type="text"
                                             class="form-control @error('phone_number') is-invalid @enderror"
                                             wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
-                                            placeholder="Enter your phone number..">
+                                            placeholder="Enter admin's phone number..">
                                         <div class="input-group-append">
                                             <span class="input-group-text">
                                                 <i class="fa fa-phone"></i>
@@ -126,7 +126,7 @@
                                     <div class="input-group">
                                         <input type="email" class="form-control @error('email') is-invalid @enderror"
                                             wire:model.defer="state.email" id="email" name="email"
-                                            placeholder="Enter your email..">
+                                            placeholder="Enter admin's email..">
                                         <div class="input-group-append">
                                             <span class="input-group-text">
                                                 <i class="fa fa-envelope-o"></i>
@@ -144,7 +144,8 @@
                                 <label class="col-12" for="location">Password</label>
                                 <div class="col-12">
                                     <div class="input-group">
-                                        <input type="text" class="form-control @error('password') is-invalid @enderror"
+                                        <input type="password"
+                                            class="form-control @error('password') is-invalid @enderror"
                                             wire:model.defer="state.password" id="password" name="password"
                                             placeholder="Enter your password..">
                                         @error('password')

@@ -147,7 +147,7 @@
                                         }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{
                                         $appointment->receiver->prescriber_type->initial ?? '' }} {{
                                         $appointment->receiver->first_name ?? '' }} {{ $appointment->receiver->last_name ?? ''
-                                        }}', {{ $appointment->updatable() }})">
+                                        }}', {{ $appointment->prescriber_id }})">
                                             <i class="fa fa-eye"></i>
                                         </button>
                                         @endif

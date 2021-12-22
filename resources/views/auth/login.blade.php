@@ -9,7 +9,9 @@
                         <!-- Header -->
                         <div class="py-30 text-center">
                             <a class="link-effect font-w700" href="index.html">
-                                <i class="si si-fire"></i>
+                                <img class="mb-1" src="{{ asset('assets/base/afyatime-logo.png') }}" alt=""
+                                    height="20px">
+                                {{-- <i class="si si-fire"></i> --}}
                                 <span class="font-size-xl text-primary-dark">afya</span><span
                                     class="font-size-xl">time</span>
                             </a>

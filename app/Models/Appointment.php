@@ -76,13 +76,13 @@ class Appointment extends Model
 
         return false;
     }
-
+    // || $this->prescriber_id == Auth::user()->account->id
     public function updatable(): bool
     {
-        if (!Auth::user()->isAdmin() || $this->prescriber_id == Auth::user()->account->id) {
-            return true;
+        if (Auth::user()->isAdmin() || $this->prescriber_id == Auth::user()->account->id) {
+            return 'true';
         }
-        return false;
+        return 'false';
     }
 
     public function visited(): int

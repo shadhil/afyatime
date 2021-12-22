@@ -15,7 +15,7 @@
                 <!-- Logo -->
                 <div class="content-header-item">
                     <a class="link-effect font-w700" href="{{ route('admin.organizations') }}">
-                        <i class="si si-fire text-primary"></i>
+                        <img class="mb-1" src="{{ asset('assets/base/afyatime-logo.png') }}" alt="" height="20px">
                         <span class="font-size-xl text-dual-primary-dark">afya</span><span
                             class="font-size-xl text-primary">time</span>
                     </a>
@@ -51,12 +51,12 @@
                         <a href="{{ route('admin.admins') }}"><i class="si si-user"></i>Admins</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.logout') }}"
+                        <a href="{{ route('logout') }}"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="si si-logout"></i>Logout
                         </a>
                     </li>
-                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </ul>
@@ -78,7 +78,7 @@
             <!-- Logo -->
             <div class="content-header-item mr-5">
                 <a class="link-effect font-w700" href="{{ route('admin.organizations') }}">
-                    <i class="si si-fire text-primary"></i>
+                    <img class="mb-1" src="{{ asset('assets/base/afyatime-logo.png') }}" alt="" height="20px">
                     <span class="font-size-xl text-dual-primary-dark">afya</span><span
                         class="font-size-xl text-primary">time</span>
                 </a>
@@ -120,13 +120,12 @@
                             <a href="{{ route('admin.admins') }}"><i class="si si-user"></i>Admins</a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.logout') }}"
+                            <a href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="si si-logout"></i>Logout
                             </a>
                         </li>
-                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
-                            style="display: none;">
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
                     </ul>

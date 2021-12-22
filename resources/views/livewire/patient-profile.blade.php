@@ -65,6 +65,12 @@
                         <i class="fa fa-plus mr-5"></i>Add Supporter
                     </button>
                 </div>
+                <br>
+                <div class="block-options-item text-center">
+                    <address>
+                        <a href="{{ route('patients.supporters') }}">View All Supporters</a>
+                    </address>
+                </div>
                 @endif
                 @else
                 <div class="block-content pull-t mt-0">
@@ -87,14 +93,14 @@
                             <i class="fa fa-edit mr-5"></i>Change Supporter
                         </button>
                     </div>
-                    <br>
                     @endif
+                    @endif
+                    <br>
                     <div class="block-options-item text-center">
                         <address>
                             <a href="{{ route('patients.supporters') }}">View All Supporters</a>
                         </address>
                     </div>
-                    @endif
                 </div>
                 @endif
             </div>
@@ -170,10 +176,13 @@
                                             </button>
                                         </div>
                                         @else
+                                        @if (Auth::user()->isAdmin() || $appointment->prescriber_id ==
+                                        Auth::user()->account->id)
                                         <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip"
                                             title="Confirm" wire:click="completeModal({{ $appointment->id }})">
                                             <i class="fa fa-calendar-check-o"></i>
                                         </button>
+                                        @endif
                                         <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip"
                                             title="View" wire:click="viewAppointmentModal('{{ $appointment->id }}', '{{
                                         $appointment->prescriber->prescriber_type->initial ?? '' }} {{
@@ -181,15 +190,9 @@
                                         }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{
                                         $appointment->receiver->prescriber_type->initial ?? '' }} {{
                                         $appointment->receiver->first_name ?? '' }} {{ $appointment->receiver->last_name ?? ''
-                                        }}', {{ $appointment->updatable() }})">
+                                        }}', {{ $appointment->prescriber_id }})">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        {{-- @if ($appointment->updatable())
-                                        <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip"
-                                            title="Edit" wire:click="editAppointment({{ $appointment->id }})">
-                                            <i class="fa fa-pencil"></i>
-                                        </button>
-                                        @endif --}}
                                         @endif
                                     </div>
                                 </td>
@@ -480,7 +483,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            @if (Auth::user()->isAdmin())
+                            {{-- @if (Auth::user()->isAdmin()) --}}
                             <div class="form-group row">
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-alt-info" wire:loading.attr="disabled">
@@ -489,16 +492,16 @@
                                     </button>
                                 </div>
                             </div>
-                            @endif
+                            {{-- @endif --}}
                         </form>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    @if (is_subscribed())
+                    {{-- @if (is_subscribed())
                     <button type="button" class="btn btn-alt-success" wire:click="newSupporter">
                         <i class="fa fa-check"></i> Add Supporter
                     </button>
-                    @endif
+                    @endif --}}
                     <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -607,20 +610,19 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (Auth::user()->isAdmin())
                             <div class="form-group row">
                                 <div class="col-12">
+                                    @if($showEditModal)
                                     <button type="submit" class="btn btn-alt-info" wire:loading.attr="disabled">
-                                        <i class="fa fa-send mr-5"></i>
-                                        @if($showEditModal)
-                                        Save Changes
-                                        @else
-                                        Save
-                                        @endif
+                                        <i class="fa fa-send mr-5"></i> Save Changes
                                     </button>
+                                    @else
+                                    <button type="submit" class="btn btn-alt-info" wire:loading.attr="disabled">
+                                        <i class="fa fa-send mr-5"></i> Save
+                                    </button>
+                                    @endif
                                 </div>
                             </div>
-                            @endif
                         </form>
                     </div>
                 </div>

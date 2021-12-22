@@ -8,10 +8,10 @@
                     <div class="content content-full overflow-hidden">
                         <!-- Header -->
                         <div class="py-30 text-center">
-                            <a class="link-effect font-w700" href="index.html">
-                                <i class="si si-fire"></i>
-                                <span class="font-size-xl text-primary-dark">code</span><span
-                                    class="font-size-xl">base</span>
+                            <a class="link-effect font-w700" href="{{ route('home') }}">
+                                <img class="mb-1" src="{{ asset('assets/base/afyatime-logo.png') }}" alt="" height="20px">
+                                <span class="font-size-xl text-primary-dark">afya</span><span
+                                    class="font-size-xl">time</span>
                             </a>
                             <h1 class="h4 font-w700 mt-30 mb-10">Don’t worry, we’ve got your back</h1>
                             <h2 class="h5 font-w400 text-muted mb-0">Please enter your username or email</h2>

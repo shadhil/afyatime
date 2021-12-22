@@ -1,6 +1,6 @@
 <div>
     <h2 class="content-heading">Treatment Supporters</h2>
-    @if (Auth::user()->isAdmin())
+    {{-- @if (Auth::user()->isAdmin()) --}}
     <div class="block-header">
         {{-- <h3 class="block-title"></h3> --}}
         {{-- <div class="block-title"> --}}
@@ -22,7 +22,7 @@
             {{--
         </div> --}}
     </div>
-    @endif
+    {{-- @endif --}}
     @if (sizeof($supporters)>0)
     <div class="row">
         @foreach ($supporters as $supporter)
@@ -103,7 +103,7 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-12">
-                                    <label for="full_name">Firstname</label>
+                                    <label for="full_name">Fullname</label>
                                     <input type="text" class="form-control @error('full_name') is-invalid @enderror"
                                         wire:model.defer="state.full_name" id="full_name" name="full_name"
                                         placeholder="Enter your full name..">
@@ -209,7 +209,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            @if (Auth::user()->isAdmin())
+                            {{-- @if (Auth::user()->isAdmin()) --}}
                             <div class="form-group row">
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-alt-info" wire:loading.attr="disabled">
@@ -222,7 +222,7 @@
                                     </button>
                                 </div>
                             </div>
-                            @endif
+                            {{-- @endif --}}
                         </form>
                     </div>
                 </div>
