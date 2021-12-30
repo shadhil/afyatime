@@ -70,6 +70,9 @@ class CreateUserActionsTable extends Migration
             ],
             [
                 'action' => 'Update Role/Title',
+            ],
+            [
+                'action' => 'Assign Supporter',
             ]
         ]);
     }

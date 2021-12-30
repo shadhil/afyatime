@@ -19,6 +19,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class Prescribers extends Component
 {
@@ -46,6 +47,8 @@ class Prescribers extends Component
 
     public $title;
     public $initial;
+
+    public $prescriberAdmin = false;
 
     public function newCode()
     {
@@ -95,7 +98,15 @@ class Prescribers extends Component
             //$this->state['admin_type'] = 'admin';
 
             if ($this->photo) {
-                $this->state['profile_photo'] = $this->photo->store('/', 'profiles');
+                if ($this->photo->isValid()) {
+                    $photoName = Prescriber::PATH . '/pr_' . md5(microtime()) . '.' . $this->photo->extension();
+                    $ImageFile = Image::make($this->photo);
+                    $ImageFile->save($photoName);
+                    $this->state['profile_photo'] = '/' . $photoName;
+                    // $this->editState['profile_photo'] = '/' . $photoName;
+                } else {
+                    $this->state['photo'] = NULL;
+                }
             } else {
                 $this->state['profile_photo'] = NULL;
             }
@@ -147,7 +158,8 @@ class Prescribers extends Component
 
     public function editPrescriber($prescriberId)
     {
-        $this->reset('state', 'photo', 'profilePhoto');
+        $this->reset(['state', 'editState', 'photo', 'profilePhoto', 'prescriberAdmin']);
+        // dd($this->prescriberAdmin);
         $this->showEditModal = true;
         // $prescriber = DB::table('prescribers')
         //     ->join('users', 'users.email', '=', 'prescribers.email')
@@ -164,6 +176,10 @@ class Prescribers extends Component
         $user = $prescriber->accounts()->where('account_id', $prescriberId)->first();
         $this->userId = $user->id;
         $this->state['is_admin'] = $user->is_admin == 1 ? true : false;
+
+        if (Auth::user()->account_type != 'organization') {
+            $this->prescriberAdmin = $this->state['is_admin'];
+        }
 
         // dd($this->state);
 
@@ -192,8 +208,15 @@ class Prescribers extends Component
             $this->editState['name'] = $validatedData['first_name'] . ' ' . $validatedData['last_name'];
             $this->editState['email'] = $validatedData['email'];
             if ($this->photo) {
-                $this->editState['profile_photo'] = $this->photo->store('/', 'profiles');
-                $this->state['profile_photo'] = $this->photo->store('/', 'profiles');
+                if ($this->photo->isValid()) {
+                    $photoName = Prescriber::PATH . '/pr_' . md5(microtime()) . '.' . $this->photo->extension();
+                    $ImageFile = Image::make($this->photo);
+                    $ImageFile->save($photoName);
+                    $this->state['profile_photo'] = '/' . $photoName;
+                    $this->editState['profile_photo'] = '/' . $photoName;
+                } else {
+                    $this->state['photo'] = NULL;
+                }
             }
 
             $this->state['phone_number'] = trim_phone_number($this->state['phone_number']);

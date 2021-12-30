@@ -17,6 +17,13 @@
                         <a class="text-muted font-w400" href="javascript:void(0)">
                             {{ Str::ucfirst($prescriber->type->title ?? '') }}
                         </a>
+                        @if (request()->routeIs('my-profile'))
+                        <div class="block-options-item text-center pt-10">
+                            <button type="button" class="btn btn-sm btn-outline-info" wire:click="editPrescriber">
+                                <i class="fa fa-edit mr-5"></i>Edit Profile
+                            </button>
+                        </div>
+                        @endif
                     </div>
                 </div>
                 <div class="block-content pull-t">
@@ -208,6 +215,184 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-prescriber" tabindex="-1" role="dialog" aria-labelledby="modal-popout"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-popout" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">
+                            @if($showEditModal)
+                            <span>Edit Prescriber</span>
+                            @else
+                            <span>Add Prescriber</span>
+                            @endif
+                        </h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <form wire:submit.prevent="updatePrescriber">
+                            <div class="form-group row">
+                                <div class="col-12 col-sm-12 text-center">
+                                    <div class="form-group avatar-box">
+                                        <div class="img-box">
+                                            @if ($browsed_photo)
+                                            <img src="{{ $browsed_photo->temporaryUrl() }}" width="150" height="150"
+                                                alt="">
+                                            @else
+                                            <img src="{{ $profilePhoto == null ? asset('assets/images/add_user.jpg') : asset($profilePhoto) }}"
+                                                width="150" height="150" alt="">
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-outline-primary self-center" type="button" id="browseImg"
+                                        type="button" onclick="document.getElementById('browsed_photo').click();">
+                                        Browse Image
+                                    </button>
+                                    <br>
+                                    @error('browsed_photo')
+                                    <div class="text-danger italic">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                    <input wire:model="browsed_photo" type="file" accept="image/*" style="display:none;"
+                                        id="browsed_photo" name="browsed_photo">
+                                    @if ($browsed_photo)
+                                    {{ $browsed_photo->getClientOriginalName() }}
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="firstname">Firstname</label>
+                                    <input type="text" class="form-control @error('first_name') is-invalid @enderror"
+                                        wire:model.defer="first_name" id="first_name" name="first_name"
+                                        placeholder="Enter your firstname.." disabled>
+                                    @error('first_name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="col-6">
+                                    <label for="lastname">Lastname</label>
+                                    <input type="text" class="form-control @error('last_name') is-invalid @enderror"
+                                        wire:model.defer="last_name" id="last_name" name="last_name"
+                                        placeholder="Enter your lastname.." disabled>
+                                    @error('last_name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="phone_number">Phone Number</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="text"
+                                            class="form-control @error('phone_number') is-invalid @enderror" type="text"
+                                            wire:model.defer="phone_number" id="phone_number" name="phone_number"
+                                            placeholder="Enter your phone number..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-phone"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('phone_number')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="email">Email</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                            type="text" wire:model.defer="email" id="email" name="email"
+                                            placeholder="Enter your email..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-envelope-o"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            @if($showEditModal && Auth::user()->isAdmin())
+                            <div class="form-group row">
+                                <label class="col-12" for="password">Password</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="password"
+                                            class="form-control @error('password') is-invalid @enderror" type="text"
+                                            wire:model.defer="password" id="password" name="password"
+                                            placeholder="Enter your password..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-lock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('password')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-12" for="password">Confirm Password</label>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="password"
+                                            class="form-control @error('password') is-invalid @enderror" type="text"
+                                            wire:model.defer="password_confirmation" id="password_confirmation"
+                                            name="password_confirmation" placeholder="Confirm your password..">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-lock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @error('password_confirmation')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            @endif
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-alt-info" wire:loading.attr="hidden">
+                                        <i class="fa fa-send mr-5"></i>
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @push('scripts')
 <script>
@@ -218,6 +403,17 @@
     window.addEventListener('hide-view-modal', event => {
         $('#view-modal').modal('hide');
         // toastr.success(event.detail.message, 'Success!');
+    })
+
+    window.addEventListener('hide-prescriber-modal', event => {
+        $('#modal-prescriber').modal('hide');
+        if(event.detail.message != 'none'){
+            toastr.success(event.detail.message, 'Success!');
+        }
+    })
+
+    window.addEventListener('show-prescriber-modal', event => {
+        $('#modal-prescriber').modal('show');
     })
 
     window.addEventListener('show-error-toastr', event => {

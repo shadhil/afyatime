@@ -119,7 +119,7 @@ class Dashboard extends Component
             }])
             ->where('organization_id', Auth::user()->org_id)
             ->orderByDesc('date_of_visit')
-            ->limit(10)
+            ->limit(12)
             ->get();
 
         $subscription = OrganizationSubscription::query()

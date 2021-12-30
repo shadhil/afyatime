@@ -95,9 +95,7 @@
                         @foreach ($organizations as $org)
                         <tr>
                             <td class="text-center">
-                                <img class="img-avatar img-avatar48"
-                                    src="{{ $org->logo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($org->logo) }}"
-                                    alt="">
+                                <img class="img-avatar img-avatar48" src="{{ $org->logoUrl() }}" alt="">
                             </td>
                             <td class="font-w700" width="30%">
                                 <a href="{{ route('admin.organizations.profile', $org->id) }}">

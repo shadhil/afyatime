@@ -5,12 +5,12 @@
         <div class="col-lg-12 col-xl-12">
             <div class="block block-rounded block-bordered">
                 <div class="block-header block-header-default">
-                    <h3 class="block-title">Appointments</h3>
-                    <div class="block-options">
+                    <h3 class="block-title">Prescriber's Timeline</h3>
+                    {{-- <div class="block-options">
                         <a href="{{ route('appointments') }}" type="button" class="btn btn-alt-primary">
-                            <i class="fa fa-calendar mr-5"></i>All Appointments
+                            <i class="fa fa-calendar mr-5"></i>All Events
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="block-content block-content-full">
                     <div class="table-responsive">
@@ -64,6 +64,11 @@
                                             {{ $userLog->entity->id ?? '' }} - {{ $userLog->entity->patient->first_name
                                             ?? '' }} {{ $userLog->entity->patient->last_name ?? '' }} {{
                                             $userLog->note ?? '' }}
+                                            @elseif ($userLog->entity_type == 'supporter')
+                                            {{ $userLog->entity->id ?? '' }} - {{
+                                            $userLog->entity->full_name
+                                            ?? '' }} {{
+                                            $userLog->note ?? '' }}
                                             @else
                                             {{ $userLog->entity->id ?? '' }}
                                             @endif
@@ -89,7 +94,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-5 pb-10">
+            <div class="float-right mt-0 pb-10">
                 {{ $userLogs->links('vendor.livewire.bootstrap') }}
             </div>
         </div>

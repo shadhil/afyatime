@@ -1,116 +1,169 @@
-<!DOCTYPE html>
-<html class="no-js" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!doctype html>
+<html lang="zxx">
 
 <head>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>AfyaTime - Patient Appointment's Reminder App</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('landing//favicon.ico') }}">
-    <!-- Place favicon.ico in the root directory -->
-
-    <!-- CSS here -->
+    <!-- Bootstrap Min CSS -->
     <link rel="stylesheet" href="{{ asset('assets/landing/css/bootstrap.min.css') }}">
+    <!-- Animate Min CSS -->
     <link rel="stylesheet" href="{{ asset('assets/landing/css/animate.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/landing/css/magnific-popup.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/landing/css/fontawesome-all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/landing/css/slick.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/landing/css/themify-icons.css') }}">
+    <!-- Owl Carousel Min CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/landing/css/owl.carousel.min.css') }}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/landing/css/fontawesome.min.css') }}">
+    <!-- Odometer CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/landing/css/odometer.css') }}">
+    <!-- Popup CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/landing/css/magnific-popup.min.css') }}">
+    <!-- Slick CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/landing/css/slick.min.css') }}">
+    <!-- Style CSS -->
     <link rel="stylesheet" href="{{ asset('assets/landing/css/style.css') }}">
-    @livewireStyles
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/landing/css/responsive.css') }}">
+
+    <title>AfyaTime - App Landing Page HTML Template</title>
+
+    <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}">
 </head>
 
-<body>
+<body data-spy="scroll" data-offset="120">
 
-    <!-- header -->
-    <!-- header -->
-    <header id="header-sticky" class="header transparent-header pt-70 pl-65 pr-65">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-xl-2 col-lg-3">
-                    <div class="header__logo">
-                        <a href="index-3.html"><img src="{{ asset('assets/landing/img/logo/logo.png') }}"
-                                alt="logo"></a>
-                    </div>
-                </div>
-                <div class="col-xl-8 col-lg-9">
-                    <div class="header__menu main-menu text-center">
-                        <nav class="navbar navbar-expand-lg">
-                            <button class="navbar-toggler" type="button" data-toggle="collapse"
-                                data-target="#navbarNav">
-                                <span class="navbar-icon"></span>
-                                <span class="navbar-icon"></span>
-                                <span class="navbar-icon"></span>
-                            </button>
-                            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                                <ul class="navbar-nav">
-                                    <li class="nav-item active"><a class="nav-link" href="#hero">Home</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#work">How It Work?</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#whyafyatime">Why AfyaTime?</a></li>
-                                </ul>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-                <div class="col-xl-2 d-none d-xl-block">
-                    <div class="header__btn text-right">
-                        <a href="#contact-us" class="btn">Contact Us</a>
-                    </div>
-                </div>
-            </div>
+    <!-- Start Preloader Area -->
+    <div class="preloader">
+        <div class="preloader">
+            <span></span>
+            <span></span>
         </div>
-    </header>
-    <!-- header-end -->
-    {{ $slot }}
-    <!-- footer-area -->
-    <footer class="footer__bg pt-105" data-background="{{ ('assets/landing/img/bg/footer_bg.jpg') }}">
+    </div>
+    <!-- End Preloader Area -->
+
+    <!-- Start Navbar Area -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <div class="row">
-                <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 mb-90">
-                    <div class="footer__cta text-center">
-                        <div class="section__title footer-title text-center mb-45 wow fadeInUp" data-wow-delay="0.2s">
-                            <h2>For Future Updates</h2>
-                        </div>
-                        <div class="footer__cta-form wow fadeInUp" data-wow-delay="0.4s">
-                            <form action="#">
-                                <input type="text" placeholder="Enter your email address....">
-                                <button class="btn">Subscribe Now</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+            <div class="logo">
+                <a href="index.html">
+                    <img src="{{ asset('assets/landing/img/afya-logo.png') }}" style="margin-right: 5px;">
+                </a>
             </div>
-            <div class="copyright-wrap">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="copyright__text pt-35 pb-35 text-center">
-                            <p>Copyright. AfyaTime 2021. All Right Reserved.</p>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="#home" class="nav-link">
+                            Home
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#about" class="nav-link">
+                            About
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#features" class="nav-link">
+                            Features
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#screenshots" class="nav-link">
+                            Screenshots
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#faq" class="nav-link">
+                            FAQ
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link">
+                            Contact
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="others-option">
+                    <div class="d-flex align-items-center">
+                        <div class="option-item">
+                            <a href="#" class="default-btn">
+                                Get Started
+                                <span></span>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </footer>
-    <!-- footer-area-end -->
+    </nav>
+    <!-- End Navbar Area -->
 
-    <!-- JS here -->
-    <script src="{{ asset('assets/landing/js/vendor/modernizr-3.5.0.min.js') }}"></script>
-    <script src="{{ asset('assets/landing/js/vendor/jquery-1.12.4.min.js') }}"></script>
+    {{ $slot }}
+
+    <!-- Start Copy Right Area -->
+    <div class="copy-right">
+        <div class="container">
+            <div class="copy-right-content wow fadeInUp" data-wow-delay=".3s">
+                <p>
+                    <i class="far fa-copyright"></i>
+                    2020 AfyaTime. All Rights Reserved by
+                    <a href="https://njiwa.tech" target="_blank">
+                        Njiwa Technologies
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- End Copy Right Area -->
+
+    <!-- Start Go Top Section -->
+    <div class="go-top">
+        <i class="fa fa-chevron-up"></i>
+        <i class="fa fa-chevron-up"></i>
+    </div>
+    <!-- End Go Top Section -->
+
+    <!-- jQuery Min JS -->
+    <script src="{{ asset('assets/landing/js/jquery-3.5.1.min.js') }}"></script>
+    <!-- Popper Min JS -->
     <script src="{{ asset('assets/landing/js/popper.min.js') }}"></script>
+    <!-- Bootstrap Min JS -->
     <script src="{{ asset('assets/landing/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/landing/js/one-page-nav-min.js') }}"></script>
+    <!-- Owl Carousel Min JS -->
+    <script src="{{ asset('assets/landing/js/owl.carousel.min.js') }}"></script>
+    <!-- Appear JS -->
+    <script src="{{ asset('assets/landing/js/jquery.appear.js') }}"></script>
+    <!-- Odometer JS -->
+    <script src="{{ asset('assets/landing/js/odometer.min.js') }}"></script>
+    <!-- Slick JS -->
     <script src="{{ asset('assets/landing/js/slick.min.js') }}"></script>
-    <script src="{{ asset('assets/landing/js/ajax-form.js') }}"></script>
-    <script src="{{ asset('assets/landing/js/wow.min.js') }}"></script>
-    <script src="{{ asset('assets/landing/js/jquery.scrollUp.min.js') }}"></script>
+    <!-- Particles JS -->
+    <script src="{{ asset('assets/landing/js/particles.min.js') }}"></script>
+    <!-- Ripples JS -->
+    <script src="{{ asset('assets/landing/js/jquery.ripples-min.js') }}"></script>
+    <!-- Popup JS -->
     <script src="{{ asset('assets/landing/js/jquery.magnific-popup.min.js') }}"></script>
-    <script src="{{ asset('assets/landing/js/plugins.js') }}"></script>
+    <!-- WOW Min JS -->
+    <script src="{{ asset('assets/landing/js/wow.min.js') }}"></script>
+    <!-- AjaxChimp Min JS -->
+    <script src="{{ asset('assets/landing/js/jquery.ajaxchimp.min.js') }}"></script>
+    <!-- Form Validator Min JS -->
+    <script src="{{ asset('assets/landing/js/form-validator.min.js') }}"></script>
+    <!-- Contact Form Min JS -->
+    <script src="{{ asset('assets/landing/js/contact-form-script.js') }}"></script>
+    <!-- Main JS -->
     <script src="{{ asset('assets/landing/js/main.js') }}"></script>
-    @livewireScripts
 </body>
 
 </html>

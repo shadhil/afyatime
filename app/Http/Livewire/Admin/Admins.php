@@ -38,7 +38,7 @@ class Admins extends Component
         ])->validate();
 
         if ($this->photo) {
-            $this->state['profile_photo'] = $this->photo->store('/', 'profiles');
+            // $this->state['profile_photo'] = $this->photo->store('/', 'profiles');
         }
 
         User::create([

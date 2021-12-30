@@ -7,9 +7,11 @@ use App\Models\UserLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class PrescriberProfile extends Component
 {
@@ -28,6 +30,25 @@ class PrescriberProfile extends Component
     public $vCondition;
 
     public $searchTerm;
+
+    public $state = [];
+    public $editState = [];
+
+    public $showEditModal = false;
+
+    public $userId = null;
+    public $packageSubscribers = 2;
+    public $packageStatus = 1;
+
+    public $browsed_photo;
+    public $profilePhoto;
+
+    public $phone_number;
+    public $email;
+    public $password;
+    public $password_confirmation;
+    public $photo;
+
 
     public function mount($id = 'null')
     {
@@ -72,6 +93,72 @@ class PrescriberProfile extends Component
         $this->resetPage();
     }
 
+
+    public function editPrescriber()
+    {
+        $this->reset(['phone_number', 'email', 'password', 'browsed_photo', 'profilePhoto']);
+        // dd($this->prescriberAdmin);
+        $this->showEditModal = true;
+
+        $prescriber = Prescriber::find($this->prescriberId);
+        // $collection = collect($prescriber);
+        $this->prescriberId = $prescriber->id;
+        $this->profilePhoto = $prescriber->profile_photo;
+        $this->phone_number = $prescriber->phone_number;
+        $this->email = $prescriber->email;
+
+
+        $user = $prescriber->accounts()->where('account_id', $this->prescriberId)->first();
+        $this->userId = $user->id;
+        $this->state['is_admin'] = $user->is_admin == 1 ? true : false;
+
+        $this->dispatchBrowserEvent('show-prescriber-modal');
+        //dd($admin);
+    }
+
+    public function updatePrescriber()
+    {
+        //dd($this->state);
+        $validatedData = $this->validate([
+            'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+            'email' => 'required|email|unique:users,email,' . $this->userId,
+            'password' => 'sometimes|confirmed',
+            'browsed_photo' => 'nullable|image|max:1024',
+        ]);
+
+        DB::transaction(function () use ($validatedData) {
+
+            if (!empty($validatedData['password'])) {
+                $validatedData['password'] = bcrypt($validatedData['password']);
+                $this->editState['password'] = $validatedData['password'];
+            }
+
+            $this->editState['email'] = $validatedData['email'];
+            if ($validatedData['browsed_photo'] != null) {
+                if ($this->browsed_photo->isValid()) {
+                    $photoName = Prescriber::PATH . '/pr_' . md5(microtime()) . '.' . $this->browsed_photo->extension();
+                    $ImageFile = Image::make($this->browsed_photo);
+                    $ImageFile->save($photoName);
+                    $this->validatedData['photo'] = '/' . $photoName;
+                    // $this->photo = '/' . $photoName;
+                    $this->editState['profile_photo'] = '/' . $photoName;
+                }
+            }
+
+            $validatedData['phone_number'] = trim_phone_number($validatedData['phone_number']);
+
+            $updatedPresc = Prescriber::find($this->prescriberId);
+            $updatedPresc->update($validatedData);
+
+            $updatedPresc->accounts()->update($this->editState);
+
+            if ($updatedPresc) {
+                // user_log('10', Auth::user()->account_id, 'prescriber', $this->prescriberId);
+                $this->dispatchBrowserEvent('hide-prescriber-modal', ['message' => 'Profile updated successfully!']);
+            }
+        });
+    }
+
     public function render()
     {
         $prescriber = Prescriber::where('id', $this->prescriberId)->first();
@@ -92,12 +179,12 @@ class PrescriberProfile extends Component
                     )
                     ->where('organization_id', Auth::user()->org_id)
                     ->orderByDesc('date_of_visit')
-                    ->paginate(1);
+                    ->paginate(12);
             } else {
                 $appointments = $prescriber->appointments()
                     ->where('organization_id', Auth::user()->org_id)
                     ->orderByDesc('date_of_visit')
-                    ->paginate(1);
+                    ->paginate(12);
             }
         } else {
             $prescriber = [];

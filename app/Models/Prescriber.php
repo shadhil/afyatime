@@ -13,6 +13,8 @@ class Prescriber extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const PATH = 'assets/images/profiles/';
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -57,5 +59,13 @@ class Prescriber extends Model
     public function entities(): MorphMany
     {
         return $this->morphMany(UserLog::class, 'entity');
+    }
+
+    public function photoUrl(): String
+    {
+        if ($this->profile_photo != NULL) {
+            return asset($this->profile_photo);
+        }
+        return asset('assets/images/avatar.jpg');
     }
 }

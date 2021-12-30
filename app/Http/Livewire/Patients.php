@@ -15,6 +15,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class Patients extends Component
 {
@@ -24,8 +25,8 @@ class Patients extends Component
 
     protected $paginationTheme = "bootstrap";
 
-    public $state = [];
-    public $editState = [];
+    // public $state = [];
+    // public $editState = [];
 
     public $showEditModal = false;
 
@@ -40,6 +41,22 @@ class Patients extends Component
     public $districts = [];
 
     public $packageStatus = 4;
+
+    public $first_name;
+    public $last_name;
+    public $date_of_birth;
+    public $browsed_photo;
+    public $gender;
+    public $patient_code;
+    public $phone_number;
+    public $email;
+    public $location;
+    public $region_id;
+    public $district_id;
+    public $tensel_leader;
+    public $tensel_leader_phone;
+    public $supporter_id;
+    public $organization_id;
 
     public function newCode()
     {
@@ -61,49 +78,66 @@ class Patients extends Component
     public function createPatient()
     {
         // dd($this->newCode());
-        Validator::make($this->state, [
+        $validatedData = $this->validate([
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'sometimes|email|unique:users',
+            'email' => 'nullable|email|unique:users',
             'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'location' => 'required',
             'district_id' => 'required',
             'gender' => 'required',
             'date_of_birth' => 'required',
-        ])->validate();
+            'browsed_photo' => 'nullable|image|max:1024',
+        ]);
 
-        if ($this->photo) {
-            $this->state['photo'] = $this->photo->store('/', 'profiles');
-        } else {
-            $this->state['photo'] = NULL;
-        }
-
-        if (empty($this->state['email'])) {
-            $this->state['email'] = NULL;
-        }
-
-        $this->state['organization_id'] =  Auth::user()->org_id;
-        $this->state['patient_code'] = $this->newCode();
-        $this->state['phone_number'] = trim_phone_number($this->state['phone_number']);
-        $this->state['date_of_birth'] = db_date($this->state['date_of_birth']);
-
-        DB::transaction(function () {
-
-            $newPatient = Patient::create($this->state);
-
-            if ($this->state['email'] != NULL) {
-                $newPatient->accounts()->create([
-                    'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
-                    'email' => $this->state['email'],
-                    'profile_photo' => $this->state['photo'],
-                    'password' => Hash::make($this->state['phone_number']),
-                    'org_id' => Auth::user()->org_id,
-                ]);
+        if ($validatedData['browsed_photo'] != null) {
+            if ($this->browsed_photo->isValid()) {
+                $photoName = Patient::PATH . '/pt_' . md5(microtime()) . '.' . $this->browsed_photo->extension();
+                $ImageFile = Image::make($this->browsed_photo);
+                $ImageFile->save($photoName);
+                $this->photo = '/' . $photoName;
+            } else {
+                $this->photo = NULL;
             }
+        } else {
+            $this->photo = NULL;
+        }
+
+        $this->organization_id =  Auth::user()->org_id;
+
+        DB::transaction(function () use ($validatedData) {
+
+            $this->patient_code = $this->newCode();
+            $validatedData['phone_number'] = trim_phone_number($validatedData['phone_number']);
+            $validatedData['date_of_birth'] = db_date($validatedData['date_of_birth']);
+
+            $newPatient = Patient::create([
+                'first_name' => $validatedData['first_name'],
+                'last_name' => $validatedData['last_name'],
+                'email' => $validatedData['email'],
+                'phone_number' => $validatedData['phone_number'],
+                'location' => $validatedData['location'],
+                'district_id' => $validatedData['district_id'],
+                'gender' => $validatedData['gender'],
+                'date_of_birth' => $validatedData['date_of_birth'],
+                'patient_code' => $this->patient_code,
+                'organization_id' => $this->organization_id,
+                'photo' => $this->photo,
+            ]);
+
+            // if ($this->state['email'] != NULL) {
+            //     $newPatient->accounts()->create([
+            //         'name' => $this->state['first_name'] . ' ' . $this->state['last_name'],
+            //         'email' => $this->state['email'],
+            //         'profile_photo' => $this->state['photo'],
+            //         'password' => Hash::make($this->state['phone_number']),
+            //         'org_id' => Auth::user()->org_id,
+            //     ]);
+            // }
 
             if ($newPatient) {
                 user_log('3', Auth::user()->account_id, 'patient', $newPatient->id);
-                $this->dispatchBrowserEvent('hide-patient-modal', ['message' => 'Patient added successfully!', 'url' => route('patients.profile', $this->state['patient_code'])]);
+                $this->dispatchBrowserEvent('hide-patient-modal', ['message' => 'Patient added successfully!', 'url' => route('patients.profile', $this->patient_code)]);
                 // return redirect()->route('patients.profile', $this->state['patient_code']);
             }
         });
@@ -111,14 +145,42 @@ class Patients extends Component
 
     public function addPatient()
     {
-        $this->reset('state', 'photo', 'profilePhoto', 'patientId');
+        $this->reset([
+            'photo',
+            'profilePhoto',
+            'patientId',
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'location',
+            'district_id',
+            'gender',
+            'date_of_birth',
+            'browsed_photo',
+            'organization_id',
+        ]);
         $this->showEditModal = false;
         $this->dispatchBrowserEvent('show-patient-modal');
     }
 
     public function editPatient($patientId)
     {
-        $this->reset('state', 'photo', 'profilePhoto', 'patientId');
+        $this->reset([
+            'photo',
+            'profilePhoto',
+            'patientId',
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'location',
+            'district_id',
+            'gender',
+            'date_of_birth',
+            'browsed_photo',
+            'organization_id',
+        ]);
         $this->showEditModal = true;
 
         $patient = Patient::find($patientId);
@@ -134,10 +196,20 @@ class Patients extends Component
             $this->userId = null;
         }
 
-        $this->state = $patient->toArray();
-        $this->state['region_id'] = $patient->district->region_id;
-        $this->state['district_id'] = $patient->district_id;
-        $this->state['date_of_birth'] = form_date($patient->date_of_birth);
+        // $this->state = $patient->toArray();
+
+        $this->first_name = $patient->first_name;
+        $this->last_name = $patient->last_name;
+        $this->date_of_birth = $patient->date_of_birth;
+        $this->photo = $patient->photo;
+        $this->gender = $patient->gender;
+        $this->patient_code = $patient->patient_code;
+        $this->phone_number = $patient->phone_number;
+        $this->email = $patient->email;
+        $this->location = $patient->location;
+        $this->region_id = $patient->district->region_id;
+        $this->district_id = $patient->district_id;
+        $this->date_of_birth = form_date($patient->date_of_birth);
 
         $this->dispatchBrowserEvent('show-patient-modal');
         //dd($admin);
@@ -145,44 +217,39 @@ class Patients extends Component
 
     public function updatePatient()
     {
-        $this->state['user_id'] = $this->userId;
+        // $this->state['user_id'] = $this->userId;
         //dd($this->state);
-        $validatedData = Validator::make($this->state, [
+        $validatedData = $this->validate([
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'exclude_if:user_id,null|sometimes|email|unique:users,email,' . $this->userId,
+            'email' => 'nullable|email|unique:users',
             'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'location' => 'required',
             'district_id' => 'required',
-            'date_of_birth' => 'required',
             'gender' => 'required',
-            'supporter_id' => 'sometimes',
-            // 'password' => 'sometimes|confirmed',
-        ])->validate();
+            'date_of_birth' => 'required',
+            'browsed_photo' => 'nullable|image|max:1024',
+        ]);
 
         DB::transaction(function () use ($validatedData) {
-            // if (!empty($validatedData['password'])) {
-            //     $this->editState['password'] = bcrypt($validatedData['password']);
-            // }
-            if (!empty($validatedData['email'])) {
-                $this->editState['email'] = $validatedData['email'];
-            }
-            $this->editState['name'] = $validatedData['first_name'] . ' ' . $validatedData['last_name'];
 
             $validatedData['phone_number'] = trim_phone_number($validatedData['phone_number']);
             $validatedData['date_of_birth'] = db_date($validatedData['date_of_birth']);
 
 
-            if ($this->photo) {
-                $img = $this->photo->store('/', 'profiles');
-                $this->editState['profile_photo'] = $img;
-                $validatedData['photo'] = $img;
+            if ($validatedData['browsed_photo'] != null) {
+                if ($this->browsed_photo->isValid()) {
+                    $photoName = Patient::PATH . '/pt_' . md5(microtime()) . '.' . $this->browsed_photo->extension();
+                    $ImageFile = Image::make($this->browsed_photo);
+                    $ImageFile->save($photoName);
+                    $validatedData['photo'] = '/' . $photoName;
+                }
             }
 
             $updatedPatient = Patient::find($this->patientId);
             $updatedPatient->update($validatedData);
 
-            $updatedPatient->accounts()->update($this->editState);
+            // $updatedPatient->accounts()->update($this->editState);
 
             if ($updatedPatient) {
                 user_log('4', Auth::user()->account_id, 'patient', $this->patientId);
@@ -222,17 +289,17 @@ class Patients extends Component
                         ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
                         ->orWhere('patient_code', 'like', '%' . $this->searchTerm . '%');
                 })
-                ->latest()->paginate(4);
+                ->latest()->paginate(12);
         } else {
             $patients = Patient::where('organization_id', Auth::user()->org_id)
-                ->latest()->paginate(4);
+                ->latest()->paginate(12);
         }
 
 
-        if (!empty($this->state['region_id'])) {
+        if (!empty($this->region_id)) {
             $this->districts = DB::table('districts')
                 ->select('id', 'name')
-                ->where('region_id', $this->state['region_id'])
+                ->where('region_id', $this->region_id)
                 ->get();
         } else {
             $this->districts = [];

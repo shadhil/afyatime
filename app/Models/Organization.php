@@ -13,6 +13,8 @@ class Organization extends Model
 {
     use HasFactory;
 
+    public const PATH = 'assets/images/profiles/';
+
     protected $fillable = [
         'name',
         'email',
@@ -27,6 +29,14 @@ class Organization extends Model
     protected $dispatchesEvents = [
         // 'created' => OrganizationRegistered::class,
     ];
+
+    public function logoUrl(): String
+    {
+        if ($this->logo != NULL) {
+            return asset($this->logo);
+        }
+        return asset('assets/images/default_org.png');
+    }
 
     public function district(): BelongsTo
     {

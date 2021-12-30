@@ -5,8 +5,7 @@
             <!-- Account -->
             <div class="block block-rounded text-center font-w600">
                 <div class="block-content block-content-full bg-gd-sea">
-                    <img class="img-avatar img-avatar-thumb" src="{{ asset('assets/base/media/avatars/avatar.jpg') }}"
-                        alt="">
+                    <img class="img-avatar img-avatar-thumb" src="{{ Auth::user()->account->photoUrl() }}" alt="">
                 </div>
                 <div class="block-content block-content-full">
                     <div class="border-b pb-15 mb-15">
@@ -37,9 +36,9 @@
                 <div class="block-header">
                     <h3 class="block-title font-w600">Organization Details</h3>
                     <div class="block-options">
-                        <button type="button" class="btn-block-option">
+                        {{-- <button type="button" class="btn-block-option">
                             <i class="si si-wrench"></i>
-                        </button>
+                        </button> --}}
                     </div>
                 </div>
                 <div class="block-content">
@@ -201,9 +200,7 @@
                     <a class="block block-link-pop text-center"
                         href="{{ route('prescribers.profile', ['id' => $prescriber->prescriber_code ]) }}">
                         <div class="block-content block-content-full">
-                            <img class="img-avatar"
-                                src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
-                                alt="">
+                            <img class="img-avatar" src="{{ $prescriber->photoUrl() }}" alt="">
                         </div>
                         <div class="block-content block-content-full bg-body-light">
                             <div class="font-w600 mb-5">{{ $prescriber->first_name }} {{ $prescriber->last_name }}</div>
@@ -238,9 +235,7 @@
                     <a class="block text-center"
                         href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
                         <div class="block-content block-content-full bg-gd-dusk">
-                            <img class="img-avatar img-avatar-thumb"
-                                src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
-                                alt="">
+                            <img class="img-avatar img-avatar-thumb" src="{{ $patient->photoUrl() }}" alt="">
                         </div>
                         <div class="block-content block-content-full">
                             <div class="font-w600 mb-5">{{ $patient->first_name }} {{ $patient->last_name }}</div>
@@ -253,9 +248,7 @@
                     <a class="block block-link-pop text-center"
                         href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
                         <div class="block-content block-content-full">
-                            <img class="img-avatar img-avatar-thumb"
-                                src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
-                                alt="">
+                            <img class="img-avatar img-avatar-thumb" src="{{ $patient->photoUrl() }}" alt="">
                         </div>
                         <div class="block-content block-content-full bg-body-light">
                             <div class="font-w600 mb-5">{{ $patient->first_name }} {{ $patient->last_name }}</div>
@@ -289,9 +282,7 @@
                         wire:click.prevent="viewSupporter({{ $supporter->id }})">
                         <div class="block-content block-content-full clearfix">
                             <div class="float-right">
-                                <img class="img-avatar"
-                                    src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($supporter->photo) }}"
-                                    alt="">
+                                <img class="img-avatar" src="{{ $supporter->photoUrl() }}" alt="">
                             </div>
                             <div class="float-left mt-10">
                                 <div class="font-w600 mb-5">{{ $supporter->full_name }}</div>

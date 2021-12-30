@@ -31,9 +31,7 @@
                 wire:click.prevent="viewSupporter({{ $supporter->id }})">
                 <div class="block-content block-content-full clearfix">
                     <div class="float-right">
-                        <img class="img-avatar"
-                            src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($supporter->photo) }}"
-                            alt="">
+                        <img class="img-avatar" src="{{ $supporter->photoUrl() }}" alt="">
                     </div>
                     <div class="float-left mt-10">
                         <div class="font-w600 mb-5">{{ $supporter->full_name }}</div>
@@ -79,33 +77,35 @@
                             <div class="form-group row">
                                 <div class="col-12 col-sm-12 text-center">
                                     <div class="form-group avatar-box">
-                                        <div class="img-box" onclick="document.getElementById('photo').click();"
+                                        <div class="img-box" onclick="document.getElementById('browsed_photo').click();"
                                             style="cursor: pointer">
-                                            @if ($photo)
-                                            <img src="{{ $photo->temporaryUrl() }}" width="150" height="150" alt="">
+                                            @if ($browsed_photo ?? '')
+                                            <img src="{{ $browsed_photo->temporaryUrl() }}" width="150" height="150"
+                                                alt="">
                                             @else
-                                            <img src="{{ $profilePhoto == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($profilePhoto) }}"
+                                            <img src="{{ $profilePhoto == null ? asset('assets/images/add_user.jpg') : asset($profilePhoto) }}"
                                                 width="150" height="150" alt="">
                                             @endif
                                         </div>
                                     </div>
-                                    {{-- <button class="btn btn-outline-primary self-center" type="button"
-                                        id="browseImg" type="button"
-                                        onclick="document.getElementById('photo').click();">
-                                        Browse Image
-                                    </button> --}}
-                                    <input wire:model="photo" type="file" accept="image/*" style="display:none;"
-                                        id="photo" name="photo">
-                                    @if ($photo)
-                                    {{ $photo->getClientOriginalName() }}
-                                    @endif
+                                    <br>
+                                    @error('browsed_photo')
+                                    <div class="text-danger italic">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                    <input wire:model="browsed_photo" type="file" accept="image/*" style="display:none;"
+                                        id="browsed_photo" name="browsed_photo">
+                                    {{-- @if ($state['photo'] ?? '' != '')
+                                    {{ $state['photo']->getClientOriginalName() }}
+                                    @endif --}}
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-12">
                                     <label for="full_name">Fullname</label>
                                     <input type="text" class="form-control @error('full_name') is-invalid @enderror"
-                                        wire:model.defer="state.full_name" id="full_name" name="full_name"
+                                        wire:model.defer="full_name" id="full_name" name="full_name"
                                         placeholder="Enter your full name..">
                                     @error('full_name')
                                     <div class="invalid-feedback">
@@ -120,7 +120,7 @@
                                     <div class="input-group">
                                         <input type="text"
                                             class="form-control @error('phone_number') is-invalid @enderror"
-                                            wire:model.defer="state.phone_number" id="phone_number" name="phone_number"
+                                            wire:model.defer="phone_number" id="phone_number" name="phone_number"
                                             placeholder="Enter your phone number..">
                                         <div class="input-group-append">
                                             <span class="input-group-text">
@@ -140,7 +140,7 @@
                                 <div class="col-12">
                                     <div class="input-group">
                                         <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                            wire:model.defer="state.email" id="email" name="email"
+                                            wire:model.defer="email" id="email" name="email"
                                             placeholder="Enter your email..">
                                         <div class="input-group-append">
                                             <span class="input-group-text">
@@ -160,7 +160,7 @@
                                 <div class="col-12">
                                     <div class="input-group">
                                         <input type="text" class="form-control @error('location') is-invalid @enderror"
-                                            wire:model.defer="state.location" id="location" name="location"
+                                            wire:model.defer="location" id="location" name="location"
                                             placeholder="Enter your location..">
                                         @error('location')
                                         <div class="invalid-feedback">
@@ -179,7 +179,7 @@
                                 <div class="col-6">
                                     <label for="region_id">Region</label>
                                     <select class="form-control @error('region_id') is-invalid @enderror"
-                                        title="Region Name" wire:model="state.region_id" id="region_id" name="region_id"
+                                        title="Region Name" wire:model="region_id" id="region_id" name="region_id"
                                         size="1">
                                         <option value="" class="d-none">Select Region</option>
                                         @foreach ($regions as $region)
@@ -195,7 +195,7 @@
                                 <div class="col-6">
                                     <label for="district_id">District</label>
                                     <select class="form-control @error('district_id') is-invalid @enderror"
-                                        title="District Name" wire:model.defer="state.district_id" id="district_id"
+                                        title="District Name" wire:model.defer="district_id" id="district_id"
                                         name="district_id" size="1">
                                         <option value="" class="d-none">Select District</option>
                                         @foreach ($districts as $district)

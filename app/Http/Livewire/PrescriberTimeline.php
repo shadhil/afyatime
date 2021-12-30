@@ -24,7 +24,7 @@ class PrescriberTimeline extends Component
     public function render()
     {
 
-        $userLogs = UserLog::query()->where('prescriber_id', $this->prescriberId)->latest()->paginate(4);
+        $userLogs = UserLog::query()->where('prescriber_id', $this->prescriberId)->latest()->paginate(25);
 
         return view('livewire.prescriber-timeline', compact(['userLogs']))->layout('layouts.base');
     }

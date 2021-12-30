@@ -22,6 +22,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class Organizations extends Component
 {
@@ -66,7 +67,17 @@ class Organizations extends Component
         ])->validate();
 
         if ($this->logo) {
-            $this->state['logo'] = $this->logo->store('/', 'profiles');
+            if ($this->logo->isValid()) {
+                $photoName = Organization::PATH . '/org_' . md5(microtime()) . '.' . $this->logo->extension();
+                //$this->logo->storeAs('images/products', $photoName);
+                $ImageFile = Image::make($this->logo);
+                $ImageFile->save($photoName);
+                $this->state['logo'] = '/' . $photoName;
+                $this->editState['profile_photo'] = '/' . $photoName;
+            } else {
+                $this->state['logo'] = NULL;
+            }
+            // $this->state['logo'] = $this->logo->store('/', 'profiles');
         } else {
             $this->state['logo'] = NULL;
         }
@@ -82,7 +93,6 @@ class Organizations extends Component
         DB::transaction(function () {
 
             $newOrg = Organization::create($this->state);
-
             $newOrg->accounts()->create([
                 'name' => $this->state['name'],
                 'email' => $this->state['email'],
@@ -114,7 +124,7 @@ class Organizations extends Component
 
     public function editOrg($orgId)
     {
-        $this->reset('state', 'logo', 'orgLogo', 'orgId');
+        $this->reset('state', 'editState', 'logo', 'orgLogo', 'orgId');
         $this->showEditModal = true;
         $organization = DB::table('organizations')
             ->join('full_regions', 'organizations.district_id', '=', 'full_regions.district_id')
@@ -146,6 +156,17 @@ class Organizations extends Component
             'organization_type' => 'required',
             'password' => 'sometimes|confirmed',
         ])->validate();
+
+        if ($this->logo) {
+            if ($this->logo->isValid()) {
+                $photoName = Organization::PATH . '/org_' . md5(microtime()) . '.' . $this->logo->extension();
+                //$this->logo->storeAs('images/products', $photoName);
+                $ImageFile = Image::make($this->logo);
+                $ImageFile->save($photoName);
+                $this->state['logo'] = '/' . $photoName;
+                $this->editState['profile_photo'] = '/' . $photoName;
+            }
+        }
 
         DB::transaction(function () use ($validatedData) {
 

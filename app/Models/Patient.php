@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Patient extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    public const PATH = 'assets/images/profiles/';
 
     protected $fillable = [
         'first_name',
@@ -28,6 +31,15 @@ class Patient extends Model
         'supporter_id',
         'organization_id',
     ];
+
+
+    public function photoUrl(): String
+    {
+        if ($this->photo != NULL) {
+            return asset($this->photo);
+        }
+        return asset('assets/images/default_patient.png');
+    }
 
     public function organization(): BelongsTo
     {

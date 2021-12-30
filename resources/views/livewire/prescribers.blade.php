@@ -35,9 +35,7 @@
                         </div>
                         @endif
                     </div>
-                    <img class="img-avatar"
-                        src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
-                        alt="">
+                    <img class="img-avatar" src="{{ $prescriber->photoUrl() }}" alt="">
                 </div>
                 <a href="{{ route('prescribers.profile',  $prescriber->prescriber_code ) }}">
                     <div class="block-content block-content-full block-content-sm bg-body-light">
@@ -96,7 +94,7 @@
                                             @if ($photo)
                                             <img src="{{ $photo->temporaryUrl() }}" width="150" height="150" alt="">
                                             @else
-                                            <img src="{{ $profilePhoto == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($profilePhoto) }}"
+                                            <img src="{{ $profilePhoto == null ? asset('assets/images/add_user.jpg') : asset($profilePhoto) }}"
                                                 width="150" height="150" alt="">
                                             @endif
                                         </div>
@@ -105,6 +103,7 @@
                                         type="button" onclick="document.getElementById('photo').click();">
                                         Browse Image
                                     </button>
+                                    <br>
                                     <input wire:model="photo" type="file" accept="image/*" style="display:none;"
                                         id="photo" name="photo">
                                     @if ($photo)
@@ -252,7 +251,7 @@
                                 </div>
                             </div>
                             @endif
-                            @if (Auth::user()->isAdmin())
+                            @if (Auth::user()->account_type == 'organization')
                             <div class="form-group row">
                                 <div class="col-12">
                                     <div class="custom-control custom-checkbox custom-control-inline mb-5">
@@ -286,7 +285,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    @if (Auth::user()->isAdmin())
+                    @if (Auth::user()->isAdmin() && !$prescriberAdmin)
                     <button type="button" class="btn btn-alt-danger" wire:click="deleteModal()">
                         <i class="fa fa-trash"></i> Delete
                     </button>

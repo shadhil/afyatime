@@ -14,6 +14,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class TreatmentSupporters extends Component
 {
@@ -23,8 +24,8 @@ class TreatmentSupporters extends Component
 
     protected $paginationTheme = "bootstrap";
 
-    public $state = [];
-    public $editState = [];
+    // public $state = [];
+    // public $editState = [];
 
     public $viewState = [];
 
@@ -44,6 +45,15 @@ class TreatmentSupporters extends Component
 
     public $new;
 
+    public $full_name;
+    public $browsed_photo;
+    public $phone_number;
+    public $email;
+    public $location;
+    public $region_id;
+    public $district_id;
+    public $organization_id;
+
     public function mount($new = null)
     {
         $this->new = $new;
@@ -52,38 +62,58 @@ class TreatmentSupporters extends Component
     public function createSupporter()
     {
         // dd($this->newCode());
-        Validator::make($this->state, [
-            'full_name' => 'required',
-            'email' => 'sometimes|email|unique:users',
-            'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-            'location' => 'required',
-            'district_id' => 'required',
-        ])->validate();
+        $validatedData = $this->validate(
+            [
+                'full_name' => 'required',
+                'email' => 'nullable|email|unique:users',
+                'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+                'location' => 'required',
+                'district_id' => 'required',
+                'browsed_photo' => 'nullable|image|max:1024',
+            ]
+        );
+        // dd($validatedData);
 
-        if ($this->photo) {
-            $this->state['photo'] = $this->photo->store('/', 'profiles');
-        } else {
-            $this->state['photo'] = NULL;
+
+        if ($validatedData['browsed_photo'] != null) {
+            if ($this->browsed_photo->isValid()) {
+                $photoName = TreatmentSupporter::PATH . '/ts_' . md5(microtime()) . '.' . $this->browsed_photo->extension();
+                $ImageFile = Image::make($this->browsed_photo);
+                $ImageFile->save($photoName);
+                $this->photo = '/' . $photoName;
+            } else {
+                $this->photo = NULL;
+            }
         }
 
-        if (empty($this->state['email'])) {
-            $this->state['email'] = NULL;
-        }
-        $this->state['organization_id'] = Auth::user()->org_id;
-        $this->state['phone_number'] = trim_phone_number($this->state['phone_number']);
+        // if (empty($this->email)) {
+        //     $this->email = NULL;
+        // }
+        $this->organization_id = Auth::user()->org_id;
+        $this->phone_number = trim_phone_number($this->phone_number);
 
         DB::transaction(function () {
-            $newSupporter = TreatmentSupporter::create($this->state);
-            if ($this->state['email'] != NULL) {
-                $newSupporter->accounts()->create([
-                    'name' => $this->state['full_name'],
-                    'email' => $this->state['email'],
-                    'profile_photo' => $this->state['photo'],
-                    'password' => Hash::make($this->state['phone_number']),
-                    'org_id' => Auth::user()->org_id,
-                ]);
-            }
+            $newSupporter = TreatmentSupporter::create([
+                'full_name' => $this->full_name,
+                'photo' => $this->photo,
+                'email' => $this->email,
+                'phone_number' => $this->phone_number,
+                'location' => $this->location,
+                'district_id' => $this->district_id,
+                'organization_id' => $this->organization_id,
+            ]);
+            // if ($this->state['email'] != NULL) {
+            //     $newSupporter->accounts()->create([
+            //         'name' => $this->state['full_name'],
+            //         'email' => $this->state['email'],
+            //         'profile_photo' => $this->state['photo'],
+            //         'password' => Hash::make($this->state['phone_number']),
+            //         'org_id' => Auth::user()->org_id,
+            //     ]);
+            // }
             if ($newSupporter) {
+                user_log('6', Auth::user()->account_id, 'supporter', $newSupporter->id);
+                $this->resetPage();
                 $this->dispatchBrowserEvent('hide-supporter-modal', ['message' => 'Supporter added successfully!']);
             }
         });
@@ -91,14 +121,14 @@ class TreatmentSupporters extends Component
 
     public function addSupporter()
     {
-        $this->reset('state', 'photo', 'profilePhoto', 'supporterId');
+        $this->reset(['full_name', 'browsed_photo', 'email', 'phone_number', 'location', 'district_id', 'photo', 'profilePhoto', 'supporterId', 'organization_id']);
         $this->showEditModal = false;
         $this->dispatchBrowserEvent('show-supporter-modal', ['hide_first' => false]);
     }
 
     public function editSupporter($supporterId)
     {
-        $this->reset('state', 'photo', 'profilePhoto', 'supporterId');
+        $this->reset(['full_name', 'browsed_photo', 'email', 'phone_number', 'location', 'district_id', 'photo', 'profilePhoto', 'supporterId', 'organization_id']);
         $this->showEditModal = true;
         $supporter = TreatmentSupporter::find($supporterId);
 
@@ -113,9 +143,16 @@ class TreatmentSupporters extends Component
             $this->userId = null;
         }
 
-        $this->state = $supporter->toArray();
-        $this->state['region_id'] = $supporter->district->region_id;
-        $this->state['district_id'] = $supporter->district_id;
+        $this->full_name = $supporter->full_name;
+        $this->photo = $supporter->photo;
+        $this->email = $supporter->email;
+        $this->phone_number = $supporter->phone_number;
+        $this->location = $supporter->location;
+
+        // $this->state = $supporter->toArray();
+        $this->region_id = $supporter->district->region_id;
+        $this->district_id = $supporter->district_id;
+        // $this->photo = '';
 
         $this->dispatchBrowserEvent('show-supporter-modal', ['hide_first' => true]);
         //dd($admin);
@@ -123,35 +160,47 @@ class TreatmentSupporters extends Component
 
     public function updateSupporter()
     {
-        $this->state['user_id'] = $this->userId;
-        //dd($this->state);
-        $validatedData = Validator::make($this->state, [
+        // $this->state['user_id'] = $this->userId;
+        // dd($this->state);
+        $validatedData = $this->validate([
             'full_name' => 'required',
             'email' => 'exclude_if:user_id,null|sometimes|email|unique:users,email,' . $this->userId,
             'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'location' => 'required',
             'district_id' => 'required',
-        ])->validate();
+            'browsed_photo' => 'nullable|image|max:1024',
+        ]);
+
+        // dd($validatedData);
+
+
+        // Validator::make([$this->browsed_photo], [
+        //     'photo' => 'mimes:jpeg,jpg,png|max:2000',
+        // ])->validate();
 
         DB::transaction(function () use ($validatedData) {
 
             if (!empty($validatedData['email'])) {
-                $this->editState['email'] = $validatedData['email'];
+                $this->email = $validatedData['email'];
             }
             $validatedData['phone_number'] = trim_phone_number($validatedData['phone_number']);
-            $this->editState['name'] = $validatedData['full_name'];
-            if ($this->photo) {
-                $img = $this->photo->store('/', 'profiles');
-                $this->editState['profile_photo'] = $img;
-                $validatedData['photo'] = $img;
+            if ($validatedData['browsed_photo'] != null) {
+                if ($this->browsed_photo->isValid()) {
+                    $photoName = TreatmentSupporter::PATH . '/ts_' . md5(microtime()) . '.' . $this->browsed_photo->extension();
+                    $ImageFile = Image::make($this->browsed_photo);
+                    $ImageFile->save($photoName);
+                    // $this->editState['profile_photo'] = '/' . $photoName;
+                    $validatedData['photo'] = '/' . $photoName;
+                }
             }
 
             $updatedSupporter = TreatmentSupporter::find($this->supporterId);
             $updatedSupporter->update($validatedData);
 
-            $updatedSupporter->accounts()->update($this->editState);
+            // $updatedSupporter->accounts()->update($this->editState);
 
             if ($updatedSupporter) {
+                user_log('7', Auth::user()->account_id, 'supporter', $this->supporterId);
                 $this->resetPage();
                 $this->dispatchBrowserEvent('hide-supporter-modal', ['message' => 'Supporter updated successfully!']);
             }
@@ -190,10 +239,18 @@ class TreatmentSupporters extends Component
     public function deleteSupporter()
     {
         $supporter = TreatmentSupporter::findOrFail($this->supporterId);
+        if ($supporter->patients()->count() > 0) {
+            $this->dispatchBrowserEvent('show-error-toastr', ['message' => 'UnAssign all Patients relate to this supporter first']);
+            $this->dispatchBrowserEvent('hide-delete-modal', ['message' => '']);
+        } else {
+            $full_name = $this->supporterId . ' - ' . $supporter->full_name;
 
-        $supporter->delete();
+            $supporter->delete();
 
-        $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Appointment deleted successfully!']);
+            user_log('8', Auth::user()->account_id, 'supporter', $this->supporterId, $full_name);
+
+            $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Appointment deleted successfully!']);
+        }
     }
 
     public function updatedsearchTerm()
@@ -222,18 +279,18 @@ class TreatmentSupporters extends Component
             $supporters = TreatmentSupporter::query()
                 ->where('organization_id', Auth::user()->org_id)
                 ->where('full_name', 'like', '%' . $this->searchTerm . '%')
-                ->latest()->paginate(4);
+                ->latest()->paginate(16);
         } else {
             $supporters = TreatmentSupporter::query()
                 ->where('organization_id', Auth::user()->org_id)
-                ->latest()->paginate(4);
+                ->latest()->paginate(16);
         }
 
 
-        if (!empty($this->state['region_id'])) {
+        if (!empty($this->region_id)) {
             $this->districts = DB::table('districts')
                 ->select('id', 'name')
-                ->where('region_id', $this->state['region_id'])
+                ->where('region_id', $this->region_id)
                 ->get();
         } else {
             $this->districts = [];

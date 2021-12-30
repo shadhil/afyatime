@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
             'prescriber_type' => 'App\Models\PrescriberType',
             'patient' => 'App\Models\Patient',
             'supporter' => 'App\Models\TreatmentSupporter',
+            'appointment' => 'App\Models\Appointment',
         ]);
     }
 }
