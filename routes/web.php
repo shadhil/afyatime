@@ -6,6 +6,7 @@ use App\Http\Livewire\Admin\Patients as AdminPatients;
 use App\Http\Livewire\Admin\Prescribers as AdminPrescribers;
 use App\Http\Livewire\Admin\Regions as AdminRegions;
 use App\Http\Livewire\Admin\Admins as AdminAdmins;
+use App\Http\Livewire\Admin\AdminTimeline;
 use App\Http\Livewire\Admin\AllAppointments as AdminAllAppointments;
 use App\Http\Livewire\Admin\Appointments as AdminAppointments;
 use App\Http\Livewire\Admin\District as AdminDistrict;
@@ -117,6 +118,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth.admin'])->group(functi
     Route::get('/patient/{org_id}/{code}', AdminPatientProfile::class)->name('patients.profile');
     Route::get('/treatment-supporters/{id}', AdminTreatmentSupporters::class)->name('supporters');
     Route::get('/admins', AdminAdmins::class)->name('admins');
+    Route::get('/timelines', AdminTimeline::class)->name('timeliness');
 });
 
 

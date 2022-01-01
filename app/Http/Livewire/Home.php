@@ -31,7 +31,7 @@ class Home extends Component
         if ($newContacts->id > 0) {
             $details = [
                 'name' => $newContacts->name,
-                'email' => 'info@afyatime.co.tz',
+                'email' => 'info@afyatime.com',
                 'subject' => 'New Web Contact',
                 'msg' => '' . $newContacts->name . ' from ' . $newContacts->organization . ' has contact us through email known as ' . $newContacts->email . ' with this message: <br> <b>  ' . $newContacts->message . ' </b>',
             ];

@@ -26,9 +26,9 @@ class PatientWelcomeMail extends Mailable
     public function build()
     {
         return $this->subject('Welcome to AfyaTrack')
-            ->from('no-reply@afyatime.co.tz', 'AfyaTime')
+            ->from('no-reply@afyatime.com', 'AfyaTime')
             ->to($this->patient['email'])
-            ->replyTo('support@afyatime.co.tz')
+            ->replyTo('support@afyatime.com')
             ->markdown('emails.patient-welcome-mail', $this->patient);
     }
 }

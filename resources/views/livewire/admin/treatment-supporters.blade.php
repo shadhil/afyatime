@@ -20,7 +20,7 @@
                 <div class="block-content block-content-full clearfix">
                     <div class="float-right">
                         <img class="img-avatar"
-                            src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($supporter->photo) }}"
+                            src="{{ $supporter->photo == null ? asset('assets/images/avatar.jpg') : asset($supporter->photo) }}"
                             alt="">
                     </div>
                     <div class="float-left mt-10">

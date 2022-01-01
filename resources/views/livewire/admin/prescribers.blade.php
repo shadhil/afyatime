@@ -14,7 +14,7 @@
 
                     </div>
                     <img class="img-avatar"
-                        src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
+                        src="{{ $prescriber->profile_photo == null ? asset('assets/images/default_patient.png') : asset($prescriber->profile_photo) }}"
                         alt="">
                 </div>
                 <span>

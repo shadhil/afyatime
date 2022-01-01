@@ -46,10 +46,12 @@
                                         <i class="fa fa-edit"></i>
                                     </button>
                                 </div>
+                                @if ($admin->status != '2')
                                 <button type="button" class="btn btn-sm btn-danger" data-toggle="tooltip" title="View"
                                     wire:click.prevent="confirmAdminRemoval({{ $admin->id }})">
                                     <i class=" fa fa-trash"></i>
                                 </button>
+                                @endif
                             </div>
                         </td>
                         @endif

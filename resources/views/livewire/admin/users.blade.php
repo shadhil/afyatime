@@ -25,7 +25,7 @@
                                 <tr>
                                     {{-- <td><strong>{{ $i }}.</strong></td> --}}
                                     <td class="d-none d-sm-table-cell">
-                                        <img src="{{ $user->profile_photo == null ? asset('assets/img/default-profile.png') :Storage::disk('profiles')->url($user->profile_photo) }}"
+                                        <img src="{{ $user->profile_photo == null ? asset('assets/images/default_patient.png') :asset($user->profile_photo) }}"
                                             width="50" height="50" alt="" class="rounded-500 mr-4">
                                     </td>
                                     <td>

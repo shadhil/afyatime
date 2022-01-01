@@ -33,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
             'patient' => 'App\Models\Patient',
             'supporter' => 'App\Models\TreatmentSupporter',
             'appointment' => 'App\Models\Appointment',
+            'orgSubscription' => 'App\Models\OrganizationSubscription',
+            'user' => 'App\Models\User',
         ]);
     }
 }

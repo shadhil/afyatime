@@ -76,7 +76,7 @@ class Subscriptions extends Component
                 if (!$this->isfirstSub && $this->state['status'] == '2') {
                     $details = [
                         'name' => '$newSubscription->organization->name',
-                        'email' => 'admin@afyatime.co.tz',
+                        'email' => 'admin@afyatime.com',
                         'subject' => 'Subscription Renewal',
                         'msg' => 'NEW! ' . $newSubscription->organization->name . '\'s new subscriptions has been paid successfully under the package ' . $newSubscription->package->name . '. Ths subscription will end on ' . $newSubscription->end_date . '. Please enter in the system to confirm payment'
                     ];

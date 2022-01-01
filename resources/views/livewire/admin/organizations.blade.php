@@ -195,7 +195,7 @@
                                                 @if ($logo)
                                                 <img src="{{ $logo->temporaryUrl() }}" width="150" height="150" alt="">
                                                 @else
-                                                <img src="{{ $orgLogo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($orgLogo) }}"
+                                                <img src="{{ $orgLogo == null ? asset('assets/images/default_org.png') : asset($orgLogo) }}"
                                                     width="150" height="150" alt="">
                                                 @endif
                                             </div>

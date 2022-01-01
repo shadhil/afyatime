@@ -17,7 +17,7 @@ class AddAdminIdInOrgSubscriprionTable extends Migration
             $table->unsignedBigInteger('confirmed_by')->nullable()->after('status');
 
             //FOREIGN KEY CONSTRAINTS
-            $table->foreign('confirmed_by')->references('id')->on('admins')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('confirmed_by')->references('id')->on('users')->onUpdate('cascade')->onDelete('set null');
         });
     }
 

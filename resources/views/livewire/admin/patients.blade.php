@@ -25,7 +25,7 @@
             <a class="block text-center" href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
                 <div class="block-content block-content-full bg-gd-dusk">
                     <img class="img-avatar img-avatar-thumb"
-                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
+                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : asset($patient->photo) }}"
                         alt="">
                 </div>
                 <div class="block-content block-content-full">
@@ -40,7 +40,7 @@
                 href="{{ route('patients.profile', ['code' => $patient->patient_code]) }}">
                 <div class="block-content block-content-full">
                     <img class="img-avatar img-avatar-thumb"
-                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
+                        src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : asset($patient->photo) }}"
                         alt="">
                 </div>
                 <div class="block-content block-content-full bg-body-light">

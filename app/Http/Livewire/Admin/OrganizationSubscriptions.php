@@ -82,6 +82,7 @@ class OrganizationSubscriptions extends Component
 
         $diffDays = CarbonImmutable::parse($this->state['start_date'])->diffInDays(CarbonImmutable::parse($this->state['end_date']));
         $package = SubscriptionPackage::find($this->state['package_id']);
+
         if ($diffDays > 33) {
             // dd((float)(($diffDays % 33) + 1));
             $this->state['total_price'] = ($package->monthly_cost * (float)(($diffDays % 33) + 1));
@@ -92,7 +93,7 @@ class OrganizationSubscriptions extends Component
         $this->state['status'] = $this->state['status'];
         $this->state['payment_ref'] = $this->newCode();
 
-        $prevSub = OrganizationSubscription::query()->latest()->first();
+        $prevSub = OrganizationSubscription::query()->where('organization_id', $this->orgId)->latest()->first();
         if ($prevSub != null) {
             $res = CarbonImmutable::parse($prevSub->end_date)->greaterThan(CarbonImmutable::parse($this->state['end_date']));
         } else {
@@ -113,6 +114,9 @@ class OrganizationSubscriptions extends Component
             $newSubscription = OrganizationSubscription::create($this->state);
 
             if ($newSubscription) {
+
+                admin_log('25', Auth::user()->id, 'orgSubscription', $newSubscription->id, $newSubscription->id, $newSubscription->id . ' - Package' . $newSubscription->package_id);
+
                 $this->dispatchBrowserEvent('hide-subscription-modal', ['message' => 'Subscription added successfully!']);
 
                 if (!$this->isfirstSub && $this->state['status'] == '2') {
@@ -201,7 +205,9 @@ class OrganizationSubscriptions extends Component
             $OrgSubscription = OrganizationSubscription::find($this->subscriptionId);
             $OrgSubscription->update($this->editState);
 
-            info(Auth::user()->name . ' Updated Subscription for ' . $this->orgName . ' with ID ' . $this->orgId);
+            admin_log('26', Auth::user()->id, 'orgSubscription', $OrgSubscription->id, $OrgSubscription->id, $OrgSubscription->id . ' - Package' . $OrgSubscription->package_id);
+
+            // info(Auth::user()->name . ' Updated Subscription for ' . $this->orgName . ' with ID ' . $this->orgId);
 
             $this->dispatchBrowserEvent('hide-subscription-modal', ['message' => 'subscription updated successfully!']);
 
@@ -236,6 +242,8 @@ class OrganizationSubscriptions extends Component
     public function deleteSubscription()
     {
         $subscription = OrganizationSubscription::findOrFail($this->subscriptionId);
+
+        admin_log('27', Auth::user()->id, 'orgSubscription', $subscription->id, $subscription->id . ' - ' . $subscription->organization->name);
 
         $subscription->delete();
 

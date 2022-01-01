@@ -108,13 +108,27 @@ if (!function_exists('is_valid_date')) {
     }
 }
 
-
 if (!function_exists('user_log')) {
     function user_log($actionId, $prescriberId, $entityType = NULL, $entityId = NULL, $note = NULL)
     {
         $newLog = \App\Models\UserLog::create([
             'user_action_id' => $actionId,
             'prescriber_id' => $prescriberId,
+            'entity_type' => $entityType,
+            'entity_id' => $entityId,
+            'note' => $note
+        ]);
+
+        return $newLog == null ? false : true;
+    }
+}
+
+if (!function_exists('admin_log')) {
+    function admin_log($actionId, $adminId, $entityType = NULL, $entityId = NULL, $note = NULL)
+    {
+        $newLog = \App\Models\AdminLog::create([
+            'user_action_id' => $actionId,
+            'user_id' => $adminId,
             'entity_type' => $entityType,
             'entity_id' => $entityId,
             'note' => $note

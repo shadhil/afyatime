@@ -6,7 +6,7 @@
             <div class="block block-rounded font-w600">
                 <div class="block-content block-content-full bg-gd-sea text-center">
                     <img class="img-avatar img-avatar-thumb"
-                        src="{{ $patient->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($patient->photo) }}"
+                        src="{{ $patient->photo == null ? asset('assets/images/avatar.jpg') : asset($patient->photo) }}"
                         alt="">
                 </div>
                 <div class="block-content block-content-full text-center">

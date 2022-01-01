@@ -194,7 +194,7 @@
                         href="{{ route('admin.prescribers.profile', ['id' => $prescriber->prescriber_code, 'org_id' => $orgId]) }}">
                         <div class="block-content block-content-full">
                             <img class="img-avatar"
-                                src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($prescriber->profile_photo) }}"
+                                src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : asset($prescriber->profile_photo) }}"
                                 alt="">
                         </div>
                         <div class="block-content block-content-full bg-body-light">
@@ -231,7 +231,7 @@
                         href="{{ route('admin.patients.profile', ['code' => $patient->patient_code, 'org_id' => $orgId]) }}">
                         <div class="block-content block-content-full bg-gd-dusk">
                             <img class="img-avatar img-avatar-thumb"
-                                src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
+                                src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : asset($patient->photo) }}"
                                 alt="">
                         </div>
                         <div class="block-content block-content-full">
@@ -246,7 +246,7 @@
                         href="{{ route('admin.patients.profile', ['code' => $patient->patient_code, 'org_id' => $orgId]) }}">
                         <div class="block-content block-content-full">
                             <img class="img-avatar img-avatar-thumb"
-                                src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : Storage::disk('profiles')->url($patient->photo) }}"
+                                src="{{ $patient->photo == null ? asset('assets/base/media/avatars/avatar.jpg') : asset($patient->photo) }}"
                                 alt="">
                         </div>
                         <div class="block-content block-content-full bg-body-light">
@@ -283,7 +283,7 @@
                         <div class="block-content block-content-full clearfix">
                             <div class="float-right">
                                 <img class="img-avatar"
-                                    src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : Storage::disk('profiles')->url($supporter->photo) }}"
+                                    src="{{ $supporter->photo == null ? asset('assets/img/default-profile.png') : asset($supporter->photo) }}"
                                     alt="">
                             </div>
                             <div class="float-left mt-10">

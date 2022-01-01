@@ -31,7 +31,7 @@ class SubscriptionRisitMail extends Mailable
     {
         return $this->subject('Subscription Confirmed')
             ->markdown('emails.subscription-risit-mail', $this->details)
-            ->from('no-reply@afyatime.co.tz', 'AfyaTime - Patient Reminder App')
-            ->replyTo('support@afyatime.co.tz');
+            ->from('no-reply@afyatime.com', 'AfyaTime - Patient Reminder App')
+            ->replyTo('support@afyatime.com');
     }
 }

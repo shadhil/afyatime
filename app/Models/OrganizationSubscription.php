@@ -47,7 +47,7 @@ class OrganizationSubscription extends Model
 
     public function confirmedBy(): BelongsTo
     {
-        return $this->belongsTo(Admin::class, 'confirmed_by');
+        return $this->belongsTo(User::class, 'confirmed_by');
     }
 
     public function status()

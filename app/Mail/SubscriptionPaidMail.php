@@ -31,7 +31,7 @@ class SubscriptionPaidMail extends Mailable
     public function build()
     {
         return $this->subject($this->details['title'])
-        ->view('emails.subscription-paid-mail')
-        ->from('notifications@afyatime.co.tz');
+            ->view('emails.subscription-paid-mail')
+            ->from('no-reply@afyatime.com');
     }
 }

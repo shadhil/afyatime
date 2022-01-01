@@ -5,7 +5,7 @@
         <div class="col-lg-12 col-xl-12">
             <div class="block block-rounded block-bordered">
                 <div class="block-header block-header-default">
-                    <h3 class="block-title">Prescriber's Timeline</h3>
+                    <h3 class="block-title">Admin's Timeline</h3>
                     {{-- <div class="block-options">
                         <a href="{{ route('appointments') }}" type="button" class="btn btn-alt-primary">
                             <i class="fa fa-calendar mr-5"></i>All Events
@@ -17,6 +17,7 @@
                         <table class="table table-borderless table-hover table-striped table-vcenter mb-0">
                             <thead>
                                 <tr>
+                                    <th class="text-center">Admin's Name</th>
                                     <th width="10%" class="text-center">Date</th>
                                     <th width="10%" class="text-center">Time</th>
                                     <th width="25%" class="d-none d-sm-table-cell text-center">Action</th>
@@ -24,11 +25,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (sizeof($userLogs)>0)
+                                @if (sizeof($adminLogs)>0)
                                 @php
                                 $actionDate = '';
                                 @endphp
-                                @foreach ($userLogs as $userLog)
+                                @foreach ($adminLogs as $userLog)
                                 @php
                                 $currentDate = \Carbon\Carbon::parse($userLog->created_at)->format('d/m/Y');
                                 if ($actionDate == $currentDate) {
@@ -38,6 +39,9 @@
                                 }
                                 @endphp
                                 <tr>
+                                    <td class="text-center">
+                                        {{ $userLog->admin->name }}
+                                    </td>
                                     <td width="20%" class="text-center">
                                         {{ $currentDate }}
                                     </td>
@@ -69,6 +73,21 @@
                                             $userLog->entity->full_name
                                             ?? '' }} {{
                                             $userLog->note ?? '' }}
+                                            @elseif ($userLog->entity_type == 'organization')
+                                            {{ $userLog->entity->id ?? '' }} - {{
+                                            $userLog->entity->name
+                                            ?? '' }} {{
+                                            $userLog->note ?? '' }}
+                                            @elseif ($userLog->entity_type == 'orgSubscription')
+                                            {{ $userLog->entity->id ?? '' }} - {{
+                                            $userLog->entity->organization->name
+                                            ?? '' }} {{
+                                            $userLog->note ?? '' }}
+                                            @elseif ($userLog->entity_type == 'user')
+                                            {{ $userLog->entity->id ?? '' }} - {{
+                                            $userLog->entity->name
+                                            ?? '' }} {{
+                                            $userLog->note ?? '' }}
                                             @else
                                             {{ $userLog->entity->id ?? '' }}
                                             @endif
@@ -85,7 +104,7 @@
                                 @else
                                 <div class="row mb-15">
                                     <div class="col-sm-12 col-xl-12 text-center">
-                                        No Event Found
+                                        No Events Found
                                     </div>
                                 </div>
                                 @endif
@@ -95,7 +114,7 @@
                 </div>
             </div>
             <div class="float-right mt-0 pb-10">
-                {{ $userLogs->links('vendor.livewire.bootstrap') }}
+                {{ $adminLogs->links('vendor.livewire.bootstrap') }}
             </div>
         </div>
         <!-- END Updates -->

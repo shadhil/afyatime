@@ -2,7 +2,7 @@
 
 {{ $details['msg'] }}
 
-Please contact us on support@afyatime.co.tz if you have any problem accessing your account.
+Please contact us on support@afyatime.com if you have any problem accessing your account.
 
 Kind regards,<br>
 AfyaTime Tanzania.

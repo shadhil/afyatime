@@ -102,6 +102,7 @@ class Organizations extends Component
             ]);
 
             if ($newOrg) {
+                admin_log('19', Auth::user()->id, 'organization', $newOrg->id);
                 $this->dispatchBrowserEvent('hide-org-modal', ['message' => 'Organization added successfully!']);
                 $details = [
                     'name' => $this->state['name'],
@@ -189,6 +190,7 @@ class Organizations extends Component
             $updatedOrg->accounts()->update($this->editState);
 
             if ($updatedOrg) {
+                admin_log('20', Auth::user()->id, 'organization', $updatedOrg->id);
                 $this->dispatchBrowserEvent('hide-org-modal', ['message' => 'Organization updated successfully!']);
             }
 
@@ -218,6 +220,8 @@ class Organizations extends Component
     public function deleteOrg()
     {
         $organization = Organization::findOrFail($this->orgId);
+
+        admin_log('21', Auth::user()->id, 'organization', $organization->id, $organization->id. ' - '. $organization->name);
 
         $organization->delete();
 

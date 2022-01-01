@@ -73,6 +73,33 @@ class CreateUserActionsTable extends Migration
             ],
             [
                 'action' => 'Assign Supporter',
+            ],
+            [
+                'action' => 'Add Organization',
+            ],
+            [
+                'action' => 'Edit Organization',
+            ],
+            [
+                'action' => 'Delete Organization',
+            ],
+            [
+                'action' => 'Add Admin',
+            ],
+            [
+                'action' => 'Edit Admin',
+            ],
+            [
+                'action' => 'Delete Admin',
+            ],
+            [
+                'action' => 'Add Subcription',
+            ],
+            [
+                'action' => 'Edit Subcription',
+            ],
+            [
+                'action' => 'Delete Subcription',
             ]
         ]);
     }

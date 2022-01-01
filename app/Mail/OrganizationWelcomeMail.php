@@ -21,9 +21,9 @@ class OrganizationWelcomeMail extends Mailable
     public function build()
     {
         return $this->subject('Welcome to AfyaTime')
-            ->from('no-reply@afyatime.co.tz', 'AfyaTime')
+            ->from('no-reply@afyatime.com', 'AfyaTime')
             ->to($this->details['email'])
-            ->replyTo('support@afyatime.co.tz')
+            ->replyTo('support@afyatime.com')
             ->markdown('emails.organization-welcome-mail', $this->details);
     }
 }
