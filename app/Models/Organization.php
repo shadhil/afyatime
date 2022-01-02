@@ -83,4 +83,12 @@ class Organization extends Model
     {
         return $this->hasOne(OrganizationSubscription::class)->latestOfMany();
     }
+
+    public function photoUrl(): String
+    {
+        if ($this->logo != NULL) {
+            return asset($this->logo);
+        }
+        return asset('assets/images/avatar.jpg');
+    }
 }

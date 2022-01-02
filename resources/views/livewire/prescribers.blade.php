@@ -141,6 +141,7 @@
                                     <select class="form-control @error('prescriber_type') is-invalid @enderror"
                                         title="Prescriber Type" wire:model.defer="state.prescriber_type"
                                         id="prescriber_type" name="prescriber_type" size="1" {{ $canUpdate }}>
+                                        <option class="d-none">Prescriber's Role</option>
                                         @foreach ($prescriberTypes as $type)
                                         <option value="{{ $type->id }}">{{ $type->title }}</option>
                                         @endforeach
@@ -156,6 +157,7 @@
                                     <select class="form-control @error('gender') is-invalid @enderror" title="Gender"
                                         wire:model.defer="state.gender" id="gender" name="gender" size="1" {{ $canUpdate
                                         }}>
+                                        <option class="d-none">Prescriber's Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Male">Female</option>
                                     </select>
@@ -199,12 +201,12 @@
                                                 <i class="fa fa-envelope-o"></i>
                                             </span>
                                         </div>
+                                        @error('email')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
-                                    @error('email')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
                                 </div>
                             </div>
                             @if($showEditModal && Auth::user()->isAdmin())
@@ -221,12 +223,12 @@
                                                 <i class="fa fa-lock"></i>
                                             </span>
                                         </div>
+                                        @error('password')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
-                                    @error('password')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -242,12 +244,12 @@
                                                 <i class="fa fa-lock"></i>
                                             </span>
                                         </div>
+                                        @error('password_confirmation')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
-                                    @error('password_confirmation')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
                                 </div>
                             </div>
                             @endif

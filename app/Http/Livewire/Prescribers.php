@@ -316,11 +316,11 @@ class Prescribers extends Component
                     $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
                         ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%');
                 })
-                ->latest()->limit($this->packageSubscribers)->paginate(4);
+                ->latest()->limit(16)->paginate(4);
         } else {
             $prescribers = Prescriber::query()
                 ->where('prescribers.organization_id', Auth::user()->org_id)
-                ->latest()->limit($this->packageSubscribers)->paginate(4);
+                ->latest()->limit(16)->paginate(4);
         }
 
         $prescriberTypes = PrescriberType::query()

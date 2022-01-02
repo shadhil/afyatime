@@ -185,7 +185,21 @@
             </div>
             <!-- END Appointments -->
 
-            <h2 class="content-heading">Current Prescribers</h2>
+            <div class="block block-rounded block-bordered invisible" data-toggle="appear">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Prescribers</h3>
+                    <div class="block-options">
+                        @if (sizeof($prescribers) == 0)
+                        <a href="{{ route('admin.prescribers', ['id' => $orgId]) }}" type="button"
+                            class="btn btn-alt-primary">
+                            <i class="fa fa-plus mr-5"></i>Add Presscriber
+                        </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            {{-- <h2 class="content-heading">Current Prescribers</h2> --}}
             @if (sizeof($prescribers)>0)
             <div class="row">
                 @foreach ($prescribers as $prescriber)
@@ -193,9 +207,7 @@
                     <a class="block block-link-pop text-center"
                         href="{{ route('admin.prescribers.profile', ['id' => $prescriber->prescriber_code, 'org_id' => $orgId]) }}">
                         <div class="block-content block-content-full">
-                            <img class="img-avatar"
-                                src="{{ $prescriber->profile_photo == null ? asset('assets/img/default-profile.png') : asset($prescriber->profile_photo) }}"
-                                alt="">
+                            <img class="img-avatar" src="{{ $prescriber->photoUrl() }}" alt="">
                         </div>
                         <div class="block-content block-content-full bg-body-light">
                             <div class="font-w600 mb-5">{{ $prescriber->first_name }} {{ $prescriber->last_name }}</div>
