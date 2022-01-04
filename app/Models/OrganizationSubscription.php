@@ -21,7 +21,6 @@ class OrganizationSubscription extends Model
 
     protected $casts = [
         'status' => 'integer',
-        'monthly_cost' => 'decimal',
     ];
 
     protected $guarded = [];

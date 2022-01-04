@@ -32,7 +32,7 @@ class WelcomePatientJob implements ShouldQueue
             'Authorization' => 'Basic bmppd2F0ZWNoOkZseWluZ2NvbG91cnNAIzAx',
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "Ndugu ' . $patient["name"] . ' Karibu AFYATIME. Umeunganishwa kwenye mfumo wa kukumbushwa kuhudhuria miadi yako ya kliniki kwa njia ya SMS. Kituo chako cha kliniki ni ' . $patient["clinic"] . '. Karibu – AFYATIME. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
+        ])->withBody('{"from": "AfyaTime", "to": "' . $phone . '", "text": "Ndugu ' . $patient["name"] . ' Karibu AFYATIME. Umeunganishwa kwenye mfumo wa kukumbushwa kuhudhuria miadi yako ya kliniki kwa njia ya SMS. Kituo chako cha kliniki ni ' . $patient["clinic"] . '. Karibu – AFYATIME. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
 
         if ($patient['email'] != NULL) {
             $email = $patient['email'];

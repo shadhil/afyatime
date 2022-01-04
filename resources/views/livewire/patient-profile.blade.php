@@ -112,7 +112,7 @@
                     <h3 class="block-title">Patient's Appointments</h3>
                     <div class="block-options">
                         <div class="block-options-item">
-                            @if (is_subscribed())
+                            @if (is_subscribed() && has_appointments())
                             <button type="button" class="btn btn-alt-primary" wire:click="addAppointment">
                                 <i class="fa fa-calendar-plus-o mr-5"></i>New Appointment
                             </button>
@@ -143,9 +143,16 @@
                                     \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}
                                 </td>
                                 <td class="d-none d-sm-table-cell text-center">
-                                    <span
-                                        class="badge {{ $appointment->app_type == 'weekly' ? 'badge-info' : 'badge-success' }}">{{
+                                    @if ($appointment->app_type == 'weekly')
+                                    <span class="badge badge-info">{{
                                         $appointment->app_type }}</span>
+                                    @elseif ($appointment->app_type == 'daily')
+                                    <span class="badge badge-primary">{{
+                                        $appointment->app_type }}</span>
+                                    @else
+                                    <span class="badge badge-secondary">{{
+                                        $appointment->app_type }}</span>
+                                    @endif
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group">
@@ -177,7 +184,8 @@
                                         @if (Auth::user()->isAdmin() || $appointment->prescriber_id ==
                                         Auth::user()->account->id)
                                         <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip"
-                                            title="Confirm" wire:click="completeModal({{ $appointment->id }})">
+                                            title="Confirm"
+                                            wire:click="completeModal('{{ $appointment->id }}', '{{ $appointment->date_of_visit }}')">
                                             <i class="fa fa-calendar-check-o"></i>
                                         </button>
                                         @endif
@@ -612,6 +620,11 @@
                                         <input wire:model.defer="state.app_type" class="custom-control-input"
                                             type="radio" name="app_type" id="daily" value="daily">
                                         <label class="custom-control-label" for="daily">Daily Visits</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline mb-5">
+                                        <input wire:model.defer="state.app_type" class="custom-control-input"
+                                            type="radio" name="app_type" id="hourly" value="hourly">
+                                        <label class="custom-control-label" for="hourly">Hourly Visits</label>
                                     </div>
                                 </div>
                             </div>

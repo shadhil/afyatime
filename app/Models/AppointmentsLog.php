@@ -9,19 +9,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AppointmentsLog extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = "appointments_logs";
 
-    protected $fillable = [
-        'app_action',
-        'appointment_id',
-        'prescriber_id'
-    ];
+    protected $guarded = [];
 
-    public function subscription(): BelongsTo
+    public function patient(): BelongsTo
     {
-        return $this->belongsTo(OrganizationSubscription::class, 'org_subscription_id');
+        return $this->belongsTo(Patient::class, 'patient_id');
     }
 
     public function appointment(): BelongsTo
@@ -29,8 +25,8 @@ class AppointmentsLog extends Model
         return $this->belongsTo(Appointment::class, 'appointment_id');
     }
 
-    public function appAction(): BelongsTo
+    public function organization(): BelongsTo
     {
-        return $this->belongsTo(AppAction::class, 'app_action_id');
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 }

@@ -16,9 +16,12 @@ class UserSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'name' => 'System Admin',
+            'name' => 'AfyaTime Admin',
             'email' => 'admin@afyatime.com',
-            'admin_type' => 'system',
+            'account_type' => 'admin',
+            'account_id' => '0',
+            'is_admin' => '2',
+            'status' => '2',
             'password' => Hash::make('admin')
         ]);
     }

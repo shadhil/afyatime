@@ -11,6 +11,7 @@ use App\Models\OrganizationSubscription;
 use App\Models\Patient;
 use App\Models\Prescriber;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,7 @@ class PatientProfile extends Component
     public $patientId;
     public $userId;
     public $appointmentId;
+    public $appointmentDate;
     public $prescriberId;
     public $removeAppointmentId;
 
@@ -238,9 +240,10 @@ class PatientProfile extends Component
         $this->dispatchBrowserEvent('hide-delete-modal', ['message' => 'Appointment deleted successfully!']);
     }
 
-    public function completeModal($appointmentId)
+    public function completeModal($appointmentId, $date)
     {
         $this->appointmentId = $appointmentId;
+        $this->appointmentDate = $date;
         $this->dispatchBrowserEvent('show-complete-modal');
     }
 
@@ -252,17 +255,37 @@ class PatientProfile extends Component
         //     $this->showEditModal = false;
         // }
         if (is_subscribed()) {
-            $appointment = Appointment::findOrFail($this->appointmentId);
 
-            $appointment->received_by = Auth::user()->account->id;
+            $res = CarbonImmutable::parse($this->appointmentDate)->lessThanOrEqualTo(CarbonImmutable::now());
 
-            $appointment->save();
+            // dd($res);
 
-            user_log('14', Auth::user()->account_id, 'appointment', $this->appointmentId);
-            $this->dispatchBrowserEvent('hide-complete-modal', ['message' => 'The Patient is Confirmed to attend his/her Appointment successfully!']);
+            if ($res) {
+
+                $appointment = Appointment::findOrFail($this->appointmentId);
+
+                $appointment->received_by = Auth::user()->account->id;
+
+                $appointment->save();
+
+                user_log('14', Auth::user()->account_id, 'appointment', $this->appointmentId);
+                $this->dispatchBrowserEvent('hide-complete-modal', ['message' => 'The Patient is Confirmed to attend his/her Appointment successfully!']);
+            } else {
+                $this->dispatchBrowserEvent('show-error-toastr', ['message' => 'You can not confirm before the visiting date']);
+            }
+
+
+            // $appointment = Appointment::findOrFail($this->appointmentId);
+
+            // $appointment->received_by = Auth::user()->account->id;
+
+            // $appointment->save();
+
+            // user_log('14', Auth::user()->account_id, 'appointment', $this->appointmentId);
+            // $this->dispatchBrowserEvent('hide-complete-modal', ['message' => 'The Patient is Confirmed to attend his/her Appointment successfully!']);
+        } else {
+            $this->dispatchBrowserEvent('show-error-toastr', ['message' => 'Your subscription is up so you can not aupdate this appointment']);
         }
-
-        $this->dispatchBrowserEvent('show-error-toastr', ['message' => 'Your subscription is up so you can not aupdate this appointment']);
     }
 
     public function viewAppointmentModal($id, $prescriber, $date, $time, $type, $condition, $receiver = null, $prescriber_id)

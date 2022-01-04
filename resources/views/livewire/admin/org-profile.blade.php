@@ -7,11 +7,6 @@
             <div class="block block-rounded">
                 <div class="block-header">
                     <h3 class="block-title font-w600">Organization Details</h3>
-                    <div class="block-options">
-                        <button type="button" class="btn-block-option">
-                            <i class="si si-wrench"></i>
-                        </button>
-                    </div>
                 </div>
                 <div class="block-content">
                     <a class="font-w600" href="javascript:void(0)">Name</a>

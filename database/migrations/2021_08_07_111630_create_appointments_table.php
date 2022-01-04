@@ -18,11 +18,11 @@ class CreateAppointmentsTable extends Migration
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('prescriber_id')->nullable();
             $table->unsignedBigInteger('condition_id');
-            $table->enum('app_type', ['weekly', 'daily']);
+            $table->enum('app_type', ['weekly', 'daily', 'hourly']);
             $table->date('date_of_visit');
             $table->time('visit_time')->default(date("08:00:00"));
             $table->unsignedBigInteger('organization_id')->nullable();
-            $table->foreignId('received_by')->constrained('prescribers')->nullable();
+            $table->foreignId('received_by')->nullable()->constrained('prescribers')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
 

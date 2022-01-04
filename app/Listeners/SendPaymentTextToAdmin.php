@@ -39,7 +39,7 @@ class SendPaymentTextToAdmin
                 'Authorization' => 'Basic c2hhenk6bXlkdXR5IzMxMTA=',
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json'
-            ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "Hi! There is new subscription payment from ' . $subscriberInfo->organization . ', please check and confirm the details."}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
+            ])->withBody('{"from": "AfyaTime", "to": "' . $phone . '", "text": "Hi! There is new subscription payment from ' . $subscriberInfo->organization . ', please check and confirm the details."}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
             return json_decode($response->body());
         }
     }

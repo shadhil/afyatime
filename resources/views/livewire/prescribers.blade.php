@@ -8,11 +8,9 @@
             <button type="button" class="btn btn-alt-primary" wire:click="addPrescriber">
                 <i class="fa fa-plus mr-5"></i>New Prescriber
             </button>
-            @if (Auth::user()->account_type == 'organization')
             <button type="button" class="btn btn-alt-warning" wire:click="showTitleModal">
                 <i class="fa fa-plus mr-5"></i>New Role/Title
             </button>
-            @endif
             @endif
             {{--
         </div> --}}
@@ -158,8 +156,8 @@
                                         wire:model.defer="state.gender" id="gender" name="gender" size="1" {{ $canUpdate
                                         }}>
                                         <option class="d-none">Prescriber's Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Male">Female</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
                                     </select>
                                     @error('gender')
                                     <div class="invalid-feedback">
@@ -253,7 +251,7 @@
                                 </div>
                             </div>
                             @endif
-                            @if (Auth::user()->account_type == 'organization')
+                            @if (Auth::user()->isAdmin())
                             <div class="form-group row">
                                 <div class="col-12">
                                     <div class="custom-control custom-checkbox custom-control-inline mb-5">

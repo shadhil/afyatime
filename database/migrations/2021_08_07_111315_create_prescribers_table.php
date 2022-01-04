@@ -24,6 +24,7 @@ class CreatePrescribersTable extends Migration
             $table->string('email');
             $table->unsignedBigInteger('organization_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             //FOREIGN KEY CONSTRAINTS
             $table->foreign('organization_id')->references('id')->on('organizations')->onUpdate('cascade')->onDelete('set null');

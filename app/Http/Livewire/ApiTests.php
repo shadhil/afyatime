@@ -168,7 +168,7 @@ class ApiTests extends Component
             'Authorization' => 'Basic bmppd2F0ZWNoOkZseWluZ2NvbG91cnNAIzAx',
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->withBody('{"from": "NEXTSMS", "to": "' . $phone . '", "text": "Habari!  , Kupitia tunakumbushwa unatakiwa kuhudhuria kwenye kituo chako cha afya .    Taarifa hii inafikishwa kwako kupitia mfumo wa AfyaTime. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
+        ])->withBody('{"from": "AfyaTime", "to": "' . $phone . '", "text": "Habari!  , Kupitia tunakumbushwa unatakiwa kuhudhuria kwenye kituo chako cha afya .    Taarifa hii inafikishwa kwako kupitia mfumo wa AfyaTime. "}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
         dd(json_decode($response->body()));
         // dd($appointments);
         return view('livewire.api-tests');

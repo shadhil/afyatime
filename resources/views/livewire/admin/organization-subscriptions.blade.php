@@ -17,8 +17,8 @@
                             <th>Package</th>
                             <th class="d-none d-md-table-cell">Start Date</th>
                             <th class="d-none d-md-table-cell">End Date</th>
-                            <th class="d-none d-md-table-cell">Total Price</th>
-                            <th class="d-none d-md-table-cell">Status</th>
+                            <th class="d-none d-md-table-cell text-center">Duration</th>
+                            <th class="d-none d-md-table-cell text-center">Status</th>
                             <th class="text-center" style="width: 100px;">Actions</th>
                         </tr>
                     </thead>
@@ -41,10 +41,14 @@
                             <td class="d-none d-md-table-cell">
                                 {{ \Carbon\Carbon::parse($subscription->end_date)->format('d/m/Y') }}
                             </td>
-                            <td class="d-none d-md-table-cell">
-                                {{ $subscription->total_price }}
+                            <td class="d-none d-md-table-cell text-center">
+                                @if ($subscription->duration == 'yearly')
+                                <span class="badge badge-secondary"> 1 YEAR </span>
+                                @else
+                                <span class="badge badge-secondary"> 1 MONTH </span>
+                                @endif
                             </td>
-                            <td class="d-none d-md-table-cell">
+                            <td class="d-none d-md-table-cell text-center">
                                 @if ($subscription->status == 3)
                                 <span class="badge badge-info"> PAID </span>
                                 @endif
@@ -60,18 +64,20 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="tooltip"
+                                    {{-- <button type="button" class="btn btn-sm btn-primary" data-toggle="tooltip"
                                         title="View" wire:click="viewSubscription({{ $subscription->id }})">
                                         <i class=" fa fa-eye"></i>
-                                    </button>
+                                    </button> --}}
                                     <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip"
                                         title="View" wire:click="editSubscription({{ $subscription->id }})">
                                         <i class=" fa fa-edit"></i>
                                     </button>
+                                    @if (Auth::user()->status == '2')
                                     <button type="button" class="btn btn-sm btn-danger" data-toggle="tooltip"
                                         title="View" wire:click="deleteSubModal({{ $subscription->id }})">
                                         <i class=" fa fa-trash"></i>
                                     </button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -79,7 +85,7 @@
                         @else
                         <tr class="mb-15">
                             <td colspan="7" class="text-center">
-                                No Appointment Found
+                                No Subscription Found
                             </td>
                         </tr>
                         @endif
@@ -176,17 +182,15 @@
                             <form
                                 wire:submit.prevent="{{ $showEditModal ? 'updateSubscription' : 'createSubscription' }}">
                                 <div class="form-group row">
-                                    <div class="col-12">
+                                    <div class="col-sm-12 col-lg-7">
                                         <label for="package_id">Subscription Package</label>
-                                    </div>
-                                    <div class="col-12">
                                         <select class="form-control @error('package_id') is-invalid @enderror"
-                                            title="package_id" wire:model.defer="state.package_id" id="package_id"
-                                            name="package_id" size="1">
+                                            title="package_id" wire:model="package_id" id="package_id" name="package_id"
+                                            size="1" {{ $disabled }}>
                                             <option class="d-none">Select Package</option>
                                             @foreach ($packages as $package)
                                             <option value="{{ $package->id }}">
-                                                {{ $package->name .' (@'.$package->monthly_cost.' TZS)'}}</option>
+                                                {{ $package->name }}</option>
                                             @endforeach
                                         </select>
                                         @error('package_id')
@@ -195,35 +199,74 @@
                                         </div>
                                         @enderror
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <label for="paid_by">Paid By</label>
-                                    </div>
-                                    <div class="col-12">
-                                        <select class="form-control @error('paid_by') is-invalid @enderror"
-                                            title="paid_by" wire:model.defer="state.paid_by" id="paid_by" name="paid_by"
-                                            size="1">
-                                            <option class="d-none">Select Org/Admin</option>
-                                            @foreach ($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                            @endforeach
+                                    <div class="col-sm-12 col-lg-5">
+                                        <label for="package_id">Package Duration</label>
+                                        <select class="form-control @error('package_duration') is-invalid @enderror"
+                                            title="package_duration" wire:model="package_duration" id="package_duration"
+                                            name="package_duration" size="1" {{ $disabled }}>
+                                            <option class="d-none">Select Duration</option>
+                                            <option value="monthly">One Month</option>
+                                            <option value="yearly">One Year</option>
                                         </select>
-                                        @error('paid_by')
+                                        @error('package_duration')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
                                         @enderror
                                     </div>
                                 </div>
+                                @if ($package_id != null && $package_duration != null)
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control " wire:model="package_details"
+                                                disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="start_date">Start Date</label>
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="text"
+                                            class="js-flatpickr form-control bg-white @error('start_date') is-invalid @enderror"
+                                            wire:model.defer="start_date" id="start_date" name="start_date"
+                                            placeholder="d-m-Y" data-date-format="d-m-Y" {{ $disabled }}>
+                                        @error('start_date')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                @if($showEditModal)
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="end_date">End Date</label>
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="text"
+                                            class="js-flatpickr form-control bg-white @error('end_date') is-invalid @enderror"
+                                            wire:model.defer="end_date" id="end_date" name="end_date"
+                                            placeholder="d-m-Y" data-date-format="d-m-Y" {{ $disabled }}>
+                                        @error('end_date')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                @endif
                                 <div class="form-group row">
                                     <div class="col-12">
                                         <label for="status">Subscription Status</label>
                                     </div>
                                     <div class="col-12">
                                         <select class="form-control @error('status') is-invalid @enderror"
-                                            title="status" wire:model.defer="state.status" id="status" name="status"
-                                            size="1">
+                                            title="status" wire:model.defer="status" id="status" name="status" size="1">
                                             <option class="d-none">Select Status</option>
                                             <option value="2">Subscribed </option>
                                             <option value="1">UnSubscribed </option>
@@ -238,66 +281,14 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <label for="start_date">Start Date</label>
-                                    </div>
-                                    <div class="col-12">
-                                        <input type="text"
-                                            class="js-flatpickr form-control bg-white @error('start_date') is-invalid @enderror"
-                                            wire:model.defer="state.start_date" id="start_date" name="start_date"
-                                            placeholder="d-m-Y" data-date-format="d-m-Y">
-                                        @error('start_date')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <label for="end_date">End Date</label>
-                                    </div>
-                                    <div class="col-12">
-                                        <input type="text"
-                                            class="js-flatpickr form-control bg-white @error('end_date') is-invalid @enderror"
-                                            wire:model.defer="state.end_date" id="end_date" name="end_date"
-                                            placeholder="d-m-Y" data-date-format="d-m-Y">
-                                        @error('end_date')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                {{-- <div class="form-group row">
-                                    <label class="col-12" for="total_price">Total Price</label>
-                                    <div class="col-12">
-                                        <div class="input-group">
-                                            <input type="text"
-                                                class="form-control @error('total_price') is-invalid @enderror"
-                                                wire:model.defer="state.total_price" id="total_price" name="total_price"
-                                                placeholder="Enter your phone number..">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">
-                                                    <i class="fa fa-phone"></i>
-                                                </span>
-                                            </div>
-                                            @error('total_price')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div> --}}
+                                @if ($showEditModal)
                                 <div class="form-group row">
                                     <label class="col-12" for="payment_ref">Payment Ref</label>
                                     <div class="col-12">
                                         <div class="input-group">
                                             <input type="text"
                                                 class="form-control @error('payment_ref') is-invalid @enderror"
-                                                wire:model.defer="state.payment_ref" id="payment_ref" name="payment_ref"
+                                                wire:model.defer="payment_ref" id="payment_ref" name="payment_ref"
                                                 placeholder="Enter your payment_ref.." disabled>
                                             @error('payment_ref')
                                             <div class="invalid-feedback">
@@ -307,6 +298,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endif
                                 <div class="form-group row">
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-alt-info" wire:loading.attr="disabled">

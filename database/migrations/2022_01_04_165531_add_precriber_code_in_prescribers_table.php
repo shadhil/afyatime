@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDeleteInOrgSubscriprionTable extends Migration
+class AddPrecriberCodeInPrescribersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddDeleteInOrgSubscriprionTable extends Migration
      */
     public function up()
     {
-        Schema::table('organization_subscriptions', function (Blueprint $table) {
-            $table->softDeletes();
+        Schema::table('prescribers', function (Blueprint $table) {
+            $table->string('prescriber_code')->unique()->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddDeleteInOrgSubscriprionTable extends Migration
      */
     public function down()
     {
-        Schema::table('organization_subscriptions', function (Blueprint $table) {
-            $table->dropSoftDeletes();
+        Schema::table('prescribers', function (Blueprint $table) {
+            $table->dropColumn('prescriber_code');
         });
     }
 }

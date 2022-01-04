@@ -44,6 +44,16 @@ class OrganizationSubscriptions extends Component
 
     public $isfirstSub = false;
 
+    public $package_details;
+    public $package_id;
+    public $package_duration;
+    public $start_date;
+    public $end_date;
+    public $old_end_date;
+    public $status;
+    public $disabled = "";
+    public $payment_ref;
+
 
     public function mount($id)
     {
@@ -69,57 +79,88 @@ class OrganizationSubscriptions extends Component
         return Str::upper($testCode);
     }
 
+    public function updatedPackageId($value)
+    {
+        if ($this->package_duration != null) {
+            $package = DB::table('subscription_packages')->find($value);
+            if ($this->package_duration == 'yearly') {
+                $this->package_details = $package->yearly_appointments . ' Appointments - @ Tsh.' . $package->yearly_cost;
+            } else {
+                $this->package_details = $package->monthly_appointments . ' Appointments - @ Tsh.' . $package->monthly_cost;
+            }
+        }
+    }
+
+    public function updatedPackageDuration($value)
+    {
+        if ($this->package_id != null) {
+            $package = DB::table('subscription_packages')->find($this->package_id);
+            if ($value == 'yearly') {
+                $this->package_details = $package->yearly_appointments . ' Appointments - @ Tsh.' . $package->yearly_cost;
+            } else {
+                $this->package_details = $package->monthly_appointments . ' Appointments - @ Tsh.' . $package->monthly_cost;
+            }
+        }
+    }
+
     public function createSubscription()
     {
-        // dd($this->state);
-        Validator::make($this->state, [
+
+        // $endDate = CarbonImmutable::parse($this->start_date)->addMonth();
+        // dd($endDate->format('Y-m-d'));
+        $validatedData = $this->validate([
             'package_id' => 'required',
-            'paid_by' => 'required',
-            'status' => 'string',
+            'status' => 'required',
             'start_date' => 'required',
-            'end_date' => 'required',
-        ])->validate();
+            'package_duration' => 'required'
+        ]);
 
-        $diffDays = CarbonImmutable::parse($this->state['start_date'])->diffInDays(CarbonImmutable::parse($this->state['end_date']));
-        $package = SubscriptionPackage::find($this->state['package_id']);
+        // $diffDays = CarbonImmutable::parse($this->state['start_date'])->diffInDays(CarbonImmutable::parse($this->state['end_date']));
+        // $package = SubscriptionPackage::find($this->state['package_id']);
 
-        if ($diffDays > 33) {
-            // dd((float)(($diffDays % 33) + 1));
-            $this->state['total_price'] = ($package->monthly_cost * (float)(($diffDays % 33) + 1));
-        } else {
-            $this->state['total_price'] = $package->monthly_cost;
-        }
-        $this->state['confirmed_by'] = Auth::user()->id;
-        $this->state['status'] = $this->state['status'];
-        $this->state['payment_ref'] = $this->newCode();
+        // if ($diffDays > 33) {
+        //     // dd((float)(($diffDays % 33) + 1));
+        //     $this->state['total_price'] = ($package->monthly_cost * (float)(($diffDays % 33) + 1));
+        // } else {
+        //     $this->state['total_price'] = $package->monthly_cost;
+        // }
+        // $this->state['confirmed_by'] = Auth::user()->id;
+        // $this->state['status'] = $this->state['status'];
+        // $this->state['payment_ref'] = $this->newCode();
 
         $prevSub = OrganizationSubscription::query()->where('organization_id', $this->orgId)->latest()->first();
         if ($prevSub != null) {
-            $res = CarbonImmutable::parse($prevSub->end_date)->greaterThan(CarbonImmutable::parse($this->state['end_date']));
+            $res = CarbonImmutable::parse($prevSub->end_date)->greaterThan(CarbonImmutable::parse($this->end_date));
         } else {
             $res = false;
         }
 
         if (!$res) {
-            $this->state['organization_id'] = $this->orgId;
 
-            if (!empty($this->state['start_date'])) {
-                $this->state['start_date'] = db_date($this->state['start_date']);
+            if ($this->package_duration == 'yearly') {
+                $endDate = CarbonImmutable::parse($this->start_date)->addYear();
+            } else {
+                $endDate = CarbonImmutable::parse($this->start_date)->addMonth();
             }
 
-            if (!empty($this->state['end_date'])) {
-                $this->state['end_date'] = db_date($this->state['end_date']);
-            }
 
-            $newSubscription = OrganizationSubscription::create($this->state);
+            $newSubscription = OrganizationSubscription::create([
+                'organization_id' => $this->orgId,
+                'package_id' => $this->package_id,
+                'start_date' => db_date($this->start_date),
+                'end_date' => $endDate->format('Y-m-d'),
+                'duration' => $this->package_duration,
+                'payment_ref' => $this->newCode(),
+                'status' => $this->status,
+                'created_by' => Auth::user()->id,
+            ]);
 
             if ($newSubscription) {
-
                 admin_log('25', Auth::user()->id, 'orgSubscription', $newSubscription->id, $newSubscription->id, $newSubscription->id . ' - Package' . $newSubscription->package_id);
 
                 $this->dispatchBrowserEvent('hide-subscription-modal', ['message' => 'Subscription added successfully!']);
 
-                if (!$this->isfirstSub && $this->state['status'] == '2') {
+                if (!$this->isfirstSub && $this->status == '2') {
                     $details = [
                         'name' => $newSubscription->organization->name,
                         'email' => $newSubscription->organization->email,
@@ -136,31 +177,37 @@ class OrganizationSubscriptions extends Component
 
     public function addSubscription()
     {
-        $this->reset('state', 'subscriptionId');
+        $this->reset('subscriptionId', 'package_id', 'start_date', 'package_duration', 'status', 'payment_ref');
         $this->showEditModal = false;
+        $this->disabled = "";
         $this->dispatchBrowserEvent('show-subscription-modal');
     }
 
     public function editSubscription($subscriptionId)
     {
-        $this->reset('state', 'subscriptionId');
+        $this->reset('subscriptionId', 'package_id', 'start_date', 'package_duration', 'status', 'payment_ref');
         $this->showEditModal = true;
-        $subscription = DB::table('organization_subscriptions')
-            ->where('id', $subscriptionId)
-            ->first();
-
-        $collection = collect($subscription);
-        $this->subscriptionId = $subscription->id;
-
-        $this->state = $collection->toArray();
-
-        if (!empty($this->state['start_date'])) {
-            $this->state['start_date'] = form_date($this->state['start_date']);
+        if (Auth::user()->status != '2') {
+            $this->disabled = "disabled";
         }
 
-        if (!empty($this->state['end_date'])) {
-            $this->state['end_date'] = form_date($this->state['end_date']);
-            $this->state['old_end_date'] = $this->state['end_date'];
+        $subscription = OrganizationSubscription::find($subscriptionId);
+
+        $this->subscriptionId = $subscription->id;
+
+        $this->start_date = form_date($subscription->start_date);
+        $this->end_date = form_date($subscription->end_date);
+        $this->old_end_date = form_date($subscription->end_date);
+        $this->package_id = $subscription->package_id;
+        $this->package_duration = $subscription->duration;
+        $this->payment_ref = $subscription->payment_ref;
+        $this->status = $subscription->status;
+
+        $package = DB::table('subscription_packages')->find($this->package_id);
+        if ($subscription->duration == 'yearly') {
+            $this->package_details = $package->yearly_appointments . ' Appointments - @ Tsh.' . $package->yearly_cost;
+        } else {
+            $this->package_details = $package->monthly_appointments . ' Appointments - @ Tsh.' . $package->monthly_cost;
         }
 
         $this->dispatchBrowserEvent('show-subscription-modal');
@@ -169,41 +216,42 @@ class OrganizationSubscriptions extends Component
     public function updateSubscription()
     {
         //dd($this->state);
-        $validatedData =
-            Validator::make($this->state, [
-                'package_id' => 'required',
-                'paid_by' => 'required',
-                'status' => 'required',
-                'payment_ref' => 'string',
-                'total_price' => 'required',
-                'start_date' => 'required',
-                'end_date' => 'required',
-            ])->validate();
+        $validatedData = $this->validate([
+            'package_id' => 'required',
+            'status' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'package_duration' => 'required'
+        ]);
 
-        $res = CarbonImmutable::parse($this->state['end_date'])->greaterThan(CarbonImmutable::parse($this->state['old_end_date']));
+        $res = true;
 
         // dd($res);
         if ($res) {
-            $this->dispatchBrowserEvent('show-error-toastr', ['message' => 'you can not chnage date']);
-        } else {
 
-            $this->editState['status'] = $this->state['status'];
-            $this->editState['payment_ref'] = $this->state['payment_ref'];
+            // $this->editState['status'] = $this->state['status'];
+            // $this->editState['payment_ref'] = $this->state['payment_ref'];
 
             if (Auth::user()->status == '2') {
-                $this->editState['total_price'] = $this->state['total_price'];
+                // $this->editState['total_price'] = $this->state['total_price'];
 
-                if (!empty($this->state['start_date'])) {
-                    $this->state['start_date'] = db_date($this->state['start_date']);
-                }
+                // if (!empty($this->state['start_date'])) {
+                //     $this->state['start_date'] = db_date($this->state['start_date']);
+                // }
 
-                if (!empty($this->state['end_date'])) {
-                    $this->state['end_date'] = db_date($this->state['end_date']);
-                }
+                // if (!empty($this->state['end_date'])) {
+                //     $this->state['end_date'] = db_date($this->state['end_date']);
+                // }
             }
 
             $OrgSubscription = OrganizationSubscription::find($this->subscriptionId);
-            $OrgSubscription->update($this->editState);
+            $OrgSubscription->update([
+                'package_id' => $this->package_id,
+                'start_date' => db_date($this->start_date),
+                'end_date' => db_date($this->end_date),
+                'duration' => $this->package_duration,
+                'status' => $this->status,
+            ]);
 
             admin_log('26', Auth::user()->id, 'orgSubscription', $OrgSubscription->id, $OrgSubscription->id, $OrgSubscription->id . ' - Package' . $OrgSubscription->package_id);
 
@@ -211,7 +259,7 @@ class OrganizationSubscriptions extends Component
 
             $this->dispatchBrowserEvent('hide-subscription-modal', ['message' => 'subscription updated successfully!']);
 
-            if ($this->state['status'] == '1') {
+            if ($this->status == '1') {
                 $details = [
                     'name' => $OrgSubscription->organization->name,
                     'email' => $OrgSubscription->organization->email,
@@ -221,7 +269,7 @@ class OrganizationSubscriptions extends Component
                 EmailNotificationJob::dispatch($details);
             }
 
-            if ($this->state['status'] == '5') {
+            if ($this->status == '5') {
                 $details = [
                     'name' => $OrgSubscription->organization->name,
                     'email' => $OrgSubscription->organization->email,

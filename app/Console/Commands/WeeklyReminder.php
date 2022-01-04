@@ -6,6 +6,7 @@ use App\Mail\AppointmentReminder;
 use App\Models\Appointment;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class WeeklyReminder extends Command
@@ -41,6 +42,9 @@ class WeeklyReminder extends Command
      */
     public function handle()
     {
+        // if (is_subscribed(Auth::user()->org_id) && has_appointments()) {
+        //     # code...
+        // }
         $today = CarbonImmutable::parse(\Carbon\Carbon::now()->format('Y-m-d'));
         $now = CarbonImmutable::parse(\Carbon\Carbon::now()->format('H:i:s'));
 
@@ -54,10 +58,10 @@ class WeeklyReminder extends Command
         foreach ($appointments as $appointment) {
             $visitDay = CarbonImmutable::parse($appointment->date_of_visit);
             $visitTime = CarbonImmutable::parse($appointment->visit_time);
-            $before_1 = CarbonImmutable::parse($appointment->visit_time)->subRealHour();
+            $before_12 = CarbonImmutable::parse($appointment->visit_time)->subRealHours(12);
             // dd($visitTime->format('h:m A'));
 
-            $subscription = $appointment->organization->latestSubscription;;
+            $subscription = $appointment->organization->latestSubscription;
             $reminderCount = $subscription->package->reminder_msg;
             $appId = $appointment->id;
             $subId = $subscription->id;
@@ -87,11 +91,11 @@ class WeeklyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
-                    store_appointments_logs($appId, $subId);
+                    store_appointments_logs($appointment->id, $appointment->patient_id, $appointment->organization_id);
                 }
             } elseif ($diffDay == 0 && ($reminderCount == 3 || $reminderCount == 2)) {
                 // dd($appointment->visit_time);
-                if ($now->isSameHour($before_1)) {
+                if ($now->isSameHour($before_12)) {
                     send_sms($details['phone'], $details['msg']);
                     if ($details['email'] != null) {
                         Mail::to($details['email'])->send(new AppointmentReminder($details));
@@ -99,7 +103,7 @@ class WeeklyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
-                    store_appointments_logs($appId, $subId);
+                    store_appointments_logs($appointment->id, $appointment->patient_id, $appointment->organization_id);
                 }
             } elseif ($diffDay == 1) {
                 if ($now->isSameHour($visitTime)) {
@@ -110,7 +114,7 @@ class WeeklyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
-                    store_appointments_logs($appId, $subId);
+                    store_appointments_logs($appointment->id, $appointment->patient_id, $appointment->organization_id);
                 }
             }
         }

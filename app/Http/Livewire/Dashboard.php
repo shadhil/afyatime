@@ -9,7 +9,9 @@ use App\Models\OrganizationSubscription;
 use App\Models\Patient;
 use App\Models\Prescriber;
 use App\Models\TreatmentSupporter;
+use App\Models\UserLog;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -32,6 +34,8 @@ class Dashboard extends Component
     public $receivedAppointments;
     public $previousAppointments;
     public $upcomingAppointments;
+    public $countedApointments;
+    public $packageApointments;
 
     public $subscriptionStatus;
 
@@ -59,40 +63,70 @@ class Dashboard extends Component
             user_log('1', Auth::user()->account_id);
             Session::put('logged_in', false);
         }
-        $this->totalPatients = DB::table('patients')->count();
-        $this->myPatients = DB::table('user_logs')->where('prescriber_id', Auth::user()->account->id)->where('user_action_id', '3')->count();
 
-        $this->totalAppointments = DB::table('appointments')
-            ->whereNull('deleted_at')
+        $this->totalPatients = Patient::query()
+            ->where('organization_id', Auth::user()->org_id)
             ->count();
-        $this->myAppointments = DB::table('appointments')
+
+        $this->myPatients = UserLog::query()
             ->where('prescriber_id', Auth::user()->account->id)
-            ->whereNull('deleted_at')
+            ->where('user_action_id', '3')
             ->count();
 
-        $this->receivedAppointments = DB::table('appointments')
+        $this->totalAppointments = Appointment::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->count();
+
+        $this->myAppointments = Appointment::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->where('prescriber_id', Auth::user()->account->id)
+            ->count();
+
+        $this->receivedAppointments = Appointment::query()
+            ->where('organization_id', Auth::user()->org_id)
             ->where('prescriber_id', Auth::user()->account->id)
             ->whereNotNull('received_by')
-            ->whereNull('deleted_at')
             ->count();
 
-        $this->previousAppointments = DB::table('appointments')
+        $this->previousAppointments = Appointment::query()
+            ->where('organization_id', Auth::user()->org_id)
             ->where('prescriber_id', Auth::user()->account->id)
             ->whereDate('date_of_visit', '<', Carbon::today()->toDateString())
-            ->whereNull('deleted_at')
             ->count();
 
-
-        $this->upcomingAppointments = DB::table('appointments')
+        $this->upcomingAppointments = Appointment::query()
+            ->where('organization_id', Auth::user()->org_id)
             ->where('prescriber_id', Auth::user()->account->id)
             ->whereDate('date_of_visit', '>=', Carbon::today()->toDateString())
-            ->whereNull('deleted_at')
+            ->count();
+
+        $curSub = OrganizationSubscription::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->where('status', '2')
+            ->latest()
+            ->first();
+
+        // dd($curSub->package->monthly_appointments);
+
+        if ($curSub->duration == 'monthly') {
+            $this->packageApointments = $curSub->package->monthly_appointments;
+        } else {
+            $this->packageApointments = $curSub->package->yearly_appointments;
+        }
+
+        $this->countedApointments = Appointment::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->whereDate('date_of_visit', '>=', $curSub->start_date)
+            ->whereDate('date_of_visit', '<=', $curSub->end_date)
             ->count();
 
 
-        $this->totalPrescribers = DB::table('prescribers')->count();
+        $this->totalPrescribers = Prescriber::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->count();
 
         $organization = Organization::find(Auth::user()->org_id);
+
         $patients = Patient::query()
             ->where('organization_id', Auth::user()->org_id)
             ->orderByDesc('created_at')

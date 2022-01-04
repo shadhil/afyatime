@@ -5,9 +5,7 @@
             <!-- Account -->
             <div class="block block-rounded font-w600">
                 <div class="block-content block-content-full bg-gd-sea text-center">
-                    <img class="img-avatar img-avatar-thumb"
-                        src="{{ $prescriber->photo == null ? asset('assets/img/default-profile.png') : asset($prescriber->photo) }}"
-                        alt="">
+                    <img class="img-avatar img-avatar-thumb" src="{{ $prescriber->photoUrl() }}" alt="">
                 </div>
                 <div class="block-content block-content-full text-center">
                     <div class="border-b pb-15">

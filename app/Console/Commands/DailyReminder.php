@@ -51,9 +51,6 @@ class DailyReminder extends Command
         $today = CarbonImmutable::parse(\Carbon\Carbon::now()->format('Y-m-d'));
         $now = CarbonImmutable::parse(\Carbon\Carbon::now()->format('H:i:s'));
 
-        // dd($tomorrow);
-
-
         $tomorrow_apps = Appointment::query()
             ->where('date_of_visit', $tomorrow)
             ->where('app_type', 'daily')
@@ -64,7 +61,7 @@ class DailyReminder extends Command
             ->where('app_type', 'daily')
             ->take(50)->get();
 
-        // dd($appointments);
+        // dd($tomorrow_apps);
 
         foreach ($tomorrow_apps as $appointment) {
             $visitDay = CarbonImmutable::parse($appointment->date_of_visit);
@@ -101,7 +98,7 @@ class DailyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
-                    store_appointments_logs($appId, $subId);
+                    store_appointments_logs($appointment->id, $appointment->patient_id, $appointment->organization_id);
                 }
             }
         }
@@ -118,6 +115,8 @@ class DailyReminder extends Command
             // dd($visitTime->greaterThan($noon));
             $subscription = $appointment->organization->latestSubscription->package;
             $reminderCount = $subscription->reminder_msg;
+
+            // dd($now->isSameHour($before_12));
 
             $details = [
                 'msg' => "Ndugu " . $appointment->patient->first_name . " " . $appointment->patient->last_name . " Unakumbushwa miadi yako ya kuhudhuria kliniki tarehe " . $visitDay->format('d/m/Y') . " kuanzai saa " . $visitTime->format('h:m A') . " bila kukosa kwenye kituo chako cha " . $appointment->organization->known_as . ". ",
@@ -143,9 +142,9 @@ class DailyReminder extends Command
                     if ($supporter != null) {
                         send_sms($phone_supporter, $msg_supporter);
                     }
-                    store_appointments_logs($appId, $subId);
+                    store_appointments_logs($appointment->id, $appointment->patient_id, $appointment->organization_id);
                 }
-            } elseif ($now->isSameHour($before_1) && ($reminderCount == 3 || $reminderCount == 2)) {
+            } elseif ($now->isSameHour($before_6) && ($reminderCount == 3 || $reminderCount == 2)) {
                 // dd($details['phone'] . ' - ' . $details['msg']);
                 send_sms($details['phone'], $details['msg']);
                 if ($details['email'] != null) {
@@ -154,8 +153,8 @@ class DailyReminder extends Command
                 if ($supporter != null) {
                     send_sms($phone_supporter, $msg_supporter);
                 }
-                store_appointments_logs($appId, $subId);
-            } elseif ($now->isSameHour($before_6)) {
+                store_appointments_logs($appointment->id, $appointment->patient_id, $appointment->organization_id);
+            } elseif ($now->isSameHour($before_12)) {
                 send_sms($details['phone'], $details['msg']);
                 if ($details['email'] != null) {
                     Mail::to($details['email'])->send(new AppointmentReminder($details));
@@ -163,7 +162,7 @@ class DailyReminder extends Command
                 if ($supporter != null) {
                     send_sms($phone_supporter, $msg_supporter);
                 }
-                store_appointments_logs($appId, $subId);
+                store_appointments_logs($appointment->id, $appointment->patient_id, $appointment->organization_id);
             }
         }
     }

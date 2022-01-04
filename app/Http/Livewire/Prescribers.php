@@ -181,15 +181,13 @@ class Prescribers extends Component
             $this->prescriberAdmin = $this->state['is_admin'];
         }
 
-        // dd($this->state);
-
         $this->dispatchBrowserEvent('show-prescriber-modal');
         //dd($admin);
     }
 
     public function updatePrescriber()
     {
-        //dd($this->state);
+        // dd($this->state);
         $validatedData = Validator::make($this->state, [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -220,6 +218,8 @@ class Prescribers extends Component
             }
 
             $this->state['phone_number'] = trim_phone_number($this->state['phone_number']);
+
+            $this->editState['is_admin'] = $this->state['is_admin'] == true ? '1' : '0';
 
             $updatedPresc = Prescriber::find($this->prescriberId);
             $updatedPresc->update($this->state);

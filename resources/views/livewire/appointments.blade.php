@@ -58,10 +58,16 @@
                             {{ $appointment->prescriber->last_name }}
                         </td>
                         <td class="d-none d-md-table-cell">
-                            <span
-                                class="badge {{ ($appointment->app_type == 'weekly') ? 'badge-primary' : 'badge-info'}}">
-                                {{ Str::upper($appointment->app_type) }}
-                            </span>
+                            @if ($appointment->app_type == 'weekly')
+                            <span class="badge badge-info">{{
+                                $appointment->app_type }}</span>
+                            @elseif ($appointment->app_type == 'daily')
+                            <span class="badge badge-primary">{{
+                                $appointment->app_type }}</span>
+                            @else
+                            <span class="badge badge-secondary">{{
+                                $appointment->app_type }}</span>
+                            @endif
                         </td>
                         <td class="text-center">
                             <div class="btn-group">
@@ -89,7 +95,7 @@
                                     wire:click="viewAppointmentModal('{{ $appointment->id }}', '{{
                                                                     $appointment->patient->first_name }} {{ $appointment->patient->last_name
                                                                     }}', '{{ $appointment->prescriber->type->initial ?? '' }} {{ $appointment->prescriber->first_name }} {{ $appointment->prescriber->last_name }}', '{{ \Carbon\Carbon::parse($appointment->date_of_visit)->format('l, F jS, Y') }}', '{{ \Carbon\Carbon::parse($appointment->visit_time)->format('h:i A') }}',  '{{ $appointment->app_type }}', '{{ $appointment->condition->condition }}', '{{ $appointment->received_by->prescriber_type->initial ?? '' }} {{ $appointment->received_by->first_name ?? '' }} {{ $appointment->received_by->last_name ?? '' }}', {{ $appointment->prescriber_id }})">
-                                                                    <i class=" fa fa-eye"></i>
+                                    <i class=" fa fa-eye"></i>
                                 </button>
                                 @endif
                             </div>

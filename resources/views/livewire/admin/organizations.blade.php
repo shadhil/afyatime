@@ -145,7 +145,7 @@
                                 <div class="btn-group">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip"
-                                            title="Visited" wire:click="editOrg({{ $org->id }})">
+                                            title="Edit" wire:click="editOrg({{ $org->id }})">
                                             <i class="fa fa-edit"></i>
                                         </button>
                                     </div>

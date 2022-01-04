@@ -45,22 +45,28 @@ class OrgProfile extends Component
     {
         $org = Organization::find($this->orgId);
 
-        $totalPatients = DB::table('patients')->where('organization_id', $this->orgId)->count();
+        $totalPatients = Patient::query()
+            ->where('organization_id', $this->orgId)
+            ->count();
 
-        $totalAppointments = DB::table('appointments')
+        $totalAppointments = Appointment::query()
             ->where('organization_id', $this->orgId)
             ->whereNull('deleted_at')
             ->count();
 
-        $receivedAppointments = DB::table('appointments')
+        $receivedAppointments = Appointment::query()
             ->where('organization_id', $this->orgId)
             ->whereNotNull('received_by')
             ->whereNull('deleted_at')
             ->count();
 
-        $totalPrescribers = DB::table('prescribers')->where('organization_id', $this->orgId)->count();
+        $totalPrescribers = Prescriber::query()
+            ->where('organization_id', $this->orgId)
+            ->count();
 
-        $totalSupporters = DB::table('treatment_supporters')->where('organization_id', $this->orgId)->count();
+        $totalSupporters = TreatmentSupporter::query()
+            ->where('organization_id', $this->orgId)
+            ->count();
 
         $patients = Patient::query()
             ->where('organization_id', $this->orgId)

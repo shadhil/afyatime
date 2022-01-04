@@ -43,17 +43,38 @@ if (!function_exists('send_sms')) {
             'Authorization' => 'Basic bmppd2F0ZWNoOkZseWluZ2NvbG91cnNAIzAx',
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->withBody('{"from": "NEXTSMS", "to": "' . sms_phone_number($phone) . '", "text": "' . $msg . ' Shukrani – AFYATIME."}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
+        ])->withBody('{"from": "AfyaTime", "to": "' . sms_phone_number($phone) . '", "text": "' . $msg . ' Shukrani – AFYATIME."}', 'application/json')->post('https://messaging-service.co.tz/api/sms/v1/text/single');
     }
 }
 
-if (!function_exists('store_appointments_logs')) {
-    function store_appointments_logs($appId, $subId)
+if (!function_exists('has_appointments')) {
+    function has_appointments()
     {
-        \App\Models\AppointmentsLog::create([
-            'appointment_id' => $appId,
-            'org_subscription_id' => $subId,
-        ]);
+        $curSub = \App\Models\OrganizationSubscription::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->where('status', '2')
+            ->latest()
+            ->first();
+
+        // dd($curSub->package->monthly_appointments);
+
+        if ($curSub->duration == 'monthly') {
+            $packageApointments = $curSub->package->monthly_appointments;
+        } else {
+            $packageApointments = $curSub->package->yearly_appointments;
+        }
+
+        $countedApointments = \App\Models\Appointment::query()
+            ->where('organization_id', Auth::user()->org_id)
+            ->whereDate('date_of_visit', '>=', $curSub->start_date)
+            ->whereDate('date_of_visit', '<=', $curSub->end_date)
+            ->count();
+
+        // return ($packageApointments - $countedApointments);
+        if ($countedApointments < $packageApointments) {
+            return true;
+        }
+        return false;
     }
 }
 
@@ -139,10 +160,13 @@ if (!function_exists('admin_log')) {
 }
 
 if (!function_exists('is_subscribed')) {
-    function is_subscribed()
+    function is_subscribed($orgId = null)
     {
+        if ($orgId == null) {
+            $orgId = Auth::user()->org_id;
+        }
         $subscription = \App\Models\OrganizationSubscription::query()
-            ->where('organization_id', Auth::user()->org_id)
+            ->where('organization_id', $orgId)
             ->where('status', '2')
             ->latest('end_date')
             ->first();
@@ -155,5 +179,16 @@ if (!function_exists('is_subscribed')) {
             }
         }
         return false;
+    }
+}
+
+if (!function_exists('store_appointments_logs')) {
+    function store_appointments_logs($appId, $patientId, $orgId)
+    {
+        \App\Models\AppointmentsLog::create([
+            'appointment_id' => $appId,
+            'patient_id' => $patientId,
+            'organization_id' => $orgId,
+        ]);
     }
 }

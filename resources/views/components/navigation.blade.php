@@ -120,7 +120,7 @@
 
                     <!-- User-Profile -->
                     <a href="{{ route('my-profile') }}" type="button" class="btn btn-alt-info ml-5">
-                        <i class="si si-info"></i>
+                        <i class="si si-user"></i>
                         <span class="d-none d-sm-inline">My Profile</span>
                     </a>
                     <!-- END Logout -->

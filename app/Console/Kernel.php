@@ -36,7 +36,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('subscription:check')->dailyAt('9:30');
         $schedule->command('subscription:reminder')->dailyAt('9:15');
         $schedule->command('reminder:daily')->hourlyAt(5);
-        $schedule->command('reminder:weekly')->hourlyAt(15);
+        $schedule->command('reminder:weekly')->hourlyAt(25);
+        $schedule->command('reminder:hourly')->everyMinute();
         // $schedule->command('reminder:daily')->twiceDaily(5, 8);
         // $schedule->command('inspire')->hourly();
         // $now = Carbon::now();

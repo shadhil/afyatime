@@ -47,11 +47,11 @@ class CreateRegionsTable extends Migration
             ['name' => 'Songwe'],
             ['name' => 'Tabora'],
             ['name' => 'Tanga'],
-            ['name' => 'Kaskazini Pemba'],
-            ['name' => 'Kusini Pemba'],
-            ['name' => 'Kaskazini Unguja'],
-            ['name' => 'Kusini Unguja'],
-            ['name' => 'Mjini Magharibi']
+            // ['name' => 'Kaskazini Pemba'],
+            // ['name' => 'Kusini Pemba'],
+            // ['name' => 'Kaskazini Unguja'],
+            // ['name' => 'Kusini Unguja'],
+            // ['name' => 'Mjini Magharibi']
         ]);
     }
 

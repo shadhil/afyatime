@@ -53,9 +53,10 @@
                     <p class="text-muted">{{ $organization->phone_number }}</p>
                     @if (Auth::user()->isAdmin())
                     <a class="font-w600" href="javascript:void(0)">#Subscription</a>
-                    <p class="text-muted">{{
-                        \Carbon\Carbon::parse($subscription->end_date)->format('F j, Y')
-                        }}
+                    <p class="text-muted">
+                        @if ($subscription->end_date ?? '' != '')
+                        {{ \Carbon\Carbon::parse($subscription->end_date)->format('F j, Y') }}
+                        @endif
                         @if ($subscriptionStatus == 'UNSUBSCRIBED')
                         <br>
                         <span class="badge badge-danger">SUBSCRIPTION ENDED</span>
@@ -67,8 +68,9 @@
                         <span class="badge badge-secondary">NOT SUBSCRIBED</span>
                         @endif
                     </p>
+                    <a class="font-w600" href="javascript:void(0)"> Appointments</a>
+                    <p class="text-muted">{{ $countedApointments }}/{{ $packageApointments }}</p>
                     @endif
-
                 </div>
             </div>
             <!-- END Worldwide Trends -->
@@ -171,9 +173,16 @@
                                             }}</span>
                                     </td>
                                     <td class="d-none d-md-table-cell text-center">
-                                        <span
-                                            class="badge {{ $appointment->app_type == 'weekly' ? 'badge-info' : 'badge-success' }}">{{
+                                        @if ($appointment->app_type == 'weekly')
+                                        <span class="badge badge-info">{{
                                             $appointment->app_type }}</span>
+                                        @elseif ($appointment->app_type == 'daily')
+                                        <span class="badge badge-primary">{{
+                                            $appointment->app_type }}</span>
+                                        @else
+                                        <span class="badge badge-secondary">{{
+                                            $appointment->app_type }}</span>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
