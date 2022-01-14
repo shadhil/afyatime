@@ -3,17 +3,18 @@
     <div id="home" class="main-banner">
         <div class="d-table">
             <div class="d-table-cell">
-                <div class="container">
+                <div class="container-fluid">
                     <div class="row align-items-center">
-                        <div class="col-lg-6 wow fadeInLeft" data-wow-delay=".3s">
+                        <div class="col-lg-6">
                             <div class="banner-content">
-                                <h1>Manage your Appointments Using AfyaTime</h1>
-                                <p>AfyaTime offers accurate and timely
-                                    appointment reminders to patients who have regular clinic visits direct via SMS.</p>
+                                <h1>SMS Patient Appointment Reminder Platform</h1>
+                                <p>AfyaTime offers accurate and timely appointment reminders to patients who have
+                                    regular
+                                    clinic visits direct via SMS.</p>
 
-                                <div class="banner-btn">
-                                    <a href="#" class="default-btn">
-                                        Get Started
+                                <div class="about-btn">
+                                    <a href="#about" class="default-btn">
+                                        Learn More
                                         <span></span>
                                     </a>
                                 </div>
@@ -21,31 +22,8 @@
                         </div>
 
                         <div class="col-lg-6">
-                            <div class="banner-form">
-                                <h3>Register & Get started</h3>
-                                <p>App ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna aliqua.</p>
-
-                                <form>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Organization's Name">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input type="email" class="form-control" placeholder="Organization's Email">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Organization's Phone">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <textarea cols="30" rows="6" class="form-control"
-                                            placeholder="About Organization"></textarea>
-                                    </div>
-
-                                    <button type="submit">Submit</button>
-                                </form>
+                            <div class="banner-image">
+                                <img src="{{ asset('assets/landing/img/mobile.png') }}" alt="image">
                             </div>
                         </div>
                     </div>
@@ -77,88 +55,40 @@
     </div>
     <!-- End Main Banner Area -->
 
-    <!-- Start Fun Facts Area -->
-    <section class="fun-facts-area pt-100 pb-70">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay=".2s">
-                    <div class="single-fun-fact">
-                        <div class="icon">
-                            <i class="fa fa-users"></i>
-                        </div>
-                        <h3>
-                            <span class="odometer" data-count="1020">00</span>
-                        </h3>
-                        <p>Usersr</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay=".3s">
-                    <div class="single-fun-fact">
-                        <div class="icon">
-                            <i class="fa fa-heart"></i>
-                        </div>
-                        <h3>
-                            <span class="odometer" data-count="5679">00</span>
-                        </h3>
-                        <p>Happy Clients</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay=".4s">
-                    <div class="single-fun-fact">
-                        <div class="icon">
-                            <i class="fa fa-star"></i>
-                        </div>
-                        <h3>
-                            <span class="odometer" data-count="2660">00</span>
-                        </h3>
-                        <p>Reviews</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay=".5s">
-                    <div class="single-fun-fact">
-                        <div class="icon">
-                            <i class="fa fa-download"></i>
-                        </div>
-                        <h3>
-                            <span class="odometer" data-count="6789">00</span>
-                        </h3>
-                        <p>App Downloads</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- End Fun Facts Area -->
-
     <!-- Start About Area -->
     <section id="about" class="about-area pb-100">
         <div class="container">
             <div class="section-title wow fadeInUp" data-wow-delay=".3s">
-                <h2>About Our System</h2>
+                <h2>About AfyaTime</h2>
                 <div class="bar"></div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incidiunt labore et
-                    dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+                <p>Poor clinic attendance for medication top-up or investigations is a problem which leads to poor
+                    prognosis
+                    of most diseases. This is how we solve that.</p>
             </div>
 
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <div class="about-content">
-                        <h3>Our process is simple, Our App is powerful</h3>
+                        <h3>Missing appointments is the thing of the past</h3>
                         <div class="bar"></div>
-                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                            suffered alteration in some form, by injected humour, or randomised words which don't look
-                            even slightly believable.</p>
-                        <p>If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything
-                            embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet
-                            tend to repeat predefined chunks as necessary, making this the first true generator on the
-                            Internet.</p>
-
+                        <p>We have put together a complex reminder system that uses both SMS and E-mails to patients and
+                            prescribers respectifully This enables clear and timely alerts which improves clinic
+                            attendance
+                            and proper preparedness on the clinic side.</p>
+                        <p>Manage patients and prescribers in one platform. Ensuring close relationship and
+                            communication
+                            between prescribers and patients which establishes trust and responsibility towards clinic
+                            attendance. Prescribers will ensure patients are aware of their appointment dates and set
+                            reminders which will be timely sent to the patients as SMS.</p>
+                        <p>Organizations and clinic service providers have a chance to track patients, prescribers,
+                            health
+                            service providers and also plan in advance how human and equipment resources are expected to
+                            be
+                            for future appointments. AfyaTime also allows tracking patient attendance, enabling tracking
+                            less adherent patients and contact them.</p>
                         <div class="about-btn">
-                            <a href="#" class="default-btn">
-                                Download Now
+                            <a href="#contact" class="default-btn">
+                                Get Started
                                 <span></span>
                             </a>
                         </div>
@@ -201,10 +131,10 @@
     <section id="features" class="features-area pb-70">
         <div class="container">
             <div class="section-title wow fadeInUp" data-wow-delay=".3s">
-                <h2>Awsome Features</h2>
+                <h2>AfyaTime Features</h2>
                 <div class="bar"></div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incidiunt labore et
-                    dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+                <p>For secure and timely patient appointment reminders sent via SMS AfyaTime is the solution that will
+                    ensure increase in clinic attendance.</p>
             </div>
 
             <div class="row">
@@ -214,8 +144,7 @@
                             <i class="fa fa-sun"></i>
                         </div>
                         <h3>Appointment History</h3>
-                        <p>Lorem ipsum dolor sit amet, con se ctetur adipiscing elit. In sagittis eg esta ante, sed
-                            viverra nunc tinci dunt nec elei fend et tiram.</p>
+                        <p>Track previous attendances and prescriber - patient encounters</p>
                     </div>
                 </div>
 
@@ -225,8 +154,9 @@
                             <i class="fa fa-lightbulb"></i>
                         </div>
                         <h3>Clinic performance</h3>
-                        <p>Lorem ipsum dolor sit amet, con se ctetur adipiscing elit. In sagittis eg esta ante, sed
-                            viverra nunc tinci dunt nec elei fend et tiram.</p>
+                        <p>Heve a clear picture of future clinic attendance expectations and establish resources
+                            capacity
+                            accordingly</p>
                     </div>
                 </div>
 
@@ -236,8 +166,10 @@
                             <i class="fa fa-desktop"></i>
                         </div>
                         <h3>External Analytics</h3>
-                        <p>Lorem ipsum dolor sit amet, con se ctetur adipiscing elit. In sagittis eg esta ante, sed
-                            viverra nunc tinci dunt nec elei fend et tiram.</p>
+                        <p>Ability to track patients with poor attendance and contact them or send them regular high
+                            frequency SMS reminders. Ability to give time specific appointment to avoid unnecessary
+                            queues
+                        </p>
                     </div>
                 </div>
 
@@ -272,8 +204,9 @@
                             <i class="fa fa-camera"></i>
                         </div>
                         <h3>Internal Analytics</h3>
-                        <p>Lorem ipsum dolor sit amet, con se ctetur adipiscing elit. In sagittis eg esta ante, sed
-                            viverra nunc tinci dunt nec elei fend et tiram.</p>
+                        <p>Ability to plan and deploy resources as needed since future attendance is known. Ability to
+                            space
+                            and maintain a normal defined number of attendances per day.</p>
                     </div>
                 </div>
             </div>
@@ -304,13 +237,12 @@
     <!-- End Features Area -->
 
     <!-- End Screenshot Area -->
-    <section id="screenshots" class="screenshot-area ptb-100">
+    <section id="screenshots" class="screenshot-area ptb-100" wire:ignore>
         <div class="container-fluid">
             <div class="section-title wow fadeInUp" data-wow-delay=".3s">
-                <h2>App Screenshot</h2>
+                <h2>Platform Screenshots</h2>
                 <div class="bar"></div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incidiunt labore et
-                    dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+                <p>A little sneak peek to how the platform look and all the things it can do.</p>
             </div>
 
             <div class="screenshot-slider owl-carousel owl-theme">
@@ -352,303 +284,36 @@
 
                 <div class="screenshot-item">
                     <div class="image">
-                        <img src="{{ asset('assets/landing/img/screenshot/1.png') }}" alt="image">
+                        <img src="{{ asset('assets/landing/img/screenshot/7.png') }}" alt="image">
                     </div>
                 </div>
 
                 <div class="screenshot-item">
                     <div class="image">
-                        <img src="{{ asset('assets/landing/img/screenshot/2.png') }}" alt="image">
+                        <img src="{{ asset('assets/landing/img/screenshot/8.png') }}" alt="image">
                     </div>
                 </div>
 
-                <div class="screenshot-item">
+                {{-- <div class="screenshot-item">
                     <div class="image">
-                        <img src="{{ asset('assets/landing/img/screenshot/3.png') }}" alt="image">
+                        <img src="{{ asset('assets/landing/img/screenshot/9.png') }}" alt="image">
                     </div>
-                </div>
-
-                <div class="screenshot-item">
-                    <div class="image">
-                        <img src="{{ asset('assets/landing/img/screenshot/4.png') }}" alt="image">
-                    </div>
-                </div>
-
-                <div class="screenshot-item">
-                    <div class="image">
-                        <img src="{{ asset('assets/landing/img/screenshot/5.png') }}" alt="image">
-                    </div>
-                </div>
-
-                <div class="screenshot-item">
-                    <div class="image">
-                        <img src="{{ asset('assets/landing/img/screenshot/6.png') }}" alt="image">
-                    </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </section>
     <!-- End Screenshot Area -->
 
-    <!-- Start Testimonial Area -->
-    <section class="testimonial-area ptb-100">
-        <div class="container">
-            <div class="section-title wow fadeInUp" data-wow-delay=".3s">
-                <h2>Testimonial</h2>
-                <div class="bar"></div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incidiunt labore et
-                    dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
-            </div>
-
-            <div class="testimonial-slides">
-                <div class="client-feedback">
-                    <div>
-                        <div class="item">
-                            <div class="single-feedback">
-                                <div class="icon">
-                                    <i class="fa fa-quote-left"></i>
-                                </div>
-                                <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna. Quis ipsum suspendisse ultrices gravida.”</p>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="single-feedback">
-                                <div class="icon">
-                                    <i class="fa fa-quote-left"></i>
-                                </div>
-                                <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna. Quis ipsum suspendisse ultrices gravida.”</p>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="single-feedback">
-                                <div class="icon">
-                                    <i class="fa fa-quote-left"></i>
-                                </div>
-                                <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna. Quis ipsum suspendisse ultrices gravida.”</p>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="single-feedback">
-                                <div class="icon">
-                                    <i class="fa fa-quote-left"></i>
-                                </div>
-                                <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna. Quis ipsum suspendisse ultrices gravida.”</p>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="single-feedback">
-                                <div class="icon">
-                                    <i class="fa fa-quote-left"></i>
-                                </div>
-                                <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna. Quis ipsum suspendisse ultrices gravida.”</p>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="single-feedback">
-                                <div class="icon">
-                                    <i class="fa fa-quote-left"></i>
-                                </div>
-                                <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna. Quis ipsum suspendisse ultrices gravida.”</p>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="single-feedback">
-                                <div class="icon">
-                                    <i class="fa fa-quote-left"></i>
-                                </div>
-                                <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna. Quis ipsum suspendisse ultrices gravida.”</p>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="single-feedback">
-                                <div class="icon">
-                                    <i class="fa fa-quote-left"></i>
-                                </div>
-                                <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna. Quis ipsum suspendisse ultrices gravida.”</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button class="prev-arrow slick-arrow">
-                        <i class="fa fa-chevron-left"></i>
-                    </button>
-
-                    <button class="next-arrow slick-arrow">
-                        <i class="fa fa-chevron-right"></i>
-                    </button>
-                </div>
-
-                <div class="client-thumbnails">
-                    <div>
-                        <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/landing/img/client/1.jpg') }}" alt="client">
-                            </div>
-
-                            <div class="title">
-                                <h3>Jonus Nathan</h3>
-                                <span>CEO at Envato</span>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/landing/img/client/2.jpg') }}" alt="client">
-                            </div>
-
-                            <div class="title">
-                                <h3>Sadio Finn</h3>
-                                <span>CEO at FlatIcon</span>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/landing/img/client/3.jpg') }}" alt="client">
-                            </div>
-
-                            <div class="title">
-                                <h3>Tom Olivar</h3>
-                                <span>CEO at ThemeForest</span>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/landing/img/client/4.jpg') }}" alt="client">
-                            </div>
-
-                            <div class="title">
-                                <h3>James Finn</h3>
-                                <span>CEO at GitLab</span>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/landing/img/client/5.jpg') }}" alt="client">
-                            </div>
-
-                            <div class="title">
-                                <h3>John Lucy</h3>
-                                <span>CEO at Linkedin</span>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/landing/img/client/1.jpg') }}" alt="client">
-                            </div>
-
-                            <div class="title">
-                                <h3>Sarah Taylor</h3>
-                                <span>CEO at Twitter</span>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/landing/img/client/2.jpg') }}" alt="client">
-                            </div>
-
-                            <div class="title">
-                                <h3>James Anderson</h3>
-                                <span>CEO at Facebook</span>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/landing/img/client/3.jpg') }}" alt="client">
-                            </div>
-
-                            <div class="title">
-                                <h3>Steven Smith</h3>
-                                <span>CEO at EnvyTheme</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="default-shape">
-            <div class="shape-1">
-                <img src="{{ asset('assets/landing/img/shape/1.png') }}" alt="image">
-            </div>
-
-            <div class="shape-2 rotateme">
-                <img src="{{ asset('assets/landing/img/shape/2.png') }}" alt="image">
-            </div>
-
-            <div class="shape-3">
-                <img src="{{ asset('assets/landing/img/shape/3.svg') }}" alt="image">
-            </div>
-
-            <div class="shape-4">
-                <img src="{{ asset('assets/landing/img/shape/4.svg') }}" alt="image">
-            </div>
-
-            <div class="shape-5">
-                <img src="{{ asset('assets/landing/img/shape/5.png') }}" alt="image">
-            </div>
-        </div>
-    </section>
-    <!-- End Testimonial Area -->
-
-    <!-- Start Overview Area -->
-    <section class="overview-area ptb-100">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <div class="overview-content">
-                        <h3>Overall 400k+ Our Users Please Get Download Now</h3>
-                        <div class="bar"></div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                            laboris nisi ut aliquip commodo.</p>
-                        <div class="overview-btn">
-                            <a href="#" class="default-btn">
-                                Get Starting Now
-                                <span></span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 wow fadeInRight" data-wow-delay=".3s">
-                    <div class="overview-image">
-                        <img src="{{ asset('assets/landing/img/overview.png') }}" alt="image">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- End Overview Area -->
-
     <!-- Start Faq Area -->
     <section id="faq" class="faq-area ptb-100">
         <div class="container">
             <div class="section-title wow fadeInUp" data-wow-delay=".3s">
-                <h2>Frequently Asked Questions</h2>
+                <h2>How AfyaTime Works</h2>
                 <div class="bar"></div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incidiunt labore et
-                    dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+                <p>With AfyaTime platform all the information regarding patients attendance and clinic situation are at
+                    your
+                    finguretips. You will have clear analytics of patients and health providers that will enable you to
+                    prepare, plan and give help to clinic attendees as needed.</p>
             </div>
 
             <div class="row align-items-center">
@@ -658,64 +323,48 @@
                             <li class="accordion-item">
                                 <a class="accordion-title active" href="javascript:void(0)">
                                     <i class="fa fa-chevron-down"></i>
-                                    Which material types can you work with?
+                                    Contact us to get a quote
                                 </a>
 
-                                <p class="accordion-content show">Lorem ipsum dolor sit amet, consectetur adipiscing
-                                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-                                    suspendisse ultrices gravida. Lorem ipsum dolor sit amet.</p>
+                                <p class="accordion-content show">After getting in touch with us we will arrange a
+                                    meeting
+                                    to discuss our packages and subscription options. Each of our subscription is
+                                    tailored
+                                    to fit different organisation needs.</p>
                             </li>
 
                             <li class="accordion-item">
                                 <a class="accordion-title" href="javascript:void(0)">
                                     <i class="fa fa-chevron-down"></i>
-                                    What access do I have on the free plan?
+                                    Pay for your organisation subscription
                                 </a>
 
-                                <p class="accordion-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-                                    suspendisse ultrices gravida. Lorem ipsum dolor sit amet, consectetur adipiscing
-                                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-                                    suspendisse ultrices gravida</p>
+                                <p class="accordion-content">After we recieved your payment, a subscription account with
+                                    the
+                                    package you choose will be activated and access to AfyaTime platform granted.</p>
                             </li>
 
                             <li class="accordion-item">
                                 <a class="accordion-title" href="javascript:void(0)">
                                     <i class="fa fa-chevron-down"></i>
-                                    Can I get support from the Author?
+                                    Register patients and health providers
                                 </a>
 
-                                <p class="accordion-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-                                    suspendisse ultrices gravida. Lorem ipsum dolor sit amet, consectetur adipiscing
-                                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-                                    suspendisse ultrices gravida</p>
+                                <p class="accordion-content">Register your health providers who will be setting up
+                                    patient
+                                    and be able to set appointments and SMS reminders will be set in the system.</p>
                             </li>
 
                             <li class="accordion-item">
                                 <a class="accordion-title" href="javascript:void(0)">
                                     <i class="fa fa-chevron-down"></i>
-                                    Which material types can you work with?
+                                    Appointment reminders are ready
                                 </a>
 
-                                <p class="accordion-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-                                    suspendisse ultrices gravida. Lorem ipsum dolor sit amet, consectetur adipiscing
-                                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-                                    suspendisse ultrices gravida</p>
-                            </li>
-
-                            <li class="accordion-item">
-                                <a class="accordion-title" href="javascript:void(0)">
-                                    <i class="fa fa-chevron-down"></i>
-                                    Why Choose Our Services In Your Business?
-                                </a>
-
-                                <p class="accordion-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-                                    suspendisse ultrices gravida. Lorem ipsum dolor sit amet, consectetur adipiscing
-                                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-                                    suspendisse ultrices gravida</p>
+                                <p class="accordion-content">Once appointment reminders have been registered in the
+                                    system,
+                                    patients will start to receive SMS reminders according to the dates and times set.
+                                    Reminders can be sent a month, a week or a day before the appointment.</p>
                             </li>
                         </ul>
                     </div>
@@ -759,19 +408,18 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".3s">
                     <div class="subscribe-content">
-                        <h2>Subscribe for our Newsletter</h2>
+                        <h2>For Future Updates</h2>
                     </div>
                 </div>
 
                 <div class="col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".3s">
-                    <form class="newsletter-form">
-                        <input type="email" class="input-newsletter" placeholder="Enter your Email" name="EMAIL"
-                            required autocomplete="off">
+                    <form class="newsletter-form" wire:submit.prevent="subscribe">
+                        <input wire:model.defer="subState.email" type="email" class="input-newsletter"
+                            placeholder="Enter your Email" name="email" required autocomplete="off">
                         <button type="submit">
-                            Subscribe Now
+                            Subscribe
                         </button>
-
-                        <div id="validator-newsletter" class="form-result"></div>
+                        <div id="validator-newsletter" class="form-result">{{ $subMessage }}</div>
                     </form>
                 </div>
             </div>
@@ -785,54 +433,78 @@
             <div class="section-title wow fadeInUp" data-wow-delay=".3s">
                 <h2>Contact Us</h2>
                 <div class="bar"></div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incidiunt labore et
-                    dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+                <p>Get in touch with us to discuss how we can improve clients attendance at your health facility. We
+                    have
+                    packages that can fit all levels.</p>
             </div>
 
             <div class="row align-items-center">
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay=".3s">
                     <div class="contact-form">
-                        <form id="contactForm">
+                        <form wire:submit.prevent="sendMessage">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="name" id="name" class="form-control" required
-                                            data-error="Please enter your name" placeholder="Your Name">
-                                        <div class="help-block with-errors"></div>
+                                        <input wire:model="state.name" type="text" name="name" id="name"
+                                            class="form-control" required data-error="Please enter your name"
+                                            placeholder="Your Name">
+                                        @error('name')
+                                        <div class="help-block with-errors">
+                                            Please enter your name
+                                        </div>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="email" name="email" id="email" class="form-control" required
-                                            data-error="Please enter your email" placeholder="Your Email">
-                                        <div class="help-block with-errors"></div>
+                                        <input wire:model="state.email" type="email" name="email" id="email"
+                                            class="form-control" required data-error="Please enter your email"
+                                            placeholder="Your Email">
+                                        @error('email')
+                                        <div class="help-block with-errors">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="phone_number" id="phone_number" required
-                                            data-error="Please enter your number" class="form-control"
-                                            placeholder="Your Phone">
-                                        <div class="help-block with-errors"></div>
+                                        <input wire:model="state.phone_number" type="text" name="phone_number"
+                                            id="phone_number" required data-error="Please enter your number"
+                                            class="form-control" placeholder="Your Phone">
+                                        @error('phone_number')
+                                        <div class="help-block with-errors">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="msg_subject" id="msg_subject" class="form-control"
-                                            required data-error="Please enter your subject" placeholder="Your Subject">
-                                        <div class="help-block with-errors"></div>
+                                        <input wire:model="state.subject" type="text" name="subject" id="subject"
+                                            class="form-control" required data-error="Please enter your subject"
+                                            placeholder="Your Subject">
+                                        @error('subject')
+                                        <div class="help-block with-errors">
+                                            Please enter your subject
+                                        </div>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-12 col-md-12">
                                     <div class="form-group">
-                                        <textarea name="message" class="form-control" id="message" cols="30" rows="6"
-                                            required data-error="Write your message"
+                                        <textarea wire:model="state.message" name="message" class="form-control"
+                                            id="message" cols="30" rows="6" required data-error="Write your message"
                                             placeholder="Your Message"></textarea>
-                                        <div class="help-block with-errors"></div>
+                                        @error('message')
+                                        <div class="help-block with-errors">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -842,7 +514,8 @@
                                             Send Message
                                             <span></span>
                                         </button>
-                                        <div id="msgSubmit" class="h3 text-center hidden"></div>
+                                        <div class="h3 text-center text-success">{{ $sMessage }}</div>
+                                        <div class="h3 text-center text-error">{{ $fMessage }}</div>
                                         <div class="clearfix"></div>
                                     </div>
                                 </div>
@@ -854,11 +527,11 @@
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay=".3s">
                     <div class="contact-info">
                         <div class="contact-info-content">
-                            <h3>Contact with us by Your Phone Number or Email Address</h3>
+                            <h3>Contact Us by Phone or Email</h3>
                             <h2>
-                                <a href="tel:+1-485-456-0102">+1-485-456-0102</a>
+                                <a href="tel:+255714610754">+255 714 610 754</a>
                                 <span>Or</span>
-                                <a href="mailto:hello@spacle.com">hello@colugo.com</a>
+                                <a href="mailto:info@afyatime.com">info@afyatime.com</a>
                             </h2>
 
                             <ul class="social">
@@ -912,4 +585,27 @@
         </div>
     </section>
     <!-- End Contact Area -->
+    {{--
+    <!-- Start Copy Right Area -->
+    <div class="copy-right">
+        <div class="container">
+            <div class="copy-right-content wow fadeInUp" data-wow-delay=".3s">
+                <p>
+                    <i class="far fa-copyright"></i>
+                    2020 AfyaTime. All Rights Reserved by
+                    <a href="https://njiwa.tech" target="_blank">
+                        Njiwa Technologies
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- End Copy Right Area -->
+
+    <!-- Start Go Top Section -->
+    <div class="go-top">
+        <i class="fa fa-chevron-up"></i>
+        <i class="fa fa-chevron-up"></i>
+    </div>
+    <!-- End Go Top Section --> --}}
 </div>

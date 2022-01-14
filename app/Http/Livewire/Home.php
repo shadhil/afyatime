@@ -11,17 +11,23 @@ use Livewire\Component;
 class Home extends Component
 {
     public $state = [];
+    public $subState = [];
     public $fMessage = '';
     public $sMessage = '';
+    public $subMessage = '';
 
 
-    public function contactUs()
+    public function sendMessage()
     {
+        $this->sMessage = '';
+        $this->fMessage = '';
+
         // dd($this->state);
         Validator::make($this->state, [
             'name' => 'required',
-            'organization' => 'string',
+            'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'email' => 'required|email',
+            'subject' => 'required',
             'message' => 'required',
         ])->validate();
 
@@ -32,14 +38,29 @@ class Home extends Component
             $details = [
                 'name' => $newContacts->name,
                 'email' => 'info@afyatime.com',
-                'subject' => 'New Web Contact',
-                'msg' => '' . $newContacts->name . ' from ' . $newContacts->organization . ' has contact us through email known as ' . $newContacts->email . ' with this message: <br> <b>  ' . $newContacts->message . ' </b>',
+                'subject' => $newContacts->subject,
+                'msg' => 'From: ' . $newContacts->name . ' email: ' . $newContacts->email . ' phone: ' . $newContacts->phone_number . ' -- ' . $newContacts->message,
             ];
             EmailNotificationJob::dispatch($details);
             $this->reset('state');
             $this->sMessage = 'Email sent Successfull';
         } else {
             $this->fMessage = 'Fail to send email';
+        }
+    }
+
+    public function subscribe()
+    {
+        Validator::make($this->subState, [
+            'email' => 'required|email',
+        ])->validate();
+
+        // dd('Okay!');
+        $newContacts = ContactUs::create($this->subState);
+
+        if ($newContacts->id > 0) {
+            $this->reset('subState');
+            $this->subMessage = 'Thank you for subscribing!';
         }
     }
 

@@ -442,7 +442,7 @@ Banner Area CSS
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url("../../../assets/landing/img/main-banner.jpg");
+    background-image: url(../../landing/img/main-banner.jpg);
     background-attachment: fixed;
     overflow: hidden;
     z-index: 1;
@@ -1070,7 +1070,7 @@ Features Area CSS
 Screenshot Area CSS
 =================================================*/
 .screenshot-area {
-    background-image: url("../../../assets/landing/img/screenshot.jpg");
+    background-image: url(../../landing/img/screenshot.jpg);
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -1752,7 +1752,7 @@ Team Area CSS
 App Download Area CSS
 =================================================*/
 .app-download {
-    background-image: url("../../../assets/landing/img/download-bg.jpg");
+    background-image: url(../../landing/img/download-bg.jpg);
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -2123,7 +2123,7 @@ Subscribe Area CSS
 .subscribe-area {
     position: relative;
     z-index: 1;
-    background-image: url("../../../assets/landing/img/subscribe-bg.jpg");
+    background-image: url(../../landing/img/subscribe-bg.jpg);
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -2223,7 +2223,7 @@ Banner Area Two CSS
     position: relative;
     height: 850px;
     z-index: 1;
-    background-image: url("../../../assets/landing/img/main-banner2.jpg");
+    background-image: url(../../landing/img/main-banner2.jpg);
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -2350,7 +2350,7 @@ Video Area CSS
 =================================================*/
 .video-content {
     text-align: center;
-    background-image: url("../../../assets/landing/img/subscribe-bg.jpg");
+    background-image: url(../../landing/img/subscribe-bg.jpg);
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -2479,7 +2479,7 @@ Page Title Area CSS
     background-repeat: no-repeat;
     height: 400px;
     background-attachment: fixed;
-    background-image: url("../../../assets/landing/img/main-banner.jpg");
+    background-image: url(../../landing/img/main-banner.jpg);
     overflow: hidden;
 }
 

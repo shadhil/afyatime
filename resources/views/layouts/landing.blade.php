@@ -27,7 +27,9 @@
 
     <title>AfyaTime - App Landing Page HTML Template</title>
 
-    <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('favicons/favicon-32x32.png') }}">
+    @livewireStyles
+    @stack('styles')
 </head>
 
 <body data-spy="scroll" data-offset="120">
@@ -97,7 +99,7 @@
                 <div class="others-option">
                     <div class="d-flex align-items-center">
                         <div class="option-item">
-                            <a href="#" class="default-btn">
+                            <a href="#contact" class="default-btn">
                                 Get Started
                                 <span></span>
                             </a>
@@ -164,6 +166,8 @@
     <script src="{{ asset('assets/landing/js/contact-form-script.js') }}"></script>
     <!-- Main JS -->
     <script src="{{ asset('assets/landing/js/main.js') }}"></script>
+    @livewireScripts
+    @stack('scripts')
 </body>
 
 </html>
